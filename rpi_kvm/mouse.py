@@ -10,6 +10,8 @@ import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
 
+#behold the evil global variable
+_clients_connected_count = int() #Setting up an integer variable for count.
 
 class KvmMouse(object):
     def __init__(self):
@@ -18,6 +20,7 @@ class KvmMouse(object):
     async def start(self):
         logging.info(f"D-Bus service connecting...")
         await self._connect_to_dbus_service()
+        await self._register_to_dbus_signals()
 
     async def _connect_to_dbus_service(self):
         self._kvm_dbus_iface = None
@@ -33,6 +36,22 @@ class KvmMouse(object):
             except dbus_next.DBusError:
                 logging.warning(f"D-Bus service not available - reconnecting...")
                 await asyncio.sleep(5)
+
+    # Copied over from info_hub
+    async def _register_to_dbus_signals(self):
+        logging.info("Register on D-Bus signals")
+        try:
+            self._kvm_dbus_iface.on_signal_connected_client_count(self._handle_connected_client_count)
+        except dbus_next.DBusError:
+            logging.warning("D-Bus service not available - reconnecting...")
+            await self._connect_to_dbus_service()
+            await self._register_to_dbus_signals()
+
+    def _handle_connected_client_count(self, clients_connected_count):
+        global _clients_connected_count
+        _clients_connected_count = clients_connected_count
+        logging.info(f"\033[0;36mConnected Clients: {_clients_connected_count} \033[0m")
+
 
     async def send_state(self, buttons, x_pos, y_pos, v_wheel, h_wheel):
         common_buttons = [False, False, False, False, False, False, False, False]
@@ -99,6 +118,28 @@ class EventMouse(object):
             logging.error(f"{self._idev.path}: {e}")
         self._is_alive = False
 
+    async def _handle_connected_client_ct_event(self):
+        if _clients_connected_count == 0:
+            try:
+                self._idev.ungrab()
+                # logging.info(f"\033[0;36m FAKE Mouse already ungrabbed. \033[0m")
+            except OSError as e:
+                # If the device is already grabbed, print a message
+                logging.info(f"\033[0;36mMouse already ungrabbed. \033[0m")
+            else:
+                # If the device is successfully grabbed, print a message
+                logging.info(f"\033[0;36mMouse Ungrabbed \033[0m")
+        elif _clients_connected_count > 0:
+            try:
+                self._idev.grab()
+                # logging.info(f"\033[0;36m FAKE Mouse Grabbed \033[0m")
+            except OSError as e:
+                # If the device is already grabbed, print a message
+                logging.info(f"\033[0;36mMouse already grabbed by another process. \033[0m")
+            else:
+                # If the device is successfully grabbed, print a message
+                logging.info(f"\033[0;36mMouse Grabbed \033[0m")
+
     # poll for mouse events
     async def _event_loop(self):
         async for event in self._idev.async_read_loop():
@@ -114,6 +155,8 @@ class EventMouse(object):
              # code and value are chosen at random
             basic_event = evdev.events.InputEvent(time_s, time_ms, ecodes.EV_SYN, 55, 55)
             await self._handle_event(basic_event)
+            # Sneak in the client count event
+            await self._handle_connected_client_ct_event()
             await asyncio.sleep(1)
 
     async def _handle_event(self, event):
@@ -134,12 +177,12 @@ class EventMouse(object):
             if button_index >= 0 and event.value < 2:
                 self._have_buttons_changed = True
                 self._buttons[button_index] = (event.value == 1)
-                if event.code in ecodes.BTN:
-                    logging.debug(f"{self._idev.path}: Key event {ecodes.BTN[event.code]}: {event.value}")
-                else:
-                    logging.debug(f"{self._idev.path}: Key event {event.code}: {event.value}")
+                # if event.code in ecodes.BTN:
+                #     logging.debug(f"{self._idev.path}: Key event {ecodes.BTN[event.code]}: {event.value}")
+                # else:
+                #     logging.debug(f"{self._idev.path}: Key event {event.code}: {event.value}")
             elif event.code == 125: # MX Master 3 - Gesture mouse button
-                logging.debug(f"{self._idev.path}: Key event BTN_GESTURE: {event.value}")
+                # logging.debug(f"{self._idev.path}: Key event BTN_GESTURE: {event.value}")
                 self._have_buttons_changed = True
                 self._buttons[self.__client_switch_button_index] = (event.value == 1)
 
@@ -149,10 +192,10 @@ class EventMouse(object):
             elif event.code == 1:
                 self._y_pos += event.value
             elif event.code == 8:
-                logging.debug(f"{self._idev.path}: V-Wheel movement: {event.value}")
+                # logging.debug(f"{self._idev.path}: V-Wheel movement: {event.value}")
                 self._v_wheel += event.value
             elif event.code == 6:
-                logging.debug(f"{self._idev.path}: H-Wheel movement: {event.value}")
+                # logging.debug(f"{self._idev.path}: H-Wheel movement: {event.value}")
                 self._h_wheel -= event.value
 
 async def main():
@@ -160,6 +203,9 @@ async def main():
     logging.info("Creating HID Manager")
     hid_manager = HidScanner()
     kvm_mouse = KvmMouse()
+    # Make the variable global between objects
+    # global _clients_connected_count 
+    # _clients_connected_count = int() #Setting up an integer variable for count.
     await kvm_mouse.start()
 
     while True:

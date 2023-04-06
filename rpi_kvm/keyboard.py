@@ -13,6 +13,7 @@ class Keyboard(object):
     def __init__(self, input_device):
         self._is_alive = False
         self._idev = input_device
+        self._clients_connected_count = int() #Setting up an integer variable for count.
         logging.info(f"{self._idev.path}: Init Keyboard - {self._idev.name}")
         self._modifiers = [ # One byte size (bit map) to represent the pressed modifier keys
             False, # Right GUI
@@ -41,6 +42,7 @@ class Keyboard(object):
     async def run(self):
         logging.info(f"{self._idev.path}: D-Bus service connecting...")
         await self._connect_to_dbus_service()
+        await self._register_to_dbus_signals()
         logging.info(f"{self._idev.path}: Starting event loop")
         self._is_alive = True
         try:
@@ -48,6 +50,31 @@ class Keyboard(object):
         except Exception as e:
             logging.error(f"{self._idev.path}: {e}")
         self._is_alive = False
+
+    # async def _handle_connected_client_count(self, clients_connected_count):
+    def _handle_connected_client_count(self, clients_connected_count):
+        self._clients_connected_count = clients_connected_count
+        logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033[0m")
+        if self._clients_connected_count == 0:
+            try:
+                self._idev.ungrab()
+                # logging.info(f"\033[0;36m FAKE Keyboard Ungrabbed \033[0m")
+            except OSError as e:
+                # If the device is already grabbed, print a message
+                logging.info(f"\033[0;36mKeyboard already ungrabbed. \033[0m")
+            else:
+                # If the device is successfully grabbed, print a message
+                logging.info(f"\033[0;36mKeyboard Ungrabbed \033[0m")
+        elif self._clients_connected_count > 0:
+            try:
+                self._idev.grab()
+                # logging.info(f"\033[0;36m FAKE Keyboard Grabbed \033[0m")
+            except OSError as e:
+                # If the device is already grabbed, print a message
+                logging.info(f"\033[0;36mKeyboard already grabbed by another process. \033[0m")
+            else:
+                # If the device is successfully grabbed, print a message
+                logging.info(f"\033[0;36mKeyboard Grabbed \033[0m")
 
     # poll for keyboard events
     async def _event_loop(self):
@@ -72,12 +99,23 @@ class Keyboard(object):
                 logging.warning(f"{self._idev.path}: D-Bus service not available - reconnecting...")
                 await asyncio.sleep(5)
 
+    # Copied over from info_hub
+    async def _register_to_dbus_signals(self):
+        logging.info("Register on D-Bus signals")
+        try:
+            self._kvm_dbus_iface.on_signal_connected_client_count(self._handle_connected_client_count)
+        except dbus_next.DBusError:
+            logging.warning("D-Bus service not available - reconnecting...")
+            await self._connect_to_dbus_service()
+            await self._register_to_dbus_signals()
+
     async def _send_state(self):
         modifier_str = ''
         for i in self._modifiers:
             mod_value_str = "1" if i else "0"
             modifier_str += mod_value_str
-        logging.debug(f"{self._idev.path}: mod: {modifier_str} keys: {self._keys}")
+        # Turning this off to keep the tmux clean.
+        # logging.debug(f"{self._idev.path}: mod: {modifier_str} keys: {self._keys}")
         try:
             await self._kvm_dbus_iface.call_send_keyboard_usb_telegram(self._modifiers, bytes(self._keys))
         except dbus_next.DBusError:

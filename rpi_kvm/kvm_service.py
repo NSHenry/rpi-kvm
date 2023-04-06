@@ -54,6 +54,10 @@ class KvmDbusService(ServiceInterface):
 
     @dbus_next.service.method()
     def GetClientsInfo(self) -> 's':
+        # Get connected client count from bt_server
+        connected_client_count = len(self._bt_server._clients_connected)
+        # logging.info(f"\033[0;36mD-Bus Service: connected_client_count = {connected_client_count}\033[0m")
+        self.signal_connected_client_count(connected_client_count)
         return json.dumps(self._bt_server.get_clients_info_dict())
 
     @dbus_next.service.method()
@@ -93,6 +97,7 @@ class KvmDbusService(ServiceInterface):
         self._bt_server.switch_active_host_to(client_address)
         client_names = self._bt_server.get_connected_client_names()
         logging.info(f"D-Bus: Switch active host to: {client_names[0]}")
+        # logging.info(f"\033[0;36mD-Bus Service: SwitchActiveHost\033[0m")
         self.signal_host_change(client_names)
 
     @dbus_next.service.method()
@@ -168,6 +173,11 @@ class KvmDbusService(ServiceInterface):
     @dbus_next.service.signal()
     def signal_restart_info_hub(self) -> '':
         return
+    
+    @dbus_next.service.signal()
+    # y is the byte type. This "high-level" language is so FUN!!!!!!
+    def signal_connected_client_count(self, connected_client_count: 'y') -> 'y':
+        return connected_client_count
 
 async def main():
     logging.basicConfig(format='BT %(levelname)s: %(message)s', level=logging.DEBUG)
