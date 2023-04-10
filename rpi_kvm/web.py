@@ -210,7 +210,7 @@ class WebServer(object):
                 self._server_future.set_result("")
             if data["service"] == "kvm":
                 logging.warning("Restart KVM service")
-                kvm_restart_cmd = "tmux new-session -d 'sudo /home/pi/rpi-kvm/rpi-kvm.sh restart'"
+                kvm_restart_cmd = "tmux new-session -d 'sudo /home/nateh/rpi-kvm/rpi-kvm.sh restart'"
                 os.system(kvm_restart_cmd)
             if data["service"] == "rpi":
                 logging.warning("Restart Raspbarry Pi")

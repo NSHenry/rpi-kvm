@@ -51,7 +51,7 @@ class Keyboard(object):
             logging.error(f"{self._idev.path}: {e}")
         self._is_alive = False
 
-    # async def _handle_connected_client_count(self, clients_connected_count):
+    # Only capture if there are connected clients
     def _handle_connected_client_count(self, clients_connected_count):
         self._clients_connected_count = clients_connected_count
         logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033[0m")

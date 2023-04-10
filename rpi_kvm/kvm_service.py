@@ -54,9 +54,10 @@ class KvmDbusService(ServiceInterface):
 
     @dbus_next.service.method()
     def GetClientsInfo(self) -> 's':
-        # Get connected client count from bt_server
+        # Get connected client count from bt_server as an integer
         connected_client_count = len(self._bt_server._clients_connected)
         # logging.info(f"\033[0;36mD-Bus Service: connected_client_count = {connected_client_count}\033[0m")
+        # Send the client count to the signal service
         self.signal_connected_client_count(connected_client_count)
         return json.dumps(self._bt_server.get_clients_info_dict())
 
