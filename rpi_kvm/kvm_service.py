@@ -16,6 +16,8 @@ from settings import Settings
 from bt_server import BtServer
 from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAktion
 from usb_hid_decoder import UsbHidDecoder
+#Testing out using reTerminal status lights
+import seeed_python_reterminal.core as rt
 
 class KvmDbusService(ServiceInterface):
     def __init__(self, settings, hotkey_detector, bt_server):
@@ -27,6 +29,8 @@ class KvmDbusService(ServiceInterface):
 
     def stop(self):
         self._stop_event = True
+        rt.sta_led_green = False
+        rt.sta_led_red = False
 
     def on_clients_change(self, clients):
         self.signal_clients_change(clients)

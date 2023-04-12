@@ -8,6 +8,8 @@ from dbus_next.aio import MessageBus
 import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
+#Testing out using reTerminal status lights
+import seeed_python_reterminal.core as rt
 
 class Keyboard(object):
     def __init__(self, input_device):
@@ -59,6 +61,8 @@ class Keyboard(object):
             try:
                 self._idev.ungrab()
                 # logging.info(f"\033[0;36m FAKE Keyboard Ungrabbed \033[0m")
+                rt.sta_led_red = True
+                rt.sta_led_green = False
             except OSError as e:
                 # If the device is already grabbed, print a message
                 logging.info(f"\033[0;36mKeyboard already ungrabbed. \033[0m")
@@ -69,6 +73,8 @@ class Keyboard(object):
             try:
                 self._idev.grab()
                 # logging.info(f"\033[0;36m FAKE Keyboard Grabbed \033[0m")
+                rt.sta_led_green = True
+                rt.sta_led_red = False
             except OSError as e:
                 # If the device is already grabbed, print a message
                 logging.info(f"\033[0;36mKeyboard already grabbed by another process. \033[0m")
