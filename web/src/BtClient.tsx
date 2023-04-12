@@ -99,7 +99,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
     return (
       <Button
         variant="outline-secondary"
-        className="mx-1"
+        className="btn-lg"
         onClick={() => this.setAsActiveBtHost()}
       >
         Set as active Host
@@ -170,7 +170,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
 
     return (
       <div className="col-md-6 ">
-        <div className="card mb-3 border-success">
+        <div className="card h-100 mb-3 bg-dark border-success">
           <div className="card-header bg-success pb-0">
             <div className="row">
               <div className="text-center text-white col-2">
@@ -179,13 +179,14 @@ export class BtClient extends React.Component<BtClientProps, any> {
               <h5 className="text-center text-white col-8">{client.name}</h5>
             </div>
           </div>
-          <div className="card-body">
+          <div className="card-body h-100 d-flex flex-column">
             <h6 className="card-title">Connected {isHostContent}</h6>
             <p className="card-text">{client.address}</p>
-            <div className="text-end">
+            <div className="d-grid h-100 gap-2">
               {this.renderSwitchActiveBtHostButton()}
               <Button
                 variant="outline-danger"
+                className="btn-lg align-self-end"
                 onClick={() => this.changeConnectState()}
               >
                 Disconnect
@@ -201,7 +202,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
     const { client } = this.props;
     return (
       <div className="col-md-6 ">
-        <div className="card mb-3 border-secondary">
+        <div className="card h-100 mb-3 bg-dark border-secondary">
           <div className="card-header bg-secondary pb-0">
             <div className="row">
               <div className="text-center text-white col-2">
@@ -216,18 +217,19 @@ export class BtClient extends React.Component<BtClientProps, any> {
               </div>
             </div>
           </div>
-          <div className="card-body">
+          <div className="card-body h-100 d-flex flex-column">
             <h6 className="card-title">Disconnected</h6>
             <p className="card-text">{client.address}</p>
-            <div className="text-end">
+            <div className="d-grid h-100 gap-2">
               {this.renderSwitchActiveBtHostButton()}
               <Button
                 variant="outline-success"
+                className="btn-lg align-self-end"
                 onClick={() => this.changeConnectState()}
               >
                 Connect
               </Button>
-            </div>
+            </div>              
           </div>
         </div>
       </div>
