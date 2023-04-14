@@ -98,8 +98,8 @@ export class BtClient extends React.Component<BtClientProps, any> {
     if (client.isHost) return <></>;
     return (
       <Button
-        variant="outline-secondary"
-        className="btn-lg"
+        variant="primary"
+        className="btn-huge"
         onClick={() => this.setAsActiveBtHost()}
       >
         Set as active Host
@@ -180,13 +180,13 @@ export class BtClient extends React.Component<BtClientProps, any> {
             </div>
           </div>
           <div className="card-body h-100 d-flex flex-column">
-            <h6 className="card-title">Connected {isHostContent}</h6>
-            <p className="card-text">{client.address}</p>
+            {/* <h6 className="card-title">Connected {isHostContent}</h6> */}
+            <p className="card-text">{client.address} {isHostContent}</p>
             <div className="d-grid h-100 gap-2">
               {this.renderSwitchActiveBtHostButton()}
               <Button
-                variant="outline-danger"
-                className="btn-lg align-self-end"
+                variant="danger"
+                className="btn-huge align-self-end"
                 onClick={() => this.changeConnectState()}
               >
                 Disconnect
@@ -218,13 +218,13 @@ export class BtClient extends React.Component<BtClientProps, any> {
             </div>
           </div>
           <div className="card-body h-100 d-flex flex-column">
-            <h6 className="card-title">Disconnected</h6>
+            {/* <h6 className="card-title">Disconnected</h6> */}
             <p className="card-text">{client.address}</p>
             <div className="d-grid h-100 gap-2">
               {this.renderSwitchActiveBtHostButton()}
               <Button
-                variant="outline-success"
-                className="btn-lg align-self-end"
+                variant="success"
+                className="btn-huge align-self-end"
                 onClick={() => this.changeConnectState()}
               >
                 Connect

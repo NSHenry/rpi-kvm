@@ -124,7 +124,8 @@ export default class BtClients extends React.Component<any, BtClientsState> {
     }
     return (
       <div className="container-fluid py-2">
-        <h1 className="text-center py-4 fw-light">Bluetooth Clients</h1>
+        {/* This is needless given this is almost a one page app. */}
+        {/* <h1 className="text-center py-4 fw-light">Bluetooth Clients</h1> */}
         <div className="row">{clientsContent}</div>
       </div>
     );

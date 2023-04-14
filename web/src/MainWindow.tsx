@@ -12,7 +12,9 @@ type MainWindowState = {
 export default class MainWindow extends React.Component<any, MainWindowState> {
   constructor(props: any) {
     super(props);
-    this.state = { activeView: 'Home' };
+    // No real need to load the home page. Go straight to Bt-Clients
+    this.state = { activeView: 'Bt-Clients' };
+    // this.state = { activeView: 'Home' };
   }
 
   switchActiveView(newActiveView: string) {

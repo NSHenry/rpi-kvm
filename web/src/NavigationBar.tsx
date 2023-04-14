@@ -20,15 +20,17 @@ export default class NavigationBar extends React.Component<NavbarProps, any> {
     return (
       <>
         <Navbar bg="dark" variant="dark" className="navbar-expand px-3">
-          <a className="navbar-brand" href="#">RPI-K(V)M</a>
+          {/* <Navbar.Brand href="#"><i className="bi bi-bluetooth text-primary d-inline-block align-middle px-2" style={{ fontSize: '4.5rem' }} /><strong className="text-primary">RPI-K(V)M</strong></Navbar.Brand> */}
+          {/* <a className="navbar-brand" href="#">RPI-K(V)M</a> */}
           <Nav
             className="me-auto"
             activeKey={activeView}
             onSelect={(selectedKey) => this.onSelect(selectedKey)}
           >
-            <Nav.Link eventKey="Home">Home</Nav.Link>
+            {/* <Nav.Link eventKey="Home">Home</Nav.Link> */}
             <Nav.Link eventKey="Bt-Clients" className="me-auto">
-              Bt-Clients
+              <i className="bi bi-bluetooth text-primary d-inline-block align-middle px-2" style={{ fontSize: '4.5rem' }} /><strong className="text-primary">RPI-K(V)M</strong>
+              {/* Bt-Clients */}
             </Nav.Link>
           </Nav>
           <Nav
@@ -36,7 +38,7 @@ export default class NavigationBar extends React.Component<NavbarProps, any> {
             onSelect={(selectedKey) => this.onSelect(selectedKey)}
           >
             <Nav.Link eventKey="Settings" className="py-0">
-              <i className="bi bi-gear-fill fs-3" />
+              <i className="bi bi-gear-wide-connected text-secondary px-2" style={{ fontSize: '4.5rem' }} />
             </Nav.Link>
           </Nav>
         </Navbar>
