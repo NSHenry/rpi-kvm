@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { ServerConfig, InfoBanner, WelcomeBanner } from './Common';
-import UpdatePerformer from './UpdatePerformer';
+// import UpdatePerformer from './UpdatePerformer';
 import { NotificationContext, NotifyType } from './Notifications';
 
 type KeyboardCodes = {
@@ -162,7 +162,7 @@ export default class Settings extends React.Component<any, SettingsState> {
     return (
       <section id="settings">
         <WelcomeBanner name="Settings" message="Configure your RPI-K(V)M" />
-        <UpdatePerformer/>
+        {/* <UpdatePerformer/> */}
         <div className="container mt-5">
           <form onSubmit={this.handleSubmit.bind(this)}>
             {this.renderWebSection()}

@@ -1,6 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBluetoothB } from '@fortawesome/free-brands-svg-icons'
 
 declare type SwitchActiveViewCB = (activeView: string) => void;
 
@@ -19,18 +21,14 @@ export default class NavigationBar extends React.Component<NavbarProps, any> {
     const { activeView } = this.props;
     return (
       <>
-        <Navbar bg="dark" variant="dark" className="navbar-expand px-3">
-          {/* <Navbar.Brand href="#"><i className="bi bi-bluetooth text-primary d-inline-block align-middle px-2" style={{ fontSize: '4.5rem' }} /><strong className="text-primary">RPI-K(V)M</strong></Navbar.Brand> */}
-          {/* <a className="navbar-brand" href="#">RPI-K(V)M</a> */}
+          <Navbar bg="dark" variant="dark" className="navbar-expand px-3">
           <Nav
             className="me-auto"
             activeKey={activeView}
             onSelect={(selectedKey) => this.onSelect(selectedKey)}
           >
-            {/* <Nav.Link eventKey="Home">Home</Nav.Link> */}
             <Nav.Link eventKey="Bt-Clients" className="me-auto">
-              <i className="bi bi-bluetooth text-primary d-inline-block align-middle px-2" style={{ fontSize: '4.5rem' }} /><strong className="text-primary">RPI-K(V)M</strong>
-              {/* Bt-Clients */}
+              <FontAwesomeIcon icon={faBluetoothB} size="6x" className="text-primary d-inline-block align-middle px-2" /><span className="text-primary h5 align-middle" style={{ marginBottom: '0' }}>RPI-K(V)M</span>
             </Nav.Link>
           </Nav>
           <Nav

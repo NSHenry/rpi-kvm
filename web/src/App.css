@@ -11,3 +11,13 @@ body {
   padding: 4rem 5rem;
   font-size: 3rem;
 }
+
+.navbar {
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+}
+
+.navbar-nav a {
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+}
