@@ -98,11 +98,11 @@ export class BtClient extends React.Component<BtClientProps, any> {
     if (client.isHost) return <></>;
     return (
       <Button
-        variant="primary"
+        variant="info"
         className="btn-huge"
         onClick={() => this.setAsActiveBtHost()}
       >
-        Set as active Host
+        Activate
       </Button>
     );
   }
@@ -113,7 +113,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
       return (
         <Button
           variant="default"
-          className="text-white col-1 py-0 ps-0 pe-3"
+          className="text-white fs-4 col-1 py-0 ps-0 pe-3"
           onClick={() => this.changeOrderLower()}
         >
           <i className="bi bi-chevron-left" style={{ fontSize: '0.9rem' }} />
@@ -123,7 +123,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
     return (
       <Button
         variant="default"
-        className="text-white col-1 py-0 ps-0 pe-3 disabled"
+        className="text-white fs-4 col-1 py-0 ps-0 pe-3 disabled"
         onClick={() => this.changeOrderLower()}
       >
         <i className="bi bi-chevron-left" style={{ fontSize: '0.9rem' }} />
@@ -137,7 +137,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
       return (
         <Button
           variant="default"
-          className="text-white col-1 py-0 ps-0 pe-3"
+          className="text-white fs-4 col-1 py-0 ps-0 pe-3"
           onClick={() => this.changeOrderHigher()}
         >
           <i className="bi bi-chevron-right" style={{ fontSize: '0.9rem' }} />
@@ -147,7 +147,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
     return (
       <Button
         variant="default"
-        className="text-white col-1 py-0 ps-0 pe-3 disabled"
+        className="text-white fs-4 col-1 py-0 ps-0 pe-3 disabled"
         onClick={() => this.changeOrderHigher()}
       >
         <i className="bi bi-chevron-right" style={{ fontSize: '0.9rem' }} />
@@ -166,7 +166,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
 
   renderConnectedCard() {
     const { client } = this.props;
-    const isHostContent = client.isHost ? '(active Host)' : '';
+    const isHostContent = client.isHost ? '(Active Host)' : '';
 
     return (
       <div className="col-md-6 ">
@@ -176,12 +176,12 @@ export class BtClient extends React.Component<BtClientProps, any> {
               <div className="text-center text-white col-2">
                 {this.renderOrderButtons()}
               </div>
-              <h5 className="text-center text-white col-8">{client.name}</h5>
+              <h5 className="text-center text-white fs-3 fw-bold col-8">{client.name}</h5>
             </div>
           </div>
           <div className="card-body h-100 d-flex flex-column">
             {/* <h6 className="card-title">Connected {isHostContent}</h6> */}
-            <p className="card-text">{client.address} {isHostContent}</p>
+            <p className="card-text fs-4 fw-bold">{client.address} {isHostContent}</p>
             <div className="d-grid h-100 gap-2">
               {this.renderSwitchActiveBtHostButton()}
               <Button
@@ -208,7 +208,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
               <div className="text-center text-white col-2">
                 {this.renderOrderButtons()}
               </div>
-              <h5 className="text-center text-white col-8">{client.name}</h5>
+              <h5 className="text-center text-white fs-3 col-8">{client.name}</h5>
               <div className="text-center text-white col-1 offset-1">
                 <BtClientRemovalModalButton
                   name={client.name}
@@ -219,7 +219,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
           </div>
           <div className="card-body h-100 d-flex flex-column">
             {/* <h6 className="card-title">Disconnected</h6> */}
-            <p className="card-text">{client.address}</p>
+            <p className="card-text fs-4">{client.address}</p>
             <div className="d-grid h-100 gap-2">
               {this.renderSwitchActiveBtHostButton()}
               <Button
