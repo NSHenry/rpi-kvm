@@ -163,6 +163,9 @@ export default class Settings extends React.Component<any, SettingsState> {
       <section id="settings">
         <WelcomeBanner name="Settings" message="Configure your RPI-K(V)M" />
         {/* <UpdatePerformer/> */}
+        <div className="container my-5">
+          <ServiceRestartSection />
+        </div>
         <div className="container mt-5">
           <form onSubmit={this.handleSubmit.bind(this)}>
             {this.renderWebSection()}
@@ -173,9 +176,6 @@ export default class Settings extends React.Component<any, SettingsState> {
               </div>
             </div>
           </form>
-        </div>
-        <div className="container my-5">
-          <ServiceRestartSection />
         </div>
       </section>
     );

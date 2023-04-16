@@ -28,7 +28,8 @@ export default class NavigationBar extends React.Component<NavbarProps, any> {
             onSelect={(selectedKey) => this.onSelect(selectedKey)}
           >
             <Nav.Link eventKey="Bt-Clients" className="me-auto">
-              <FontAwesomeIcon icon={faBluetoothB} size="6x" className="text-primary d-inline-block align-middle px-2" /><span className="text-primary h5 align-middle" style={{ marginBottom: '0' }}>RPI-K(V)M</span>
+              <FontAwesomeIcon icon={faBluetoothB} size="6x" className="text-primary d-inline-block align-middle px-2" />
+              <span className="text-primary display-6 align-middle" style={{ marginBottom: '0' }}>RPI-K(V)M</span>
             </Nav.Link>
           </Nav>
           <Nav
