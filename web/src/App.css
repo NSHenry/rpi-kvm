@@ -18,6 +18,11 @@ body {
 }
 
 .navbar-nav a {
-  padding-top: .5rem;
-  padding-bottom: .5rem;
+  /* padding-top: .5rem; */
+  /* padding-bottom: .5rem; */
+}
+
+.navbar-nav i {
+  line-height: 6.25rem;
+  /* line-height: 100px; */
 }

@@ -37,7 +37,7 @@ export default class NavigationBar extends React.Component<NavbarProps, any> {
             onSelect={(selectedKey) => this.onSelect(selectedKey)}
           >
             <Nav.Link eventKey="Settings" className="py-0">
-              <i className="bi bi-gear-wide-connected text-secondary px-2" style={{ fontSize: '4.5rem' }} />
+              <i className="bi bi-gear-wide-connected text-secondary" style={{ fontSize: '5.5rem' }} />
             </Nav.Link>
           </Nav>
         </Navbar>
