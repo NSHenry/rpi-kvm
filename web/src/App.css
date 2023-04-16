@@ -24,5 +24,16 @@ body {
 
 .navbar-nav i {
   line-height: 6.25rem;
-  /* line-height: 100px; */
+}
+
+.card-header .btn {
+  margin-bottom: 8px;
+}
+
+.card-header .btn.disabled {
+  border-color: transparent;
+}
+
+.modal-content {
+  background-color: #343a40;
 }

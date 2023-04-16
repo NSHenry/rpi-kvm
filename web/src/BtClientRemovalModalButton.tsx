@@ -45,7 +45,7 @@ export default class BtClientRemovalModalButton extends React.Component<
       <>
         <Button
           variant="close"
-          className="col-1 btn-close-white"
+          className="col-1 btn-lg btn-close-white"
           onClick={() => this.handleShow()}
         />
 
@@ -65,7 +65,7 @@ export default class BtClientRemovalModalButton extends React.Component<
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="outline-secondary"
+              variant="outline-primary"
               onClick={() => this.handleClose()}
             >
               Close
