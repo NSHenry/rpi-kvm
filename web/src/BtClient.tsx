@@ -98,7 +98,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
     if (client.isHost) return <></>;
     return (
       <Button
-        variant="info"
+        variant="primary"
         className="btn-huge"
         onClick={() => this.setAsActiveBtHost()}
       >
@@ -171,7 +171,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
     return (
       <div className="col-md-6 ">
         <div className="card h-100 mb-3 bg-dark border-success">
-          <div className="card-header bg-success d-flex align items center pb-0">
+          <div className="card-header bg-success d-flex align-items-center pb-0">
             {/* <div className="row"> */}
               <div className="text-center text-white col-2">
                 {this.renderOrderButtons()}
