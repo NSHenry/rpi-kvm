@@ -169,7 +169,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
     const isHostContent = client.isHost ? '(Active Host)' : '';
 
     return (
-      <div className="col-md-6 ">
+      <div className="col">
         <div className="card h-100 mb-3 bg-dark border-success">
           <div className="card-header bg-success d-flex align-items-center pb-0">
             {/* <div className="row"> */}
@@ -201,7 +201,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
   renderDisconnectedCard() {
     const { client } = this.props;
     return (
-      <div className="col-md-6 ">
+      <div className="col">
         <div className="card h-100 mb-3 bg-dark border-secondary">
           <div className="card-header bg-secondary d-flex align-items-center pb-0">
             {/* <div className="row"> */}

@@ -8,7 +8,7 @@ body {
 
 /* Use Bootstrap mixins to a big button for the reTerminal touchscreen */
 .btn-huge {
-  padding: 3.9rem 5rem;
+  padding: 3.9rem;
   font-size: 3rem;
 }
 
