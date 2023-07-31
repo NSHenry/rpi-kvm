@@ -35,9 +35,9 @@ class HidScanner(object):
             if evdev.ecodes.BTN_RIGHT in device.capabilities().get(evdev.ecodes.EV_KEY, []):
                 self._mice.append(device)
             # Ignore reTerminal Keys and Touchscreen
-            elif device.name == "gpio_keys" or "seeed-tp":
-                continue
+            elif device.name == "gpio_keys" or device.name == "seeed-tp":
                 # logging.info(f"{device.name} ignored")
+                continue
             else:
                 self._keyboards.append(device)
 
