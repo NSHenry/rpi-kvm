@@ -3,6 +3,7 @@
 import asyncio
 import evdev
 import logging
+# from bt_server import BtServer
 
 class HidScanner(object):
     def __init__(self):
@@ -34,12 +35,14 @@ class HidScanner(object):
             # has device a right button -> it's a mouse
             if evdev.ecodes.BTN_RIGHT in device.capabilities().get(evdev.ecodes.EV_KEY, []):
                 self._mice.append(device)
+                # logging.info(f"self._mice = {self._mice}")
             # Ignore reTerminal Keys and Touchscreen
-            elif device.name == "gpio_keys" or device.name == "seeed-tp":
+            elif device.name == "gpio_keys" or device.name == "seeed-tp" or device.name == "gpio_ir_recv" or device.name == "vc4-hdmi-0" or device.name == "vc4-hdmi-1":
                 # logging.info(f"{device.name} ignored")
                 continue
             else:
                 self._keyboards.append(device)
+                # logging.info(f"self._keyboards = {self._keyboards}")
 
     def info(self, verbose=False):
         logging.info(f"=== devices ========================")

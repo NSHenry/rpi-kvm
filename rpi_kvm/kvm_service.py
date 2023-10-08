@@ -17,9 +17,23 @@ from bt_server import BtServer
 from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAktion
 from usb_hid_decoder import UsbHidDecoder
 #Testing out using reTerminal status lights
-# import seeed_python_reterminal.core as rt
+try:
+    import seeed_python_reterminal.core as reTerminal # type: ignore
+except ImportError:
+    print("reTerminal module not found.")
+
 
 class KvmDbusService(ServiceInterface):
+    # Setting variables types so pylance doesn't complain
+    # The dbus_next library uses all kinds of weird type conversions
+    # https://python-dbus-next.readthedocs.io/en/latest/type-system/index.html 
+    s = str()
+    i = int()
+    y = int()
+    # not sure if these last two will anger dbus_next
+    ab = ay = list()
+
+
     def __init__(self, settings, hotkey_detector, bt_server):
         super().__init__("org.rpi.kvmservice")
         self._settings = settings
@@ -29,8 +43,12 @@ class KvmDbusService(ServiceInterface):
 
     def stop(self):
         self._stop_event = True
-        # rt.sta_led_green = False
-        # rt.sta_led_red = False
+        # reTerminal status lights
+        try:
+            reTerminal.sta_led_green = False
+            reTerminal.sta_led_red = False
+        except NameError:
+            print("reTerminal module not loaded.")
 
     def on_clients_change(self, clients):
         self.signal_clients_change(clients)
@@ -53,7 +71,7 @@ class KvmDbusService(ServiceInterface):
         await self._bus.request_name("org.rpi.kvmservice")
 
     @dbus_next.service.method()
-    def GetConnectedClientNames(self) -> 'as':
+    def GetConnectedClientNames(self) -> 'as': # type: ignore
         return self._bt_server.get_connected_client_names()
 
     @dbus_next.service.method()
@@ -66,47 +84,55 @@ class KvmDbusService(ServiceInterface):
         return json.dumps(self._bt_server.get_clients_info_dict())
 
     @dbus_next.service.method()
-    def ConnectClient(self, client_address: 's') -> '':
+    def ConnectClient(self, client_address: 's') -> None:
         self._bt_server.connect_client(client_address)
         return
 
     @dbus_next.service.method()
-    def DisconnectClient(self, client_address: 's') -> '':
+    def DisconnectClient(self, client_address: 's') -> None:
         self._bt_server.disconnect_client(client_address)
         return
 
     @dbus_next.service.method()
-    def RemoveClient(self, client_address: 's') -> '':
+    def RemoveClient(self, client_address: 's') -> None:
         self._bt_server.remove_client(client_address)
         return
 
     @dbus_next.service.method()
-    def ChangeClientOrder(self, client_address: 's', order_type: 's') -> '':
+    def ChangeClientOrder(self, client_address: 's', order_type: 's') -> None:
         self._bt_server.change_client_order(client_address, order_type)
         return
 
     @dbus_next.service.method()
-    def ReloadSettings(self) -> '':
+    def ReloadSettings(self) -> None:
         logging.info(f"D-Bus: Reload settings")
         self._hotkey_detector.reload_settings()
         return
     
     @dbus_next.service.method()
-    def RestartInfoHub(self) -> '':
+    def RestartInfoHub(self) -> None:
         logging.info(f"D-Bus: Restart Info Hub")
         self.signal_restart_info_hub()
         return
 
     @dbus_next.service.method()
-    def SwitchActiveHost(self, client_address: 's') -> '':
+    def SwitchActiveHost(self, client_address: 's') -> None:
         self._bt_server.switch_active_host_to(client_address)
         client_names = self._bt_server.get_connected_client_names()
         logging.info(f"D-Bus: Switch active host to: {client_names[0]}")
         # logging.info(f"\033[0;36mD-Bus Service: SwitchActiveHost\033[0m")
         self.signal_host_change(client_names)
 
+    # Attempt at creating a dbus method to deactivate the active host
     @dbus_next.service.method()
-    def SendKeyboardUsbTelegram(self, modifiers: 'ab', keys: 'ay') -> '':
+    def ClearActiveHost(self) -> None:
+        self._bt_server.clear_active_host()
+        logging.info(f"D-Bus: Cleared active host")
+        client_names = self._bt_server.get_connected_client_names()
+        self.signal_host_change(client_names)
+
+    @dbus_next.service.method()
+    def SendKeyboardUsbTelegram(self, modifiers: 'ab', keys: 'ay') -> None:
         modifiers_int =  UsbHidDecoder.convert_modifier_bit_mask_to_int(modifiers)
         action = self._hotkey_detector.evaluate_new_input([modifiers_int, *keys])
         # Only the last key of the hot key combination will not be sendted
@@ -134,7 +160,7 @@ class KvmDbusService(ServiceInterface):
             self._bt_server.send(keyboard_usb_telegram)
 
     @dbus_next.service.method()
-    def SendMouseUsbTelegram(self, buttons: 'ab', x_pos: 'i', y_pos: 'i', v_wheel: 'i', h_wheel: 'i') -> '':
+    def SendMouseUsbTelegram(self, buttons: 'ab', x_pos: 'i', y_pos: 'i', v_wheel: 'i', h_wheel: 'i') -> None:
         action = self._hotkey_detector.evaluate_new_mouse_input(buttons)
         if action == HotkeyAktion.SwitchToNextHost:
             self._bt_server.switch_to_next_connected_host()
@@ -168,15 +194,15 @@ class KvmDbusService(ServiceInterface):
             self._bt_server.send(mouse_usb_telegram)
 
     @dbus_next.service.signal()
-    def signal_host_change(self, client_names: 'as') -> 'as':
+    def signal_host_change(self, client_names: 'as') -> 'as': # type: ignore
         return client_names
 
     @dbus_next.service.signal()
-    def signal_clients_change(self, client_names: 'as') -> 'as':
+    def signal_clients_change(self, client_names: 'as') -> 'as': # type: ignore
         return client_names
 
     @dbus_next.service.signal()
-    def signal_restart_info_hub(self) -> '':
+    def signal_restart_info_hub(self) -> None:
         return
     
     @dbus_next.service.signal()
