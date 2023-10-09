@@ -67,7 +67,7 @@ class Keyboard(object):
                 # logging.info(f"\033[0;36m FAKE Keyboard Ungrabbed \033[0m")
                 try:
                     reTerminal.sta_led_green = False
-                    reTerminal.sta_led_red = False
+                    reTerminal.sta_led_red = True
                 except NameError:
                     print("reTerminal module not loaded.")
             except OSError as e:
@@ -80,8 +80,8 @@ class Keyboard(object):
             try:
                 self._idev.grab()
                 # logging.info(f"\033[0;36m FAKE Keyboard Grabbed \033[0m")
-                # rt.sta_led_green = True
-                # rt.sta_led_red = False
+                reTerminal.sta_led_green = True
+                reTerminal.sta_led_red = False
             except OSError as e:
                 # If the device is already grabbed, print a message
                 # logging.info(f"\033[0;36mKeyboard already grabbed by another process. \033[0m")
