@@ -9,6 +9,8 @@ import time
 import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
+# Temporaily adding this for testing
+# from bt_server import BtServer
 
 #behold the evil global variable
 _clients_connected_count = int() #Setting up an integer variable for count.
@@ -50,7 +52,7 @@ class KvmMouse(object):
     def _handle_connected_client_count(self, clients_connected_count):
         global _clients_connected_count
         _clients_connected_count = clients_connected_count
-        logging.info(f"\033[0;36mConnected Clients: {_clients_connected_count} \033[0m")
+        # logging.info(f"\033[0;36mConnected Clients: {_clients_connected_count} \033[0m")
 
 
     async def send_state(self, buttons, x_pos, y_pos, v_wheel, h_wheel):
@@ -135,10 +137,11 @@ class EventMouse(object):
                 # logging.info(f"\033[0;36m FAKE Mouse Grabbed \033[0m")
             except OSError as e:
                 # If the device is already grabbed, print a message
-                logging.info(f"\033[0;36mMouse already grabbed by another process. \033[0m")
-            else:
+                # logging.info(f"\033[0;36mMouse already grabbed by another process. \033[0m")
+                pass
+            # else:
                 # If the device is successfully grabbed, print a message
-                logging.info(f"\033[0;36mMouse Grabbed \033[0m")
+                # logging.info(f"\033[0;36mMouse Grabbed \033[0m")
 
     # poll for mouse events
     async def _event_loop(self):
@@ -152,7 +155,7 @@ class EventMouse(object):
             time_s = int(time_ns / 1_000_000_000)
             time_ms = int((time_ns - (time_s * 1_000_000_000)) / 1_000)
             # InputEvent.__init__(self, sec, usec, type, code, value)
-             # code and value are chosen at random
+            # code and value are chosen at random
             basic_event = evdev.events.InputEvent(time_s, time_ms, ecodes.EV_SYN, 55, 55)
             await self._handle_event(basic_event)
             # Sneak in the client count event
@@ -203,9 +206,8 @@ async def main():
     logging.info("Creating HID Manager")
     hid_manager = HidScanner()
     kvm_mouse = KvmMouse()
-    # Make the variable global between objects
-    # global _clients_connected_count 
-    # _clients_connected_count = int() #Setting up an integer variable for count.
+    # Temporaily adding this for testing
+    # bt_server = BtServer()
     await kvm_mouse.start()
 
     while True:
@@ -219,6 +221,8 @@ async def main():
         device_paths = [mouse_device.path for mouse_device in hid_manager.mouse_devices]
         if len(device_paths) == 0:
             logging.warning("No mouse device found, waiting till next device scan")
+            # Temporaily adding this for testing
+            # bt_server.clear_active_host()
         else:
             new_device_mice = [mouse_device for mouse_device in hid_manager.mouse_devices if mouse_device.path not in kvm_mouse.event_mice]
             for mouse_device in new_device_mice:

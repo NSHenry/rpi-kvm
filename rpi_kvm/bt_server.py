@@ -186,6 +186,11 @@ class BtServer(object):
             self._active_host = self._clients[client_address]
         self._clients_order.active_client = self._active_host.address
 
+    # Function to clear the active host.
+    def clear_active_host(self):
+        self._active_host = None
+        self._clients_order.active_client = ""
+
     def _get_connected_client_addresses(self):
         if self._active_host and len(self._clients_connected) > 0:
             client_addresses = self._clients_order.sort_clients( list(self._clients_connected.keys()) )

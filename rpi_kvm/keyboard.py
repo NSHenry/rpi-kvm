@@ -8,8 +8,12 @@ from dbus_next.aio import MessageBus
 import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
+from bt_server import BtServer
 #Testing out using reTerminal status lights
-import seeed_python_reterminal.core as rt
+try:
+    import seeed_python_reterminal.core as reTerminal # type: ignore
+except ImportError:
+    print("reTerminal module not found.")
 
 class Keyboard(object):
     def __init__(self, input_device):
@@ -56,13 +60,16 @@ class Keyboard(object):
     # Only capture if there are connected clients
     def _handle_connected_client_count(self, clients_connected_count):
         self._clients_connected_count = clients_connected_count
-        logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033[0m")
+        # logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033[0m")
         if self._clients_connected_count == 0:
             try:
                 self._idev.ungrab()
                 # logging.info(f"\033[0;36m FAKE Keyboard Ungrabbed \033[0m")
-                rt.sta_led_red = True
-                rt.sta_led_green = False
+                try:
+                    reTerminal.sta_led_green = False
+                    reTerminal.sta_led_red = True
+                except NameError:
+                    print("reTerminal module not loaded.")
             except OSError as e:
                 # If the device is already grabbed, print a message
                 logging.info(f"\033[0;36mKeyboard already ungrabbed. \033[0m")
@@ -73,14 +80,15 @@ class Keyboard(object):
             try:
                 self._idev.grab()
                 # logging.info(f"\033[0;36m FAKE Keyboard Grabbed \033[0m")
-                rt.sta_led_green = True
-                rt.sta_led_red = False
+                reTerminal.sta_led_green = True
+                reTerminal.sta_led_red = False
             except OSError as e:
                 # If the device is already grabbed, print a message
-                logging.info(f"\033[0;36mKeyboard already grabbed by another process. \033[0m")
-            else:
+                # logging.info(f"\033[0;36mKeyboard already grabbed by another process. \033[0m")
+                pass
+            # else:
                 # If the device is successfully grabbed, print a message
-                logging.info(f"\033[0;36mKeyboard Grabbed \033[0m")
+                # logging.info(f"\033[0;36mKeyboard Grabbed \033[0m")
 
     # poll for keyboard events
     async def _event_loop(self):
@@ -150,6 +158,7 @@ async def main():
     logging.info("Creating HID Manager")
     hid_manager = HidScanner()
     keyboards = dict()
+    bt_server = BtServer()
 
     while True:
         await hid_manager.scan()
@@ -161,6 +170,7 @@ async def main():
 
         device_paths = [keyboard_device.path for keyboard_device in hid_manager.keyboard_devices]
         if len(device_paths) == 0:
+            bt_server.clear_active_host()
             logging.warning("No keyboard found, waiting till next device scan")
         else:
             new_keyboards = [keyboard_device for keyboard_device in hid_manager.keyboard_devices if keyboard_device.path not in keyboards]
