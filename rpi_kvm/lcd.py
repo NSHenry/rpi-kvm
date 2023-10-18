@@ -5,7 +5,7 @@ import asyncio
 import enum
 import time
 import logging
- 
+
 # Define GPIO to LCD mapping
 LCD_RS = 7
 LCD_E  = 8
@@ -14,11 +14,11 @@ LCD_D5 = 24
 LCD_D6 = 23
 LCD_D7 = 18
 LED_ON = 15
- 
+
 # Define some device constants
 LCD_CHR = True
 LCD_CMD = False
- 
+
 class LcdLineStyle(enum.Enum):
     LeftJustified = 1
     Centred = 2
@@ -40,7 +40,7 @@ class LcdDisplay(object):
     E_DELAY = 0.0005
     # Maximum characters per line
     LCD_WIDTH = 20
- 
+
     def __init__(self):
         self._queue = asyncio.Queue()
 
@@ -206,6 +206,6 @@ async def main():
         raise
     finally:
         display.cleanup()
- 
+
 if __name__ == '__main__':
     asyncio.run( main() )
