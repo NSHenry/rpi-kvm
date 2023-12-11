@@ -8,11 +8,11 @@ function fail {
 echo "### RPI-KVM Install ##############"
 echo "--- RPI-KVM Dependency Install ---"
 echo "Install required basic packages via apt-get"
-sudo apt-get install git tmux python python3 python-dev python3-dev python3-pip -y
+sudo apt-get install git tmux python-is-python3 python3 python-dev-is-python3 python3-dev python3-pip -y
 echo "Install required bluetooth packages via apt-get"
 sudo apt-get install bluez bluez-tools bluez-firmware python3-bluez -y
-echo "Install required python packages via pip3"
-sudo pip3 install evdev dbus-next aiohttp RPi.GPIO
+echo "Install required python packages system-wide"
+sudo apt install python3-dbus-next python3-aiohttp
 echo "Install required python packages via apt-get"
 sudo apt-get install python3-pyudev python3-evdev python3-dbus python3-numpy python3-gi -y
 echo "Install dev tools"

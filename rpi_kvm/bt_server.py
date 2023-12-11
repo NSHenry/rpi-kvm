@@ -12,7 +12,7 @@ from bt_client import BtClient
 from client_order import PersistentClientOrder
 
 class BtServer(object):
-    NAME = "RPI-KVM"
+    NAME = "RPI-KVM-HOME"
     BT_HID_UUID = "00001124-0000-1000-8000-00805f9b34fb" # https://www.bluetooth.com/specifications/assigned-numbers/service-discovery/
     SDP_RECORD_PATH = sys.path[0] + "/../conf/sdp_record.xml" # file path of the sdp record to load
 
