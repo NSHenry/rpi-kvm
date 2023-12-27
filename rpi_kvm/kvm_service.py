@@ -109,11 +109,11 @@ class KvmDbusService(ServiceInterface):
         self._hotkey_detector.reload_settings()
         return
     
-    @dbus_next.service.method()
-    def RestartInfoHub(self) -> None:
-        logging.info(f"D-Bus: Restart Info Hub")
-        self.signal_restart_info_hub()
-        return
+    # @dbus_next.service.method()
+    # def RestartInfoHub(self) -> None:
+    #     logging.info(f"D-Bus: Restart Info Hub")
+    #     self.signal_restart_info_hub()
+    #     return
 
     @dbus_next.service.method()
     def SwitchActiveHost(self, client_address: 's') -> None:
@@ -201,9 +201,9 @@ class KvmDbusService(ServiceInterface):
     def signal_clients_change(self, client_names: 'as') -> 'as': # type: ignore
         return client_names
 
-    @dbus_next.service.signal()
-    def signal_restart_info_hub(self) -> None:
-        return
+    # @dbus_next.service.signal()
+    # def signal_restart_info_hub(self) -> None:
+    #     return
     
     @dbus_next.service.signal()
     # y is the byte type. This "high-level" language is so FUN!!!!!!

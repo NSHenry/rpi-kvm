@@ -9,8 +9,6 @@ import time
 import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
-# Temporaily adding this for testing
-# from bt_server import BtServer
 
 #behold the evil global variable
 _clients_connected_count = int() #Setting up an integer variable for count.

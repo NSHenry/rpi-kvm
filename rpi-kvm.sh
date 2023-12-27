@@ -17,6 +17,12 @@ case "$1" in
     kill)
         sudo tmux kill-session -t rpi-kvm
         ;;
+    stop)
+        sudo tmux kill-session -t rpi-kvm
+        ;;
+    quit)
+        sudo tmux kill-session -t rpi-kvm
+        ;;
     start)
         sudo ./scripts/init.sh
         ;;
