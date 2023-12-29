@@ -72,7 +72,8 @@ class Keyboard(object):
                     print("reTerminal module not loaded.")
             except OSError as e:
                 # If the device is already grabbed, print a message
-                logging.info(f"\033[0;36mKeyboard already ungrabbed. \033[0m")
+                # logging.info(f"\033[0;36mKeyboard already ungrabbed. \033[0m")
+                pass
             else:
                 # If the device is successfully grabbed, print a message
                 logging.info(f"\033[0;36mKeyboard Ungrabbed \033[0m")
@@ -123,6 +124,14 @@ class Keyboard(object):
             await self._connect_to_dbus_service()
             await self._register_to_dbus_signals()
 
+    # attempt at creating a disconnect triggered by no keyboard presence that goes through d-bus
+    # async def clear_active_host(self):
+    #     try:
+    #         await self._kvm_dbus_iface.call_clear_active_host(self)
+    #     except dbus_next.DBusError:
+    #         logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
+    #         await self._connect_to_dbus_service()
+
     async def _send_state(self):
         modifier_str = ''
         for i in self._modifiers:
@@ -169,7 +178,10 @@ async def main():
             del keyboards[keyboard.path]
 
         device_paths = [keyboard_device.path for keyboard_device in hid_manager.keyboard_devices]
+        logging.info(f"Keyboard Count: {len(device_paths)}")
+        
         if len(device_paths) == 0:
+            # This does clear the active host, but I need to figure out how to make a dbus call without being in the keyboard object or whatever.
             bt_server.clear_active_host()
             logging.warning("No keyboard found, waiting till next device scan")
         else:

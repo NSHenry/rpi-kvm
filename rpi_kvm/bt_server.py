@@ -190,6 +190,7 @@ class BtServer(object):
     def clear_active_host(self):
         self._active_host = None
         self._clients_order.active_client = ""
+        logging.warning(f"Server: clear_active_host triggered.")
 
     def _get_connected_client_addresses(self):
         if self._active_host and len(self._clients_connected) > 0:
