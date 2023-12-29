@@ -21,7 +21,6 @@ class Keyboard(object):
         self._is_alive = False
         self._idev = input_device
         self._clients_connected_count = int() #Setting up an integer variable for count.
-        # logging.info(f"{self._idev.path}: Init Keyboard - {self._idev.name}")
         self._modifiers = [ # One byte size (bit map) to represent the pressed modifier keys
             False, # Right GUI
             False, # Right Alt
@@ -47,6 +46,7 @@ class Keyboard(object):
         return self._idev.name
 
     async def run(self):
+        logging.info(f"{self._idev.path}: Init Keyboard - {self._idev.name}")
         logging.info(f"{self._idev.path}: D-Bus service connecting...")
         await self._connect_to_dbus_service()
         await self._register_to_dbus_signals()
@@ -115,9 +115,9 @@ class Keyboard(object):
                 kvm_service_obj = bus.get_proxy_object(
                     'org.rpi.kvmservice', '/org/rpi/kvmservice', introspection)
                 self._kvm_dbus_iface = kvm_service_obj.get_interface('org.rpi.kvmservice')
-                # logging.info(f"{self._idev.path}: D-Bus service connected")
+                logging.info(f"{self._idev.path}: D-Bus service connected")
             except dbus_next.DBusError:
-                # logging.warning(f"{self._idev.path}: D-Bus service not available - reconnecting...")
+                logging.warning(f"{self._idev.path}: D-Bus service not available - reconnecting...")
                 await asyncio.sleep(5)
 
     # Copied over from info_hub
@@ -135,7 +135,7 @@ class Keyboard(object):
         try:
             await self._kvm_dbus_iface.call_clear_active_host()
         except dbus_next.DBusError:
-            # logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
+            logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
 
     async def _send_state(self):
@@ -168,47 +168,6 @@ class Keyboard(object):
                     self._keys[i] = usb_key_code
                     break
 
-# class DisconnectClient(object):
-#     async def run(self):
-#         logging.info("KB Disconnect Client: D-Bus service connecting...")
-#         await self._connect_to_dbus_service()
-#         await self.clear_active_host()
-#         # logging.info("KB Disconnect Client: register to D-Bus signals")
-#         # await self._register_to_dbus_signals()
-
-#     async def _connect_to_dbus_service(self):
-#         self._kvm_dbus_iface = None
-#         while not self._kvm_dbus_iface:
-#             try:
-#                 bus = await MessageBus(bus_type=dbus_next.BusType.SYSTEM).connect()
-#                 introspection = await bus.introspect(
-#                     'org.rpi.kvmservice', '/org/rpi/kvmservice')
-#                 kvm_service_obj = bus.get_proxy_object(
-#                     'org.rpi.kvmservice', '/org/rpi/kvmservice', introspection)
-#                 self._kvm_dbus_iface = kvm_service_obj.get_interface('org.rpi.kvmservice')
-#                 logging.info("KB Disconnect Client: D-Bus service connected")
-#             except dbus_next.DBusError:
-#                 logging.warning("KB Disconnect Client: D-Bus service not available - reconnecting...")
-#                 await asyncio.sleep(5)
-
-    # Copied over from info_hub
-    # async def _register_to_dbus_signals(self):
-    #     logging.info("Register on D-Bus signals")
-    #     try:
-    #         self._kvm_dbus_iface.on_signal_connected_client_count(self._handle_connected_client_count)
-    #     except dbus_next.DBusError:
-    #         logging.warning("D-Bus service not available - reconnecting...")
-    #         await self._connect_to_dbus_service()
-    #         await self._register_to_dbus_signals()
-
-    # attempt at creating a disconnect triggered by no keyboard presence that goes through d-bus
-    # async def clear_active_host(self):
-    #     try:
-    #         await self._kvm_dbus_iface.call_clear_active_host(self)
-    #     except dbus_next.DBusError:
-    #         logging.warning("KB Disconnect Client: D-Bus connection terminated - reconnecting...")
-    #         await self._connect_to_dbus_service()
-
 async def main():
     logging.basicConfig(format='KB %(levelname)s: %(message)s', level=logging.DEBUG)
     logging.info("Creating HID Manager")
@@ -221,6 +180,11 @@ async def main():
 
         removed_keyboards = [keyboard for keyboard in keyboards.values() if not keyboard.is_alive]
         for keyboard in removed_keyboards:
+            if len(device_paths) == 0:
+                # Makes a tesk using the run_away function
+                kb = Keyboard()
+                kb_task = asyncio.create_task(kb.run_away())
+                await kb_task
             logging.info(f"Removing keyboard: {keyboard.path}")
             del keyboards[keyboard.path]
 
@@ -228,13 +192,10 @@ async def main():
         logging.info(f"Keyboard Count: {len(device_paths)}")
         
         if len(device_paths) == 0:
-            # disc = DisconnectClient()
-            # disc_task = asyncio.create_task(disc.run())
-            # disc_task = asyncio.create_task(disc.clear_active_host())
-            # await disc_task
-            kb = Keyboard()
-            kb_task = asyncio.create_task(kb.run_away())
-            await kb_task
+            # Makes a tesk using the run_away function
+            # kb = Keyboard()
+            # kb_task = asyncio.create_task(kb.run_away())
+            # await kb_task
             # This does clear the active host, but it doesn't run through the dbus call.
             # bt_server.clear_active_host()
             logging.warning("No keyboard found, waiting till next device scan")
