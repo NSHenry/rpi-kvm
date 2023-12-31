@@ -49,8 +49,8 @@ export type WelcomeBannerProps = {
 export class WelcomeBanner extends React.Component<WelcomeBannerProps, any> {
   render() {
     return (
-      <Container className="py-3 text-center">
-        <Row className="py-lg-5">
+      <Container className="pb-0 pt-3 text-center">
+        <Row className="pb-0">
           <Col lg={6} md={8} className="mx-auto">
             <h1 className="fw-light">{this.props.name}</h1>
             <p className="lead text-muted">{this.props.message}</p>

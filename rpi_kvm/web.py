@@ -11,7 +11,7 @@ import logging
 import common
 from settings import Settings
 from usb_hid_decoder import UsbHidDecoder
-from clipboard import Clipboard
+# from clipboard import Clipboard
 
 class WebServer(object):
     def __init__(self, settings):
@@ -19,8 +19,8 @@ class WebServer(object):
         self._server_url = ""
         self._is_alive = False
         self._server_future = None
-        self._clipboard = Clipboard()
-        self._clipboard.start()
+        # self._clipboard = Clipboard()
+        # self._clipboard.start()
         self._app = web.Application()
         self._app.router.add_route('*', '/', self.root_handler)
         self._app.add_routes([web.get('/hello', self.hello)])
@@ -37,11 +37,11 @@ class WebServer(object):
         self._app.add_routes([web.get('/get_keyboard_codes', self.get_keyboard_codes)])
         self._app.add_routes([web.get('/is_update_available', self.is_update_available)])
         self._app.add_routes([web.get('/perform_update', self.perform_update)])
-        self._app.add_routes([web.get('/clipboard-socket', self._clipboard.websocket_handler)])
-        self._app.add_routes([web.post('/clipboard-add', self._clipboard.add)])
-        self._app.add_routes([web.post('/clipboard-clear-history', self._clipboard.clear_history)])
-        self._app.add_routes([web.post('/clipboard-apply-entry', self._clipboard.apply_entry)])
-        self._app.add_routes([web.post('/clipboard-clear-entry', self._clipboard.clear_entry)])
+        # self._app.add_routes([web.get('/clipboard-socket', self._clipboard.websocket_handler)])
+        # self._app.add_routes([web.post('/clipboard-add', self._clipboard.add)])
+        # self._app.add_routes([web.post('/clipboard-clear-history', self._clipboard.clear_history)])
+        # self._app.add_routes([web.post('/clipboard-apply-entry', self._clipboard.apply_entry)])
+        # self._app.add_routes([web.post('/clipboard-clear-entry', self._clipboard.clear_entry)])
         self._app.router.add_static('/', "web/build/")
 
     async def _connect_to_dbus_service(self):
@@ -202,8 +202,8 @@ class WebServer(object):
     async def restart_service(self, request):
         data = await request.json()
         if "service" in data:
-            if data["service"] == "info-hub":
-                logging.warning("Restart info hub")
+            # if data["service"] == "info-hub":
+                # logging.warning("Restart info hub")
                 # await self._trigger_restart_info_hub()
             if data["service"] == "web":
                 logging.warning("Restart web service")

@@ -131,8 +131,8 @@ export default class Settings extends React.Component<any, SettingsState> {
       <Row className="g-3 align-items-center">
         <h2 className="fw-light">Web Settings</h2>
           <InfoBanner message="Web setting changes take effect after web service restart." />
-          <label htmlFor="webPort" className="col-sm-3 col-form-label">Port Number:</label>
-          <Col sm={9}>
+          <label htmlFor="webPort" className="col-sm-2 col-form-label">Port Number:</label>
+          <Col sm={10}>
             <input type="number" id="webPort" className="form-control" value={this.state.settings.web.port} onChange={this.handleWebPortChange.bind(this)}/>
           </Col>
       </Row>
@@ -147,8 +147,8 @@ export default class Settings extends React.Component<any, SettingsState> {
       <div className="row g-3 mt-5 align-items-center">
         <h2 className="fw-light">Hotkey Settings</h2>
           <p>Configure your hotkeys to perform K(V)M actions via the connected keyboard.</p>
-          <label htmlFor="hotkeyNextHostKey1" className="col-sm-4 col-form-label">Next Host Hotkey:</label>
-          <div className="col-sm-8">
+          <label htmlFor="hotkeyNextHostKey1" className="col-sm-2 col-form-label">Next Host Hotkey:</label>
+          <div className="col-sm-10">
             <select className="form-select" id="hotkeyNextHostKey1" value={this.state.settings.hotkeys.nextHost[1]} onChange={this.handleHotkeyChange.bind(this)}>
               {keyCodesSelectContent}
             </select>
@@ -161,9 +161,10 @@ export default class Settings extends React.Component<any, SettingsState> {
     const { keyboardCodes } = this.state;
     return (
       <section id="settings">
-        <WelcomeBanner name="Settings" message="Configure your RPI-K(V)M" />
+        {/* <WelcomeBanner name="Settings" message="Configure your RPI-K(V)M" /> */}
+        <WelcomeBanner name="Settings" message=" " />
         {/* <UpdatePerformer/> */}
-        <div className="container my-5">
+        <div className="container mb-4 mt-0">
           <ServiceRestartSection />
         </div>
         <div className="container mt-5">
@@ -172,7 +173,7 @@ export default class Settings extends React.Component<any, SettingsState> {
             {this.renderHotkeySection(keyboardCodes)}
             <div className="row mt-3">
               <div className="d-grid col-4">
-                <input type="submit" className="btn btn-outline-primary" value="Apply"/>
+                <input type="submit" className="btn btn-xl btn-outline-primary" value="Apply"/>
               </div>
             </div>
           </form>
@@ -218,20 +219,20 @@ class ServiceRestartSection extends React.Component {
           </button>
         </div> */}
 
-        <div className="d-grid col-3">
-          <button className="btn btn-lg btn-outline-danger" onClick={() => this.sendServiceRestart("web")}>
-            Restart Web service
+        <div className="d-grid col">
+          <button className="btn btn-xl btn-outline-danger" onClick={() => this.sendServiceRestart("web")}>
+            Restart Web Service
           </button>
         </div>
 
-        <div className="d-grid col-3">
-          <button className="btn btn-lg btn-outline-danger" onClick={() => this.sendServiceRestart("kvm")}>
-            Restart KVM service
+        <div className="d-grid col">
+          <button className="btn btn-xl btn-outline-danger" onClick={() => this.sendServiceRestart("kvm")}>
+            Restart KVM Service
           </button>
         </div>
 
-        <div className="d-grid col-3">
-          <button className="btn btn-lg btn-outline-danger" onClick={() => this.sendServiceRestart("rpi")}>
+        <div className="d-grid col">
+          <button className="btn btn-xl btn-outline-danger" onClick={() => this.sendServiceRestart("rpi")}>
             Restart Raspberry Pi
           </button>
         </div>

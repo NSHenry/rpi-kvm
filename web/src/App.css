@@ -12,6 +12,11 @@ body {
   font-size: 3rem;
 }
 
+.btn-xl {
+  padding: 2.9rem;
+  font-size: 1.8rem;
+}
+
 .navbar {
   padding-top: 0rem;
   padding-bottom: 0rem;

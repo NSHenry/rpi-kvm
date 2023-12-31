@@ -8,7 +8,7 @@ from dbus_next.aio import MessageBus
 import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
-from bt_server import BtServer
+# from bt_server import BtServer
 #Testing out using reTerminal status lights
 try:
     import seeed_python_reterminal.core as reTerminal # type: ignore
@@ -58,8 +58,8 @@ class Keyboard(object):
             logging.error(f"{self._idev.path}: {e}")
         self._is_alive = False
 
-    async def run_away(self):
-        logging.info("KDB Disconnect: D-Bus service connecting...")
+    async def run_clear_host(self):
+        logging.info("KBD Disconnect: D-Bus service connecting...")
         await self._connect_to_dbus_service()
         await self._clear_active_host()
 
@@ -173,17 +173,17 @@ async def main():
     logging.info("Creating HID Manager")
     hid_manager = HidScanner()
     keyboards = dict()
-    bt_server = BtServer()
+    # bt_server = BtServer()
 
     while True:
         await hid_manager.scan()
 
         removed_keyboards = [keyboard for keyboard in keyboards.values() if not keyboard.is_alive]
         for keyboard in removed_keyboards:
+            # If no more keyboards are connected then 
             if len(device_paths) == 0:
-                # Makes a tesk using the run_away function
                 kb = Keyboard()
-                kb_task = asyncio.create_task(kb.run_away())
+                kb_task = asyncio.create_task(kb.run_clear_host())
                 await kb_task
             logging.info(f"Removing keyboard: {keyboard.path}")
             del keyboards[keyboard.path]
@@ -192,10 +192,6 @@ async def main():
         logging.info(f"Keyboard Count: {len(device_paths)}")
         
         if len(device_paths) == 0:
-            # Makes a tesk using the run_away function
-            # kb = Keyboard()
-            # kb_task = asyncio.create_task(kb.run_away())
-            # await kb_task
             # This does clear the active host, but it doesn't run through the dbus call.
             # bt_server.clear_active_host()
             logging.warning("No keyboard found, waiting till next device scan")
