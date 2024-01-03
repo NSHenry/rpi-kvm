@@ -31,6 +31,7 @@ class WebServer(object):
         self._app.add_routes([web.post('/remove_client', self.remove_client)])
         self._app.add_routes([web.post('/change_client_order', self.change_client_order)])
         self._app.add_routes([web.post('/switch_active_bt_host', self.switch_active_bt_host)])
+        self._app.add_routes([web.post('/clear_active_bt_host', self.clear_active_bt_host)])
         self._app.add_routes([web.get('/get_settings', self.get_settings)])
         self._app.add_routes([web.post('/set_settings', self.set_settings)])
         self._app.add_routes([web.post('/restart_service', self.restart_service)])
@@ -107,6 +108,15 @@ class WebServer(object):
             logging.warning(f"D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self._switch_active_bt_host(client_address)
+
+    # Adding abililty to clear active host
+    async def _clear_active_bt_host(self):
+        try:
+            await self._kvm_dbus_iface.call_clear_active_host()
+        except dbus_next.DBusError:
+            logging.warning(f"D-Bus connection terminated - reconnecting...")
+            await self._connect_to_dbus_service()
+            await self._clear_active_bt_host()
 
     async def _trigger_reload_settings(self):
         try:
@@ -186,6 +196,12 @@ class WebServer(object):
     async def switch_active_bt_host(self, request):
         data = await request.json()
         await self._switch_active_bt_host(data['clientAddress'])
+        return web.Response()
+    
+    # Adding abililty to clear active host
+    async def clear_active_bt_host(self, request):
+        data = await request.json()
+        await self._clear_active_bt_host()
         return web.Response()
 
     async def get_settings(self, request):
