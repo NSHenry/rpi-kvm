@@ -54,7 +54,7 @@ class BtServer(object):
         await common.System.exec_cmd(f"hciconfig hci0 class 0x0025C0")
         await common.System.exec_cmd(f"hciconfig hci0 name {BtServer.NAME}")
         # bluetooth server is discoverable
-        await common.System.exec_cmd(f"hciconfig hci0 piscan")
+        # await common.System.exec_cmd(f"hciconfig hci0 piscan")
 
     async def _register_bluez_profile(self):
         service_record = self._read_sdp_service_record()
@@ -191,6 +191,13 @@ class BtServer(object):
         self._active_host = None
         self._clients_order.active_client = ""
         logging.warning(f"Server: clear_active_host triggered.")
+    
+    # Function to reconnect to the last active host. (Keyboard reconnection will trigger this via kvm_service.py)
+    def reactivate_last_host(self):
+        if len(self._clients_connected) >= 1:
+            last_host = self._get_connected_client_addresses()[0]
+            self._active_host = self._clients_connected[last_host]
+        self._clients_order.active_client = self._active_host.address
 
     def _get_connected_client_addresses(self):
         if self._active_host and len(self._clients_connected) > 0:
