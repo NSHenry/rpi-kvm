@@ -123,7 +123,7 @@ class KvmDbusService(ServiceInterface):
         # logging.info(f"\033[0;36mD-Bus Service: SwitchActiveHost\033[0m")
         self.signal_host_change(client_names)
 
-    # Attempt at creating a dbus method to deactivate the active host
+    # Dbus method to clear the active host
     @dbus_next.service.method()
     def ClearActiveHost(self) -> None:
         self._bt_server.clear_active_host()
