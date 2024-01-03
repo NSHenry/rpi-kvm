@@ -250,6 +250,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
             <p className="card-text fs-4">{client.address}</p>
             <div className="d-grid h-100 gap-2">
               {this.renderSwitchActiveBtHostButton()}
+              {this.renderClearActiveBtHostButton()}
               <Button
                 variant="success"
                 className="btn-huge align-self-end"
