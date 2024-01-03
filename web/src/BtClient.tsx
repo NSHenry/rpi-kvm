@@ -123,10 +123,9 @@ export class BtClient extends React.Component<BtClientProps, any> {
 
   renderClearActiveBtHostButton() {
     const { client } = this.props;
-    if (client.isHost) return <></>;
-    return (
+    if (client.isHost) return (
       <Button
-        variant="warning"
+        variant="secondary"
         className="btn-huge"
         onClick={() => this.clearActiveBtHost()}
       >
@@ -211,7 +210,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
             {/* <h6 className="card-title">Connected {isHostContent}</h6> */}
             <p className="card-text fs-4 fw-bold">{client.address} {isHostContent}</p>
             <div className="d-grid h-100 gap-2">
-              {/* {this.renderSwitchActiveBtHostButton()} */}
+              {this.renderSwitchActiveBtHostButton()}
               {this.renderClearActiveBtHostButton()}
               <Button
                 variant="danger"
