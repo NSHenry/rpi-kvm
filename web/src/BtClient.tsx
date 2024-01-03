@@ -32,6 +32,20 @@ export class BtClient extends React.Component<BtClientProps, any> {
     );
   }
 
+  clearActiveBtHost() {
+    const { client } = this.props;
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientAddress: client.address }),
+    };
+
+    fetch(
+      `${ServerConfig.url}clear_active_bt_host`,
+      requestOptions
+    );
+  }
+
   changeOrderLower() {
     const { client } = this.props;
     const requestOptions = {
@@ -103,6 +117,19 @@ export class BtClient extends React.Component<BtClientProps, any> {
         onClick={() => this.setAsActiveBtHost()}
       >
         Activate
+      </Button>
+    );
+  }
+
+  renderClearActiveBtHostButton() {
+    const { client } = this.props;
+    if (client.isHost) return (
+      <Button
+        variant="secondary"
+        className="btn-huge"
+        onClick={() => this.clearActiveBtHost()}
+      >
+        Deactivate
       </Button>
     );
   }
@@ -184,6 +211,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
             <p className="card-text fs-4 fw-bold">{client.address} {isHostContent}</p>
             <div className="d-grid h-100 gap-2">
               {this.renderSwitchActiveBtHostButton()}
+              {this.renderClearActiveBtHostButton()}
               <Button
                 variant="danger"
                 className="btn-huge align-self-end"
@@ -222,6 +250,7 @@ export class BtClient extends React.Component<BtClientProps, any> {
             <p className="card-text fs-4">{client.address}</p>
             <div className="d-grid h-100 gap-2">
               {this.renderSwitchActiveBtHostButton()}
+              {this.renderClearActiveBtHostButton()}
               <Button
                 variant="success"
                 className="btn-huge align-self-end"
