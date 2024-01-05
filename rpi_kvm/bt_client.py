@@ -114,7 +114,7 @@ class BtClient(object):
                 logging.error(f"{self.name}: Exception during connect: {e}")
                 self._disconnect()
         if self._is_connected:
-            self._enshure_bt_master()
+            self._ensure_bt_master()
             self._checking_connection_state_periodically()
 
     def _handle_state_at_successfull_connection(self):
@@ -186,12 +186,12 @@ class BtClient(object):
         logging.info(f"\033[0;31m{self.name}: Connection terminated - client closed ({self.address})\033[0m")
         self._disconnect()
 
-    def _enshure_bt_master(self):
+    def _ensure_bt_master(self):
         if not self._bt_master_task or self._bt_master_task.done():
             self._bt_master_task = asyncio.create_task(self._switch_to_master())
 
     async def _switch_to_master(self):
-        logging.info(f"{self._name}: Enshure connection role {BtConnectionRole.Master.name}")
+        logging.info(f"{self._name}: Ensure connection role is {BtConnectionRole.Master.name}")
         connection_role = await self._get_connection_role()
         while (connection_role == BtConnectionRole.Slave) and not self._stop_event:
             try:

@@ -10,7 +10,8 @@ from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
 # from bt_server import BtServer
 #Testing out using reTerminal status lights
-from leds import _Leds as reTerminal
+# from leds import _Leds as reTerminal
+import leds as reTerminal
 
 class Keyboard(object):
     # def __init__(self, input_device):
@@ -177,7 +178,7 @@ async def main():
 
         removed_keyboards = [keyboard for keyboard in keyboards.values() if not keyboard.is_alive]
         for keyboard in removed_keyboards:
-            # If no more keyboards are connected then 
+            # If no more keyboards are connected then clear active host.
             if len(device_paths) == 0:
                 kb = Keyboard()
                 kb_task = asyncio.create_task(kb.run_clear_host())
@@ -189,8 +190,6 @@ async def main():
         logging.info(f"Keyboard Count: {len(device_paths)}")
         
         if len(device_paths) == 0:
-            # This does clear the active host, but it doesn't run through the dbus call.
-            # bt_server.clear_active_host()
             logging.warning("No keyboard found, waiting till next device scan")
         else:
             new_keyboards = [keyboard_device for keyboard_device in hid_manager.keyboard_devices if keyboard_device.path not in keyboards]

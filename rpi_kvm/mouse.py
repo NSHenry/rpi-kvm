@@ -125,7 +125,8 @@ class EventMouse(object):
                 # logging.info(f"\033[0;36m FAKE Mouse already ungrabbed. \033[0m")
             except OSError as e:
                 # If the device is already grabbed, print a message
-                logging.info(f"\033[0;36mMouse already ungrabbed. \033[0m")
+                # logging.info(f"\033[0;36mMouse already ungrabbed. \033[0m")
+                pass
             else:
                 # If the device is successfully grabbed, print a message
                 logging.info(f"\033[0;36mMouse Ungrabbed \033[0m")

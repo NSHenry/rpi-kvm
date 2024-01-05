@@ -17,8 +17,8 @@ from bt_server import BtServer
 from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAktion
 from usb_hid_decoder import UsbHidDecoder
 #Testing out using reTerminal status lights
-from leds import _Leds as reTerminal
-
+# from leds import _Leds as reTerminal
+import leds as reTerminal
 
 class KvmDbusService(ServiceInterface):
     # Setting variables types so pylance doesn't complain
@@ -178,10 +178,10 @@ class KvmDbusService(ServiceInterface):
         else:
             buttons_byte = UsbHidDecoder.convert_modifier_bit_mask_to_int(buttons)
             # limit the values to fit inside 1 byte
-            x_pos_byte = UsbHidDecoder.enshure_byte_size(x_pos)
-            y_pos_byte = UsbHidDecoder.enshure_byte_size(y_pos)
-            v_wheel_byte = UsbHidDecoder.enshure_byte_size(v_wheel)
-            h_wheel_byte = UsbHidDecoder.enshure_byte_size(h_wheel)
+            x_pos_byte = UsbHidDecoder.ensure_byte_size(x_pos)
+            y_pos_byte = UsbHidDecoder.ensure_byte_size(y_pos)
+            v_wheel_byte = UsbHidDecoder.ensure_byte_size(v_wheel)
+            h_wheel_byte = UsbHidDecoder.ensure_byte_size(h_wheel)
             # |- USB HID input report
             # |     |- USB HID usage report => Mouse
             # |     |     |- Bit mask for mouse buttons

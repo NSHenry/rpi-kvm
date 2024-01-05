@@ -1,7 +1,4 @@
 import sys
-import glob
-import evdev
-import time
 from pathlib import Path
 
 class _Leds:

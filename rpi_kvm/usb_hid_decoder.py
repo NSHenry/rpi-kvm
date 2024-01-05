@@ -252,5 +252,5 @@ class UsbHidDecoder(object):
             return -1
 
     @staticmethod
-    def enshure_byte_size(integer):
+    def ensure_byte_size(integer):
         return min(127, max(-128, integer)) & 255
