@@ -10,10 +10,7 @@ from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
 # from bt_server import BtServer
 #Testing out using reTerminal status lights
-try:
-    import seeed_python_reterminal.core as reTerminal # type: ignore
-except ImportError:
-    print("reTerminal module not found.")
+from leds import _Leds as reTerminal
 
 class Keyboard(object):
     # def __init__(self, input_device):

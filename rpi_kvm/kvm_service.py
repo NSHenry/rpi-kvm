@@ -17,10 +17,7 @@ from bt_server import BtServer
 from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAktion
 from usb_hid_decoder import UsbHidDecoder
 #Testing out using reTerminal status lights
-try:
-    import seeed_python_reterminal.core as reTerminal # type: ignore
-except ImportError:
-    print("reTerminal module not found.")
+from leds import _Leds as reTerminal
 
 
 class KvmDbusService(ServiceInterface):
@@ -127,6 +124,11 @@ class KvmDbusService(ServiceInterface):
     @dbus_next.service.method()
     def ClearActiveHost(self) -> None:
         self._bt_server.clear_active_host()
+        # reTerminal status lights
+        try:
+            reTerminal.usr_led = False
+        except NameError:
+            print("reTerminal module not loaded.")
         logging.info(f"D-Bus: Cleared active host")
         client_names = self._bt_server.get_connected_client_names()
         self.signal_host_change(client_names)
@@ -206,7 +208,7 @@ class KvmDbusService(ServiceInterface):
     #     return
     
     @dbus_next.service.signal()
-    # y is the byte type. This "high-level" language is so FUN!!!!!!
+    # y is the integer byte type. This "high-level" language is so FUN!!!!!!
     def signal_connected_client_count(self, connected_client_count: 'y') -> 'y':
         return connected_client_count
 
