@@ -72,7 +72,7 @@ class Keyboard(object):
                     reTerminal.sta_led_green = False
                     reTerminal.sta_led_red = True
                 except NameError:
-                    print("reTerminal module not loaded.")
+                    print("reTerminal led not found.")
             except OSError as e:
                 # If the device is already grabbed, print a message
                 # logging.info(f"\033[0;36mKeyboard already ungrabbed. \033[0m")

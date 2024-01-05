@@ -45,7 +45,7 @@ class KvmDbusService(ServiceInterface):
             reTerminal.sta_led_green = False
             reTerminal.sta_led_red = False
         except NameError:
-            print("reTerminal module not loaded.")
+            print("reTerminal led not found.")
 
     def on_clients_change(self, clients):
         self.signal_clients_change(clients)
@@ -116,6 +116,12 @@ class KvmDbusService(ServiceInterface):
     def SwitchActiveHost(self, client_address: 's') -> None:
         self._bt_server.switch_active_host_to(client_address)
         client_names = self._bt_server.get_connected_client_names()
+        # reTerminal status lights
+        try:
+            reTerminal.usr_led = True
+        except NameError:
+            print("reTerminal led not found.")
+        logging.info(f"D-Bus: Cleared active host")
         logging.info(f"D-Bus: Switch active host to: {client_names[0]}")
         # logging.info(f"\033[0;36mD-Bus Service: SwitchActiveHost\033[0m")
         self.signal_host_change(client_names)
@@ -128,7 +134,7 @@ class KvmDbusService(ServiceInterface):
         try:
             reTerminal.usr_led = False
         except NameError:
-            print("reTerminal module not loaded.")
+            print("reTerminal led not found.")
         logging.info(f"D-Bus: Cleared active host")
         client_names = self._bt_server.get_connected_client_names()
         self.signal_host_change(client_names)
