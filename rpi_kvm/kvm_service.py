@@ -17,11 +17,8 @@ from bt_server import BtServer
 from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAktion
 from usb_hid_decoder import UsbHidDecoder
 #Testing out using reTerminal status lights
-try:
-    import seeed_python_reterminal.core as reTerminal # type: ignore
-except ImportError:
-    print("reTerminal module not found.")
-
+# from leds import _Leds as reTerminal
+import leds as reTerminal
 
 class KvmDbusService(ServiceInterface):
     # Setting variables types so pylance doesn't complain
@@ -48,7 +45,7 @@ class KvmDbusService(ServiceInterface):
             reTerminal.sta_led_green = False
             reTerminal.sta_led_red = False
         except NameError:
-            print("reTerminal module not loaded.")
+            print("reTerminal led not found.")
 
     def on_clients_change(self, clients):
         self.signal_clients_change(clients)
@@ -119,6 +116,12 @@ class KvmDbusService(ServiceInterface):
     def SwitchActiveHost(self, client_address: 's') -> None:
         self._bt_server.switch_active_host_to(client_address)
         client_names = self._bt_server.get_connected_client_names()
+        # reTerminal status lights
+        try:
+            reTerminal.usr_led = True
+        except NameError:
+            print("reTerminal led not found.")
+        logging.info(f"D-Bus: Cleared active host")
         logging.info(f"D-Bus: Switch active host to: {client_names[0]}")
         # logging.info(f"\033[0;36mD-Bus Service: SwitchActiveHost\033[0m")
         self.signal_host_change(client_names)
@@ -127,6 +130,11 @@ class KvmDbusService(ServiceInterface):
     @dbus_next.service.method()
     def ClearActiveHost(self) -> None:
         self._bt_server.clear_active_host()
+        # reTerminal status lights
+        try:
+            reTerminal.usr_led = False
+        except NameError:
+            print("reTerminal led not found.")
         logging.info(f"D-Bus: Cleared active host")
         client_names = self._bt_server.get_connected_client_names()
         self.signal_host_change(client_names)
@@ -170,10 +178,10 @@ class KvmDbusService(ServiceInterface):
         else:
             buttons_byte = UsbHidDecoder.convert_modifier_bit_mask_to_int(buttons)
             # limit the values to fit inside 1 byte
-            x_pos_byte = UsbHidDecoder.enshure_byte_size(x_pos)
-            y_pos_byte = UsbHidDecoder.enshure_byte_size(y_pos)
-            v_wheel_byte = UsbHidDecoder.enshure_byte_size(v_wheel)
-            h_wheel_byte = UsbHidDecoder.enshure_byte_size(h_wheel)
+            x_pos_byte = UsbHidDecoder.ensure_byte_size(x_pos)
+            y_pos_byte = UsbHidDecoder.ensure_byte_size(y_pos)
+            v_wheel_byte = UsbHidDecoder.ensure_byte_size(v_wheel)
+            h_wheel_byte = UsbHidDecoder.ensure_byte_size(h_wheel)
             # |- USB HID input report
             # |     |- USB HID usage report => Mouse
             # |     |     |- Bit mask for mouse buttons
@@ -206,7 +214,7 @@ class KvmDbusService(ServiceInterface):
     #     return
     
     @dbus_next.service.signal()
-    # y is the byte type. This "high-level" language is so FUN!!!!!!
+    # y is the integer byte type. This "high-level" language is so FUN!!!!!!
     def signal_connected_client_count(self, connected_client_count: 'y') -> 'y':
         return connected_client_count
 
