@@ -1,5 +1,6 @@
 import logging
 
+
 class UsbHidDecoder(object):
     # Python translation of the USB - HID Usage Tables:
     # https://www.usb.org/sites/default/files/documents/hut1_12v2.pdf
@@ -8,7 +9,7 @@ class UsbHidDecoder(object):
     # The table can be found on page 53
     KEY_CODES = {
         "KEY_RESERVED": 0,
-        "KEY_ERR_OVF": 1, # Keyboard ErrorRollOver - Too many keys are pressed
+        "KEY_ERR_OVF": 1,  # Keyboard ErrorRollOver - Too many keys are pressed
         # Keyboard POSTFail: 2
         # Keyboard ErrorUndefined: 3
         "KEY_A": 4,
@@ -246,7 +247,7 @@ class UsbHidDecoder(object):
 
     @staticmethod
     def encode_mouse_button_index(evdev_event_code):
-        if evdev_event_code >= 272 and evdev_event_code <= 276:
+        if 272 <= evdev_event_code <= 276:
             return 279 - evdev_event_code
         else:
             return -1

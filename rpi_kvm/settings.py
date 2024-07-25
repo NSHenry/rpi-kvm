@@ -24,8 +24,8 @@ class Settings(object):
                             # |      |      |      |      |      |      |      |- Left Control
                             #[False, False, False, False, False, False, False, False]
                 "nextHost": [[False, False, False, False, False, False, False, False],
-                            # 6 pressed keys
-                            71, 0, 0, 0, 0, 0] # KEY_SCROLLLOCK 71
+                             # 6 pressed keys
+                             71, 0, 0, 0, 0, 0]  # KEY_SCROLLLOCK 71
             }
         }
 
@@ -91,6 +91,7 @@ def main():
     settings.load_from_file()
     settings.save_to_file()
     print(settings)
+
 
 if __name__ == "__main__":
     main()

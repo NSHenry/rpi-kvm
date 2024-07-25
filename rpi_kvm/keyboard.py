@@ -9,7 +9,7 @@ import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
 # from bt_server import BtServer
-#Testing out using reTerminal status lights
+# Testing out using reTerminal status lights
 # from leds import _Leds as reTerminal
 import leds as reTerminal
 
@@ -98,7 +98,7 @@ class Keyboard(object):
     # poll for keyboard events
     async def _event_loop(self):
         async for event in self._idev.async_read_loop():
-            # only bother if we hit a key and its an up or down event
+            # only bother if we hit a key and it is an up or down event
             if event.type == ecodes.EV_KEY and event.value < 2:
                 self._handle_event(event)
                 await self._send_state()

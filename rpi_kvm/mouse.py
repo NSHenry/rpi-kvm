@@ -205,7 +205,7 @@ async def main():
     logging.info("Creating HID Manager")
     hid_manager = HidScanner()
     kvm_mouse = KvmMouse()
-    # Temporaily adding this for testing
+    # Temporarily adding this for testing
     # bt_server = BtServer()
     await kvm_mouse.start()
 
@@ -220,7 +220,7 @@ async def main():
         device_paths = [mouse_device.path for mouse_device in hid_manager.mouse_devices]
         if len(device_paths) == 0:
             logging.warning("No mouse device found, waiting till next device scan")
-            # Temporaily adding this for testing
+            # Temporarily adding this for testing
             # bt_server.clear_active_host()
         else:
             new_device_mice = [mouse_device for mouse_device in hid_manager.mouse_devices if mouse_device.path not in kvm_mouse.event_mice]

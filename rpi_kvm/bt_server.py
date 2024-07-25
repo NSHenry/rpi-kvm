@@ -11,10 +11,11 @@ import common
 from bt_client import BtClient
 from client_order import PersistentClientOrder
 
+
 class BtServer(object):
     NAME = "RPI-KVM"
-    BT_HID_UUID = "00001124-0000-1000-8000-00805f9b34fb" # https://www.bluetooth.com/specifications/assigned-numbers/service-discovery/
-    SDP_RECORD_PATH = sys.path[0] + "/../conf/sdp_record.xml" # file path of the sdp record to load
+    BT_HID_UUID = "00001124-0000-1000-8000-00805f9b34fb"  # https://www.bluetooth.com/specifications/assigned-numbers/service-discovery/
+    SDP_RECORD_PATH = sys.path[0] + "/../conf/sdp_record.xml"  # file path of the sdp record to load
 
     BT_CONTROL_PORT = 17  # Service port - control port specified in the bluetooth HID specification
     BT_INTERRUPT_PORT = 19  # Service port - interrupt port specified in the bluetooth HID specification
@@ -100,8 +101,8 @@ class BtServer(object):
         client.connect()
         self._add_client(client)
 
-    async def _listen_for_incomming_requests(self):
-        logging.info("Server: Waiting for incomming connections")
+    async def _listen_for_incoming_requests(self):
+        logging.info("Server: Waiting for incoming connections")
         self.control_socket = socket.socket(
             socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP)
         self.interrupt_socket = socket.socket(
@@ -201,7 +202,7 @@ class BtServer(object):
 
     def _get_connected_client_addresses(self):
         if self._active_host and len(self._clients_connected) > 0:
-            client_addresses = self._clients_order.sort_clients( list(self._clients_connected.keys()) )
+            client_addresses = self._clients_order.sort_clients(list(self._clients_connected.keys()))
             if self._active_host.address in client_addresses:
                 cur_active_index = client_addresses.index(self._active_host.address)
             else:
@@ -269,7 +270,7 @@ class BtServer(object):
             logging.info(f"Server: External trigger: Remove {client.name} ({client.address})")
             self._clients.pop(client.address)
             self._notify_on_clients_change()
-            asyncio.create_task( self._remove_client_from_system(client) )
+            asyncio.create_task(self._remove_client_from_system(client))
             
     async def _remove_client_from_system(self, client):
         logging.info(f"Server: Stopping client: {client.name} ({client.address})")
@@ -291,4 +292,3 @@ class BtServer(object):
     def send(self, message):
         if self._active_host:
             self._active_host.send(message)
-

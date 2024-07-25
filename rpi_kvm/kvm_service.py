@@ -14,11 +14,12 @@ import logging
 import json
 from settings import Settings
 from bt_server import BtServer
-from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAktion
+from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAction
 from usb_hid_decoder import UsbHidDecoder
-#Testing out using reTerminal status lights
+# Testing out using reTerminal status lights
 # from leds import _Leds as reTerminal
 import leds as reTerminal
+
 
 class KvmDbusService(ServiceInterface):
     # Setting variables types so pylance doesn't complain
@@ -68,7 +69,7 @@ class KvmDbusService(ServiceInterface):
         await self._bus.request_name("org.rpi.kvmservice")
 
     @dbus_next.service.method()
-    def GetConnectedClientNames(self) -> 'as': # type: ignore
+    def GetConnectedClientNames(self) -> 'as':  # type: ignore
         return self._bt_server.get_connected_client_names()
 
     @dbus_next.service.method()
@@ -142,10 +143,10 @@ class KvmDbusService(ServiceInterface):
 
     @dbus_next.service.method()
     def SendKeyboardUsbTelegram(self, modifiers: 'ab', keys: 'ay') -> None:
-        modifiers_int =  UsbHidDecoder.convert_modifier_bit_mask_to_int(modifiers)
+        modifiers_int = UsbHidDecoder.convert_modifier_bit_mask_to_int(modifiers)
         action = self._hotkey_detector.evaluate_new_input([modifiers_int, *keys])
-        # Only the last key of the hot key combination will not be sendted
-        if action == HotkeyAktion.SwitchToNextHost:
+        # Only the last key of the hot key combination will not be sent
+        if action == HotkeyAction.SwitchToNextHost:
             self._bt_server.switch_to_next_connected_host()
             client_names = self._bt_server.get_connected_client_names()
             logging.info(f"D-Bus: {action.name}: {client_names[0]}")
@@ -171,7 +172,7 @@ class KvmDbusService(ServiceInterface):
     @dbus_next.service.method()
     def SendMouseUsbTelegram(self, buttons: 'ab', x_pos: 'i', y_pos: 'i', v_wheel: 'i', h_wheel: 'i') -> None:
         action = self._hotkey_detector.evaluate_new_mouse_input(buttons)
-        if action == HotkeyAktion.SwitchToNextHost:
+        if action == HotkeyAction.SwitchToNextHost:
             self._bt_server.switch_to_next_connected_host()
             client_names = self._bt_server.get_connected_client_names()
             logging.info(f"D-Bus: {action.name}: {client_names[0]}")
@@ -198,16 +199,16 @@ class KvmDbusService(ServiceInterface):
             # |     |     |     |     |- Mouse y position
             # |     |     |     |     |     |- Vertical wheel position
             # |     |     |     |     |     |     |- Horizontal wheel position
-            # 0xA1, 0x02, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX]
+            # 0xA1, 0x02, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX
             mouse_usb_telegram = [0xA1, 2, buttons_byte, x_pos_byte, y_pos_byte, v_wheel_byte, h_wheel_byte]
             self._bt_server.send(mouse_usb_telegram)
 
     @dbus_next.service.signal()
-    def signal_host_change(self, client_names: 'as') -> 'as': # type: ignore
+    def signal_host_change(self, client_names: 'as') -> 'as':  # type: ignore
         return client_names
 
     @dbus_next.service.signal()
-    def signal_clients_change(self, client_names: 'as') -> 'as': # type: ignore
+    def signal_clients_change(self, client_names: 'as') -> 'as':  # type: ignore
         return client_names
 
     # @dbus_next.service.signal()
@@ -219,22 +220,23 @@ class KvmDbusService(ServiceInterface):
     def signal_connected_client_count(self, connected_client_count: 'y') -> 'y':
         return connected_client_count
 
+
 async def main():
     logging.basicConfig(format='BT %(levelname)s: %(message)s', level=logging.DEBUG)
 
-    if not os.geteuid() == 0: # Check if user is root
+    if not os.geteuid() == 0:  # Check if user is root
         logging.error("Root permissions required: Execute as root or with sudo")
         return
 
     bt_server = BtServer()
-    bt_server_task = asyncio.create_task( bt_server.run() )
+    bt_server_task = asyncio.create_task(bt_server.run())
 
     settings = Settings()
     settings.load_from_file()
     hotkey_config = HotkeyConfig(settings)
     hotkey_detector = HotkeyDetector(hotkey_config)
     kvm_dbus_service = KvmDbusService(settings, hotkey_detector, bt_server)
-    kvm_dbus_service_task = asyncio.create_task( kvm_dbus_service.run() )
+    kvm_dbus_service_task = asyncio.create_task(kvm_dbus_service.run())
 
     main_future = asyncio.Future()
 
@@ -243,7 +245,7 @@ async def main():
         main_future.set_result("")
     signal.signal(signal.SIGINT, signal_handler)
 
-    await main_future # wait unitl signal interrupts
+    await main_future  # wait until signal interrupts
 
     kvm_dbus_service.stop()
     await kvm_dbus_service_task
@@ -252,5 +254,4 @@ async def main():
     logging.error("System: Shut down completed")
 
 if __name__ == "__main__":
-    asyncio.run( main() )
-
+    asyncio.run(main())

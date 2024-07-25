@@ -6,10 +6,12 @@ import enum
 import logging
 import common
 
+
 class BtConnectionRole(enum.Enum):
     Master = 1
     Slave = 2
     NotConnected = 3
+
 
 class BtClient(object):
     BT_CONTROL_PORT = 17  # Service port - control port specified in the bluetooth HID specification
@@ -23,18 +25,18 @@ class BtClient(object):
 
     @staticmethod
     async def create_via_device_object_path(device_object_path):
-        address = BtClient.get_mac_address_from_devie_object_path(device_object_path)
+        address = BtClient.get_mac_address_from_device_object_path(device_object_path)
         client = BtClient(address)
         await client._connect_to_dbus_service()
         return client
 
     @staticmethod
-    def get_mac_address_from_devie_object_path(device_object_path):
-        return device_object_path[-17:].replace("_",":")
+    def get_mac_address_from_device_object_path(device_object_path):
+        return device_object_path[-17:].replace("_", ":")
 
     @staticmethod
     def get_device_object_path_from_mac_address(device_object_path):
-        return "/org/bluez/hci0/dev_" + device_object_path.replace(":","_")
+        return "/org/bluez/hci0/dev_" + device_object_path.replace(":", "_")
 
     def __init__(self, address):
         self._address = address
@@ -97,7 +99,7 @@ class BtClient(object):
     async def _establish_socket_connection(self):
         if self._control_socket and self._interrupt_socket:
             logging.debug(f"{self.name}: Incoming socket connection from {self.name} ({self.address})")
-            self._handle_state_at_successfull_connection()
+            self._handle_state_at_successful_connection()
         else:
             logging.debug(f"{self.name}: Establish socket connection to {self.name} ({self.address})")
             try:
@@ -109,7 +111,7 @@ class BtClient(object):
                     socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP)
                 await self._loop.run_in_executor(None, lambda: self._interrupt_socket.connect((self.address, self.BT_INTERRUPT_PORT)))
                 self._interrupt_socket.setblocking(False)
-                self._handle_state_at_successfull_connection()
+                self._handle_state_at_successful_connection()
             except Exception as e:
                 logging.error(f"{self.name}: Exception during connect: {e}")
                 self._disconnect()
@@ -117,7 +119,7 @@ class BtClient(object):
             self._ensure_bt_master()
             self._checking_connection_state_periodically()
 
-    def _handle_state_at_successfull_connection(self):
+    def _handle_state_at_successful_connection(self):
         self._message_queue = asyncio.Queue()
         self._is_connected = True
 
@@ -162,7 +164,8 @@ class BtClient(object):
                 self._is_bluez_connected = variant.value
 
     async def _run(self):
-        if self._stop_event: return
+        if self._stop_event:
+            return
         await self._establish_socket_connection()
         if self._is_connected:
             logging.info(f"\033[0;32m{self.name}: Connection established ({self.address})\033[0m")
@@ -179,7 +182,7 @@ class BtClient(object):
             except socket.error:
                 logging.error(f"{self._name}: Socket error during send")
                 self._disconnect()
-            except:
+            except Exception:
                 logging.error(f"{self._name}: Message could not be sed: {message}")
                 raise
 

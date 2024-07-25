@@ -5,6 +5,7 @@ import collections
 import json
 import logging
 
+
 class PersistentClientOrder(object):
     PATH_TO_FILE = "./conf/rpi-kvm-client-order.json"
 
@@ -93,7 +94,7 @@ class PersistentClientOrder(object):
         file_content = json.dumps(self._clients_order_dict, indent=4)
         with open(PersistentClientOrder.PATH_TO_FILE, 'w') as f:
             f.write(file_content)
-        #logging.info(f"PersistentClientOrder written to: {PersistentClientOrder.PATH_TO_FILE}")
+        # logging.info(f"PersistentClientOrder written to: {PersistentClientOrder.PATH_TO_FILE}")
 
     def load_from_file(self):
         if not os.path.exists(PersistentClientOrder.PATH_TO_FILE):
@@ -119,6 +120,7 @@ def main():
     client_order.load_from_file()
     client_order.save_to_file()
     print(client_order)
+
 
 if __name__ == "__main__":
     main()

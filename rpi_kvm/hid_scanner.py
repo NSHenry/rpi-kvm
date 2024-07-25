@@ -5,6 +5,7 @@ import evdev
 import logging
 # from bt_server import BtServer
 
+
 class HidScanner(object):
     def __init__(self):
         self._devices = []
@@ -59,6 +60,7 @@ class HidScanner(object):
         for device in self._mice:
             logging.info(f"{device.path} {device.name} {device.phys}")
 
+
 async def main():
     logging.basicConfig(format='HID %(levelname)s: %(message)s', level=logging.DEBUG)
     hid_manager = HidScanner()
@@ -66,4 +68,4 @@ async def main():
     hid_manager.info()
 
 if __name__ == "__main__":
-    asyncio.run( main() )
+    asyncio.run(main())

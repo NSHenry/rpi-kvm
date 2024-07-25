@@ -48,4 +48,5 @@ class _Leds:
         with open(file_name, "w") as f:
             f.write(value)
 
+
 sys.modules[__name__] = _Leds()
