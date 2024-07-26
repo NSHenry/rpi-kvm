@@ -47,7 +47,8 @@ class KvmMouse(object):
             await self._connect_to_dbus_service()
             await self._register_to_dbus_signals()
 
-    def _handle_connected_client_count(self, clients_connected_count):
+    @staticmethod
+    def _handle_connected_client_count(clients_connected_count):
         global _clients_connected_count
         _clients_connected_count = clients_connected_count
         # logging.info(f"\033[0;36mConnected Clients: {_clients_connected_count} \033[0m")
@@ -110,7 +111,7 @@ class EventMouse(object):
     async def run(self):
         self._is_alive = True
         logging.info(f"{self._idev.path}: Start sending mouse sync events continuously")
-        asyncio.create_task(self._continuous_sync_event())
+        await asyncio.create_task(self._continuous_sync_event())
         logging.info(f"{self._idev.path}: Start listening to mouse event loop")
         try:
             await self._event_loop()
@@ -228,7 +229,7 @@ async def main():
                 event_mouse = EventMouse(mouse_device)
                 event_mouse.send_state_cb = kvm_mouse.send_state
                 kvm_mouse.event_mice[mouse_device.path] = event_mouse
-                asyncio.create_task(event_mouse.run())
+                await asyncio.create_task(event_mouse.run())
         await asyncio.sleep(5)
 
 if __name__ == "__main__":

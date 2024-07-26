@@ -30,14 +30,16 @@ class HotkeyConfig(object):
         for action, hotkey_combination in self.keys.items():
             reduced_combination = self.__combine_bitmask_and_remove_vendor_reserved(hotkey_combination)
             self.keys[action] = reduced_combination
-    
-    def __combine_bitmask_and_remove_vendor_reserved(self, keyboard_input):
+
+    @staticmethod
+    def __combine_bitmask_and_remove_vendor_reserved(keyboard_input):
         modifiers_int = UsbHidDecoder.convert_modifier_bit_mask_to_int(keyboard_input[0])
         return [modifiers_int, *keyboard_input[1:7]]
 
 
 class RingBuffer(object):
     def __init__(self, size):
+        self.data = None
         self.size = size
         self.reset()
 
@@ -86,8 +88,8 @@ if __name__ == "__main__":
     settings = Settings()
     config = HotkeyConfig(settings)
     detector = HotkeyDetector(config)
-    print(detector.evaluate_new_input([0, 0, 0, 0, 0, 0, 0]) == None)
-    print(detector.evaluate_new_input([0, 0x47, 0, 0, 0, 0, 0]) == HotkeyAktion.SwitchToNextHost)
-    print(detector.evaluate_new_input([0, 0x46, 0, 0, 0, 0, 0]) == None)
-    print(detector.evaluate_new_input([0, 0x47, 0, 0, 0, 0, 0]) == HotkeyAktion.SwitchToNextHost)
-    print(detector.evaluate_new_input([0, 0, 0, 0, 0, 0, 0]) == None)
+    print(detector.evaluate_new_input([0, 0, 0, 0, 0, 0, 0]) is None)
+    print(detector.evaluate_new_input([0, 0x47, 0, 0, 0, 0, 0]) == HotkeyAction.SwitchToNextHost)
+    print(detector.evaluate_new_input([0, 0x46, 0, 0, 0, 0, 0]) is None)
+    print(detector.evaluate_new_input([0, 0x47, 0, 0, 0, 0, 0]) == HotkeyAction.SwitchToNextHost)
+    print(detector.evaluate_new_input([0, 0, 0, 0, 0, 0, 0]) is None)

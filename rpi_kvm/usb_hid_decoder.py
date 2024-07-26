@@ -79,7 +79,7 @@ class UsbHidDecoder(object):
         "KEY_F11": 68,
         "KEY_F12": 69,
         "KEY_SYSRQ": 70,
-        "KEY_SCROLLLOCK": 71,
+        "KEY_SCROLLOCK": 71,
         "KEY_PAUSE": 72,
         "KEY_INSERT": 73,
         "KEY_HOME": 74,
@@ -217,7 +217,7 @@ class UsbHidDecoder(object):
         if type(evdev_keycode) == list:
             return False
         else:
-            return (evdev_keycode in UsbHidDecoder.MODIFIER_KEYS_BIT_MASK_INDEX)
+            return evdev_keycode in UsbHidDecoder.MODIFIER_KEYS_BIT_MASK_INDEX
 
     @staticmethod
     def convert_modifier_bit_mask_to_int(modifier_bit_mask):

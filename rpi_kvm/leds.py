@@ -1,5 +1,6 @@
 import sys
-from pathlib import Path
+# from pathlib import Path
+
 
 class _Leds:
 
@@ -40,11 +41,13 @@ class _Leds:
     def usr_led(self, value):
         self.__write_to_file(_Leds.__USR_LED_GREEN_BRIGHTNESS, "1" if value else "0")
 
-    def __read_1st_line_from_file(self, file_name):
+    @staticmethod
+    def __read_1st_line_from_file(file_name):
         with open(file_name, "r") as f:
             return f.readline().replace("\n", "")
 
-    def __write_to_file(self, file_name, value):
+    @staticmethod
+    def __write_to_file(file_name, value):
         with open(file_name, "w") as f:
             f.write(value)
 

@@ -196,7 +196,7 @@ async def main():
             for keyboard_device in new_keyboards:
                 kb = Keyboard(keyboard_device)
                 keyboards[keyboard_device.path] = kb
-                asyncio.create_task(kb.run())
+                await asyncio.create_task(kb.run())
         await asyncio.sleep(5)
 
 if __name__ == "__main__":
