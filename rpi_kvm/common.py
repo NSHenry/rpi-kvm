@@ -10,4 +10,4 @@ class System(object):
             stderr=asyncio.subprocess.PIPE
         )
         stdout, stderr = await proc.communicate()
-        return proc.returncode, stdout, stderr
+        return (proc.returncode, stdout, stderr)

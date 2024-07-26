@@ -217,7 +217,7 @@ class UsbHidDecoder(object):
         if type(evdev_keycode) == list:
             return False
         else:
-            return evdev_keycode in UsbHidDecoder.MODIFIER_KEYS_BIT_MASK_INDEX
+            return (evdev_keycode in UsbHidDecoder.MODIFIER_KEYS_BIT_MASK_INDEX)
 
     @staticmethod
     def convert_modifier_bit_mask_to_int(modifier_bit_mask):

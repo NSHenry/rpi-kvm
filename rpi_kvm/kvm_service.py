@@ -6,8 +6,8 @@ import os
 import sys
 import asyncio
 import dbus_next
-from dbus_next.service import ServiceInterface
 from dbus_next.aio import MessageBus
+from dbus_next.service import ServiceInterface
 from dbus_next import Variant
 import signal
 import logging
@@ -165,7 +165,7 @@ class KvmDbusService(ServiceInterface):
             # |     |     |  0x01: Left Control
             # |     |     |     |- Vendor reserved
             # |     |     |     |     |-> 6x pressed keys
-            # 0xA1, 0x01, 0xXX, 0x00, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX
+            # 0xA1, 0x01, 0xXX, 0x00, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX]
             keyboard_usb_telegram = [0xA1, 1, modifiers_int, 0, *keys]
             self._bt_server.send(keyboard_usb_telegram)
 

@@ -246,7 +246,7 @@ class WebServer(object):
 
     async def _is_git_update_available(self):
         _, stdout, _ = await common.System.exec_cmd("git rev-list HEAD...origin/main --count")
-        return stdout != b'0\n'
+        return (stdout != b'0\n')
 
     async def is_update_available(self, request):
         is_updatable = await self._is_git_update_available()
