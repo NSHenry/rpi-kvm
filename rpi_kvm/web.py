@@ -16,8 +16,8 @@ from usb_hid_decoder import UsbHidDecoder
 
 class WebServer(object):
     def __init__(self, settings):
-        self._site = None
-        self._runner = None
+        # self._site = None
+        # self._runner = None
         self._settings = settings
         self._server_url = ""
         self._is_alive = False
@@ -153,12 +153,10 @@ class WebServer(object):
             await self._server_future
             await self._site.stop()
     
-    @staticmethod
-    async def root_handler(request):
+    async def root_handler(self, request):
         return web.HTTPFound('/index.html')
 
-    @staticmethod
-    async def hello(request):
+    async def hello(self, request):
         return web.Response(text="Hello, world")
 
     async def get_bt_clients(self, request):
@@ -238,8 +236,7 @@ class WebServer(object):
                 os.system('sudo reboot -f')
         return web.Response()
 
-    @staticmethod
-    async def get_keyboard_codes(request):
+    async def get_keyboard_codes(self, request):
         return web.Response(text=json.dumps({
             "keyboardCodes": {
                 "keyCodes": UsbHidDecoder.KEY_CODES,
@@ -247,8 +244,7 @@ class WebServer(object):
                 }
             }))
 
-    @staticmethod
-    async def _is_git_update_available():
+    async def _is_git_update_available(self):
         _, stdout, _ = await common.System.exec_cmd("git rev-list HEAD...origin/main --count")
         return stdout != b'0\n'
 

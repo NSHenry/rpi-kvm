@@ -47,8 +47,7 @@ class KvmMouse(object):
             await self._connect_to_dbus_service()
             await self._register_to_dbus_signals()
 
-    @staticmethod
-    def _handle_connected_client_count(clients_connected_count):
+    def _handle_connected_client_count(self, clients_connected_count):
         global _clients_connected_count
         _clients_connected_count = clients_connected_count
         # logging.info(f"\033[0;36mConnected Clients: {_clients_connected_count} \033[0m")

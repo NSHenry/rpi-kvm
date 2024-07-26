@@ -47,8 +47,7 @@ class BtServer(object):
         if handler in self._handlers_on_clients_change:
             self._handlers_on_clients_change.remove(handler)
 
-    @staticmethod
-    async def _restart_and_init_bt():
+    async def _restart_and_init_bt(self):
         logging.info("Server: Configuring BT server name {}".format(BtServer.NAME))
         # start bluetooth server
         await common.System.exec_cmd(f"hciconfig hci0 down")
@@ -73,8 +72,7 @@ class BtServer(object):
         manager_itf = manager_obj.get_interface("org.bluez.ProfileManager1")
         await manager_itf.call_register_profile("/org/bluez/hci0", BtServer.BT_HID_UUID, opts)
 
-    @staticmethod
-    def _read_sdp_service_record():
+    def _read_sdp_service_record(self):
         content = ""
         with open(BtServer.SDP_RECORD_PATH, 'r') as f:
             content = f.read()
@@ -281,8 +279,7 @@ class BtServer(object):
         await self._remove_client_from_bluez(client)
         logging.info(f"\033[0;31mServer: Client {client.name} ({client.address}) removed!\033[0m")
 
-    @staticmethod
-    async def _remove_client_from_bluez(client):
+    async def _remove_client_from_bluez(self, client):
         logging.info(f"Server: Remove client {client.name} ({client.address}) from bluez")
         dbus = await MessageBus(bus_type=dbus_next.BusType.SYSTEM).connect()
         introspection = await dbus.introspect(

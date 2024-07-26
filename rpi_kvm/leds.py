@@ -41,7 +41,7 @@ class _Leds:
     def usr_led(self, value):
         self.__write_to_file(_Leds.__USR_LED_GREEN_BRIGHTNESS, "1" if value else "0")
 
-    @staticmethod
+    @staticmethod 
     def __read_1st_line_from_file(file_name):
         with open(file_name, "r") as f:
             return f.readline().replace("\n", "")

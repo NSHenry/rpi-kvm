@@ -164,8 +164,7 @@ class BtClient(object):
                 self._is_bluez_connected = variant.value
 
     async def _run(self):
-        if self._stop_event:
-            return
+        if self._stop_event: return
         await self._establish_socket_connection()
         if self._is_connected:
             logging.info(f"\033[0;32m{self.name}: Connection established ({self.address})\033[0m")
@@ -182,7 +181,7 @@ class BtClient(object):
             except socket.error:
                 logging.error(f"{self._name}: Socket error during send")
                 self._disconnect()
-            except Exception:
+            except:
                 logging.error(f"{self._name}: Message could not be sed: {message}")
                 raise
 
