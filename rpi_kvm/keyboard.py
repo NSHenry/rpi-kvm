@@ -84,7 +84,7 @@ class Keyboard(object):
         elif self._clients_connected_count > 0:
             try:
                 self._idev.grab()
-                # logging.info(f"\033[0;36m FAKE Keyboard Grabbed \033[0m")
+                logging.info(f"\033[0;36m FAKE Keyboard Grabbed \033[0m")
                 reTerminal.sta_led_green = True
                 reTerminal.sta_led_red = False
             except OSError as e:
@@ -93,7 +93,7 @@ class Keyboard(object):
                 pass
             # else:
                 # If the device is successfully grabbed, print a message
-                # logging.info(f"\033[0;36mKeyboard Grabbed \033[0m")
+                logging.info(f"\033[0;36mKeyboard Grabbed \033[0m")
 
     # poll for keyboard events
     async def _event_loop(self):
@@ -196,7 +196,8 @@ async def main():
             for keyboard_device in new_keyboards:
                 kb = Keyboard(keyboard_device)
                 keyboards[keyboard_device.path] = kb
-                await asyncio.create_task(kb.run())
+                # There should be no await for the asyncio keyboard task.
+                asyncio.create_task(kb.run())
         await asyncio.sleep(5)
 
 if __name__ == "__main__":

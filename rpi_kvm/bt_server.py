@@ -93,7 +93,8 @@ class BtServer(object):
 
         for obj_path in list(managed_objects):
             if "org.bluez.Device1" in managed_objects[obj_path]:
-                await asyncio.create_task(self._connect_to_client(obj_path))
+                # There should be no await for the task below.
+                asyncio.create_task(self._connect_to_client(obj_path))
 
     async def _connect_to_client(self, device_object_path):
         client = await BtClient.create_via_device_object_path(device_object_path)

@@ -3,14 +3,12 @@
 # Bluetooth D-Bus Service
 
 import os
-# import sys
-
-import dbus_next
-from dbus_next.service import ServiceInterface, method, dbus_property, signal, Variant
-from dbus_next.aio import MessageBus
+import sys
 import asyncio
-
-# from dbus_next import Variant
+import dbus_next
+from dbus_next.service import ServiceInterface
+from dbus_next.aio import MessageBus
+from dbus_next import Variant
 import signal
 import logging
 import json
@@ -79,7 +77,7 @@ class KvmDbusService(ServiceInterface):
         # This behavior isn't triggering until the browser is open because that's the only time it's called. 
         # Get connected client count from bt_server as an integer
         connected_client_count = len(self._bt_server._clients_connected)
-        # logging.info(f"\033[0;36mD-Bus Service: connected_client_count = {connected_client_count}\033[0m")
+        logging.info(f"\033[0;36mD-Bus Service: connected_client_count = {connected_client_count}\033[0m")
         # Send the client count to the signal service
         self.signal_connected_client_count(connected_client_count)
         return json.dumps(self._bt_server.get_clients_info_dict())

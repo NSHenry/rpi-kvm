@@ -111,7 +111,8 @@ class EventMouse(object):
     async def run(self):
         self._is_alive = True
         logging.info(f"{self._idev.path}: Start sending mouse sync events continuously")
-        await asyncio.create_task(self._continuous_sync_event())
+        # No await for the task below
+        asyncio.create_task(self._continuous_sync_event())
         logging.info(f"{self._idev.path}: Start listening to mouse event loop")
         try:
             await self._event_loop()
@@ -229,7 +230,8 @@ async def main():
                 event_mouse = EventMouse(mouse_device)
                 event_mouse.send_state_cb = kvm_mouse.send_state
                 kvm_mouse.event_mice[mouse_device.path] = event_mouse
-                await asyncio.create_task(event_mouse.run())
+                # There should be no await for the asyncio mouse task.
+                asyncio.create_task(event_mouse.run())
         await asyncio.sleep(5)
 
 if __name__ == "__main__":

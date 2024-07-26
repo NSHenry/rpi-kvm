@@ -39,7 +39,7 @@ class HidScanner(object):
                 # logging.info(f"self._mice = {self._mice}")
             # Ignore reTerminal Keys and Touchscreen
             # elif device.name == "gpio_keys" or device.name == "seeed-tp" or device.name == "gpio_ir_recv" or device.name == "vc4-hdmi-0" or device.name == "vc4-hdmi-1" or device.name == "ST LIS3LV02DL Accelerometer":
-            elif device.name == "gpio_keys" or device.name == "seeed-tp" or device.name == "gpio_ir_recv" or device.name == "vc4-hdmi-0" or device.name == "vc4-hdmi-1" or device.name == "Microsoft Surface Keyboard" or device.name == "Microsoft Surface Keyboard Touchpad" or device.name == "Microsoft Surface Keyboard Mouse":
+            elif device.name == "gpio_keys" or device.name == "seeed-tp" or device.name == "gpio_ir_recv" or device.name == "vc4-hdmi-0" or device.name == "vc4-hdmi-1":
                 # logging.info(f"{device.name} ignored")
                 continue
             else:
