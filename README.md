@@ -9,7 +9,7 @@
 - Build-in web service
     - Overview of the connected bluetooth clients
     - Change the hotkey configuration
-- Show active bluetooth clients via a LCD display on your desk
+- Show active bluetooth clients via an LCD on your desk
 
 ## Getting started
 
@@ -43,13 +43,13 @@ sudo ./rpi-kvm.sh attach
 #### b) Open the web interface
 
 To see detailed bluetooth client information go the RPI-K(V)M web interface: [http://raspberrypi:8080](http://raspberrypi:8080)
->Note: If the host name has been changed during inital Raspberry Pi setup the webserver is reachable at its new RPI-KVM host name or its IP address
+>Note: If the host name has been changed during initial Raspberry Pi set up the webserver is reachable at its new RPI-KVM host name or its IP address
 
 ![Web page](/.github/Screenshots/web.png)
 
-#### c) Connect a HD44780 LCD display
+#### c) Connect a HD44780 LCD
 
-Follow [this](/docu/lcd.md) wiring guide to display the bluetooth clients on a LCD display.
+Follow [this](/docu/lcd.md) wiring guide to display the bluetooth clients on an LCD.
 
 ![Animated lcd display bluetooth client switch](/.github/Screenshots/lcd.gif)
 
@@ -73,5 +73,5 @@ Follow [this](/docu/lcd.md) wiring guide to display the bluetooth clients on a L
 
 - [Typescript](https://www.typescriptlang.org): JavaScript with syntax for types.
 - [React Js](https://reactjs.org/): A JavaScript library for building user interfaces
-- [Bootstrap](https://getbootstrap.com/): Responsive mobile-first web sites
-- [Bootstrap Icons](https://icons.getbootstrap.com/?#icons): Beatiful web icons and used for doc/overview pictures
+- [Bootstrap](https://getbootstrap.com/): Responsive mobile-first websites
+- [Bootstrap Icons](https://icons.getbootstrap.com/?#icons): Beautiful web icons and used for doc/overview pictures

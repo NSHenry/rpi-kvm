@@ -109,7 +109,7 @@ class WebServer(object):
             await self._connect_to_dbus_service()
             await self._switch_active_bt_host(client_address)
 
-    # Adding abililty to clear active host
+    # Adding ability to clear active host
     async def _clear_active_bt_host(self):
         try:
             await self._kvm_dbus_iface.call_clear_active_host()
@@ -198,7 +198,7 @@ class WebServer(object):
         await self._switch_active_bt_host(data['clientAddress'])
         return web.Response()
     
-    # Adding abililty to clear active host
+    # Adding ability to clear active host
     async def clear_active_bt_host(self, request):
         data = await request.json()
         await self._clear_active_bt_host()
@@ -229,7 +229,7 @@ class WebServer(object):
                 kvm_restart_cmd = "tmux new-session -d 'sudo /home/nateh/rpi-kvm/rpi-kvm.sh restart'"
                 os.system(kvm_restart_cmd)
             if data["service"] == "rpi":
-                logging.warning("Restart Raspbarry Pi")
+                logging.warning("Restart Raspberry Pi")
                 os.system('sudo reboot -f')
         return web.Response()
 
@@ -246,21 +246,21 @@ class WebServer(object):
         return (stdout != b'0\n')
 
     async def is_update_available(self, request):
-        is_updateable = await self._is_git_update_available()
-        if not is_updateable:
+        is_updatable = await self._is_git_update_available()
+        if not is_updatable:
             await common.System.exec_cmd("git fetch")
-            is_updateable = await self._is_git_update_available()
+            is_updatable = await self._is_git_update_available()
         return web.Response(text=json.dumps({
-            "isUpdateAvailable": is_updateable
+            "isUpdateAvailable": is_updatable
             }))
 
     async def perform_update(self, request):
         await common.System.exec_cmd("git fetch")
-        is_updateable = await self._is_git_update_available()
+        is_updatable = await self._is_git_update_available()
         is_update_successful = False
         has_update_performed = False
-        if is_updateable:
-            logging.info(f"Perfrom update via git merge")
+        if is_updatable:
+            logging.info(f"Perform update via git merge")
             returncode, _, _ = await common.System.exec_cmd("git merge origin/main")
             is_update_successful = (returncode == 0)
             has_update_performed = True

@@ -104,7 +104,7 @@ class InfoHub(object):
         await asyncio.sleep(0.5)
 
         self._display.send_string("--------------------", LcdDisplay.LCD_LINE_1, LcdLineStyle.Centred)
-        self._display.send_string("Rasbperry Pi", LcdDisplay.LCD_LINE_2, LcdLineStyle.Centred)
+        self._display.send_string("Raspberry Pi", LcdDisplay.LCD_LINE_2, LcdLineStyle.Centred)
         self._display.send_string("K(V)M", LcdDisplay.LCD_LINE_3, LcdLineStyle.Centred)
         self._display.send_string("--------------------", LcdDisplay.LCD_LINE_4, LcdLineStyle.Centred)
         await asyncio.sleep(2)

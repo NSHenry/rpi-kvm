@@ -68,7 +68,7 @@ class Keyboard(object):
         if self._clients_connected_count == 0:
             try:
                 self._idev.ungrab()
-                # logging.info(f"\033[0;36m FAKE Keyboard Ungrabbed \033[0m")
+                # logging.info(f"\033[0;36m FAKE Keyboard released \033[0m")
                 try:
                     reTerminal.sta_led_green = False
                     reTerminal.sta_led_red = True
@@ -76,11 +76,11 @@ class Keyboard(object):
                     print("reTerminal led not found.")
             except OSError as e:
                 # If the device is already grabbed, print a message
-                # logging.info(f"\033[0;36mKeyboard already ungrabbed. \033[0m")
+                # logging.info(f"\033[0;36mKeyboard already released. \033[0m")
                 pass
             else:
                 # If the device is successfully grabbed, print a message
-                logging.info(f"\033[0;36mKeyboard Ungrabbed \033[0m")
+                logging.info(f"\033[0;36mKeyboard Released \033[0m")
         elif self._clients_connected_count > 0:
             try:
                 self._idev.grab()
@@ -98,7 +98,7 @@ class Keyboard(object):
     # poll for keyboard events
     async def _event_loop(self):
         async for event in self._idev.async_read_loop():
-            # only bother if we hit a key and its an up or down event
+            # only bother if we hit a key and it's an up or down event
             if event.type == ecodes.EV_KEY and event.value < 2:
                 self._handle_event(event)
                 await self._send_state()

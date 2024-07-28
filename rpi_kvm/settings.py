@@ -25,7 +25,7 @@ class Settings(object):
                             #[False, False, False, False, False, False, False, False]
                 "nextHost": [[False, False, False, False, False, False, False, False],
                             # 6 pressed keys
-                            71, 0, 0, 0, 0, 0] # KEY_SCROLLLOCK 71
+                            71, 0, 0, 0, 0, 0] # KEY_SCROLLOCK 71
             }
         }
 

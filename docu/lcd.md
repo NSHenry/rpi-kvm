@@ -1,6 +1,6 @@
 # LCD Module
 
-Read the [full article](https://www.raspberrypi-spy.co.uk/2012/08/20x4-lcd-module-control-using-python/) how to wire and setup the lcd module with the raspberry pi by [raspberrypi-spy.co.uk](https://www.raspberrypi-spy.co.uk).
+Read the [full article](https://www.raspberrypi-spy.co.uk/2012/08/20x4-lcd-module-control-using-python/) how to wire and set up the lcd module with the raspberry pi by [raspberrypi-spy.co.uk](https://www.raspberrypi-spy.co.uk).
 
 ## LCD Module Hardware
 
@@ -23,29 +23,29 @@ The pinout of the lcd module is :
 15. LED Backlight Anode (+)
 16. LED Backlight Cathode (-)
 
-## LCD - Raspberry Pi wireing
+## LCD - Raspberry Pi wiring
 
-In the following picture the wireing is shown:
+In the following picture the wiring is shown:
 
-![wirering picture](https://www.raspberrypi-spy.co.uk/wp-content/uploads/2012/08/HD44780-LCD-Advanced-2.png)
+![wiring picture](https://www.raspberrypi-spy.co.uk/wp-content/uploads/2012/08/HD44780-LCD-Advanced-2.png)
 
 The following pins are connected in detail:
 
-LCD-Pin | Function | Pi-Function | Pi-Pin
--- | --- | --- | ---
-01 | GND | GND | P1-06
-02 | +5V | +5V | P1-02
-03 | Contrast
-04 | RS | GPIO7 | P1-26
-05 | RW | GND | P1-06
-06 | E | GPIO8 | P1-24
-07 | Data 0
-08 | Data 1
-09 | Data 2
-10 | Data 3
-11 | Data 4 | GPIO25 | P1-22
-12 | Data 5 | GPIO24 | P1-18
-13 | Data 6 | GPIO23 | P1-16
-14 | Data 7 | GPIO18 | P1-12
-15 | +5V via 560 ohm
-16 | GND | | P1-06
+| LCD-Pin | Function        | Pi-Function | Pi-Pin |
+|---------|-----------------|-------------|--------|
+| 01      | GND             | GND         | P1-06  |
+| 02      | +5V             | +5V         | P1-02  |
+| 03      | Contrast        |
+| 04      | RS              | GPIO7       | P1-26  |
+| 05      | RW              | GND         | P1-06  |
+| 06      | E               | GPIO8       | P1-24  |
+| 07      | Data 0          |
+| 08      | Data 1          |
+| 09      | Data 2          |
+| 10      | Data 3          |
+| 11      | Data 4          | GPIO25      | P1-22  |
+| 12      | Data 5          | GPIO24      | P1-18  |
+| 13      | Data 6          | GPIO23      | P1-16  |
+| 14      | Data 7          | GPIO18      | P1-12  |
+| 15      | +5V via 560 ohm |
+| 16      | GND             |             | P1-06  |

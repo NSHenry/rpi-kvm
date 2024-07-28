@@ -17,10 +17,10 @@ class Clipboard(object):
     def __init__(self):
         self._history = []
         self._update_event = asyncio.Event()
-        self._taks = None
+        self._task = None
 
     def start(self):
-        self._taks = asyncio.create_task(self._run())
+        self._task = asyncio.create_task(self._run())
 
     async def _run(self):
         while True:

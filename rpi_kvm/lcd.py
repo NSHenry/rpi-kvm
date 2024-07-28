@@ -186,7 +186,7 @@ async def main():
         while True:
             # Send some centred test
             display.send_string("--------------------", LcdDisplay.LCD_LINE_1, LcdLineStyle.Centred)
-            display.send_string("Rasbperry Pi", LcdDisplay.LCD_LINE_2, LcdLineStyle.Centred)
+            display.send_string("Raspberry Pi", LcdDisplay.LCD_LINE_2, LcdLineStyle.Centred)
             display.send_string("K(V)M", LcdDisplay.LCD_LINE_3, LcdLineStyle.Centred)
             display.send_string("--------------------", LcdDisplay.LCD_LINE_4, LcdLineStyle.Centred)
         

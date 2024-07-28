@@ -47,7 +47,7 @@ export default class BtClients extends React.Component<any, BtClientsState> {
       console.log('BT-Client-BE: connected websocket');
 
       this.timeout = 250; // reset timer to 250 on open of websocket connection
-      clearTimeout(this.connectInterval); // clear Interval on on open of websocket connection
+      clearTimeout(this.connectInterval); // clear Interval on open of websocket connection
     };
 
     // websocket onclose event listener
@@ -124,7 +124,7 @@ export default class BtClients extends React.Component<any, BtClientsState> {
     }
     return (
       <div className="container-fluid py-2">
-        {/* This is needless given this is almost a one page app. */}
+        {/* This is needless given this is almost a one-page app. */}
         {/* <h1 className="text-center py-4 fw-light">Bluetooth Clients</h1> */}
         <div className="row">{clientsContent}</div>
       </div>

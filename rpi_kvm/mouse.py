@@ -122,14 +122,14 @@ class EventMouse(object):
         if _clients_connected_count == 0:
             try:
                 self._idev.ungrab()
-                # logging.info(f"\033[0;36m FAKE Mouse already ungrabbed. \033[0m")
+                # logging.info(f"\033[0;36m FAKE Mouse already released. \033[0m")
             except OSError as e:
                 # If the device is already grabbed, print a message
-                # logging.info(f"\033[0;36mMouse already ungrabbed. \033[0m")
+                # logging.info(f"\033[0;36mMouse already released. \033[0m")
                 pass
             else:
                 # If the device is successfully grabbed, print a message
-                logging.info(f"\033[0;36mMouse Ungrabbed \033[0m")
+                logging.info(f"\033[0;36mMouse Released \033[0m")
         elif _clients_connected_count > 0:
             try:
                 self._idev.grab()
@@ -205,7 +205,7 @@ async def main():
     logging.info("Creating HID Manager")
     hid_manager = HidScanner()
     kvm_mouse = KvmMouse()
-    # Temporaily adding this for testing
+    # Temporarily adding this for testing
     # bt_server = BtServer()
     await kvm_mouse.start()
 
@@ -220,7 +220,7 @@ async def main():
         device_paths = [mouse_device.path for mouse_device in hid_manager.mouse_devices]
         if len(device_paths) == 0:
             logging.warning("No mouse device found, waiting till next device scan")
-            # Temporaily adding this for testing
+            # Temporarily adding this for testing
             # bt_server.clear_active_host()
         else:
             new_device_mice = [mouse_device for mouse_device in hid_manager.mouse_devices if mouse_device.path not in kvm_mouse.event_mice]

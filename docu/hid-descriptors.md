@@ -1,6 +1,6 @@
 # USB HID device report descriptors
 
-To get all usb devices listed execute `lsusb`. In the following we concentrait on the Logitech device. It will be identified in the follwoing via its Bus (001) und Device (008) number:
+To get all usb devices listed execute `lsusb`. In the following we concentrate on the Logitech device. It will be identified in the following via its Bus (001) und Device (008) number:
 
 ```bash
 $ lsusb
@@ -332,7 +332,7 @@ HID descriptor of a basic mouse:
 05010902a10185020901a100950575010509190129051500250181029501750381017508950305010930093109381581257f8106c0c0
 ```
 
-Translaited spec of a basic mouse with its plane hex values on the side:
+Translated spec of a basic mouse with its plane hex values on the side:
 
 ```bash
 # Basic mouse detail

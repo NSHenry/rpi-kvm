@@ -37,7 +37,7 @@ class BtServer(object):
         await self._restart_and_init_bt()
         await self._register_bluez_profile()
         await self._connect_to_paired_clients()
-        await self._listen_for_incomming_requests()
+        await self._listen_for_incoming_requests()
     
     def register_on_clients_change_handler(self, handler):
         self._handlers_on_clients_change.append(handler)
@@ -100,8 +100,8 @@ class BtServer(object):
         client.connect()
         self._add_client(client)
 
-    async def _listen_for_incomming_requests(self):
-        logging.info("Server: Waiting for incomming connections")
+    async def _listen_for_incoming_requests(self):
+        logging.info("Server: Waiting for incoming connections")
         self.control_socket = socket.socket(
             socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP)
         self.interrupt_socket = socket.socket(

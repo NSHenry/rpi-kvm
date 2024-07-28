@@ -5,7 +5,7 @@ import numpy
 from settings import Settings
 from usb_hid_decoder import UsbHidDecoder
 
-class HotkeyAktion(enum.Enum):
+class HotkeyAction(enum.Enum):
     SwitchToNextHost = 1
     IndicateHost = 2
 
@@ -20,11 +20,11 @@ class HotkeyConfig(object):
     
     def __init_keys(self):
         self.keys = {
-            HotkeyAktion.SwitchToNextHost: self._settings['hotkeys']['nextHost'],
+            HotkeyAction.SwitchToNextHost: self._settings['hotkeys']['nextHost'],
         }
-        self.__reduce_keys_to_compareable_format()
+        self.__reduce_keys_to_comparable_format()
 
-    def __reduce_keys_to_compareable_format(self):
+    def __reduce_keys_to_comparable_format(self):
         for action, hotkey_combination in self.keys.items():
             reduced_combination = self.__combine_bitmask_and_remove_vendor_reserved(hotkey_combination)
             self.keys[action] = reduced_combination
@@ -74,7 +74,7 @@ class HotkeyDetector(object):
         last_mouse_buttons_buffer = self._mouse_buttons
         self._mouse_buttons = new_mouse_button_input
         if new_mouse_button_input[2] and not last_mouse_buttons_buffer[2]:
-            return HotkeyAktion.SwitchToNextHost
+            return HotkeyAction.SwitchToNextHost
         return None
             
 
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     config = HotkeyConfig(settings)
     detector = HotkeyDetector(config)
     print(detector.evaluate_new_input([0, 0, 0, 0, 0, 0, 0]) == None)
-    print(detector.evaluate_new_input([0, 0x47, 0, 0, 0, 0, 0]) == HotkeyAktion.SwitchToNextHost)
+    print(detector.evaluate_new_input([0, 0x47, 0, 0, 0, 0, 0]) == HotkeyAction.SwitchToNextHost)
     print(detector.evaluate_new_input([0, 0x46, 0, 0, 0, 0, 0]) == None)
-    print(detector.evaluate_new_input([0, 0x47, 0, 0, 0, 0, 0]) == HotkeyAktion.SwitchToNextHost)
+    print(detector.evaluate_new_input([0, 0x47, 0, 0, 0, 0, 0]) == HotkeyAction.SwitchToNextHost)
     print(detector.evaluate_new_input([0, 0, 0, 0, 0, 0, 0]) == None)

@@ -14,7 +14,7 @@ import logging
 import json
 from settings import Settings
 from bt_server import BtServer
-from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAktion
+from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAction
 from usb_hid_decoder import UsbHidDecoder
 #Testing out using reTerminal status lights
 # from leds import _Leds as reTerminal
@@ -144,8 +144,8 @@ class KvmDbusService(ServiceInterface):
     def SendKeyboardUsbTelegram(self, modifiers: 'ab', keys: 'ay') -> None:
         modifiers_int =  UsbHidDecoder.convert_modifier_bit_mask_to_int(modifiers)
         action = self._hotkey_detector.evaluate_new_input([modifiers_int, *keys])
-        # Only the last key of the hot key combination will not be sendted
-        if action == HotkeyAktion.SwitchToNextHost:
+        # Only the last key of the hot key combination will not be sent
+        if action == HotkeyAction.SwitchToNextHost:
             self._bt_server.switch_to_next_connected_host()
             client_names = self._bt_server.get_connected_client_names()
             logging.info(f"D-Bus: {action.name}: {client_names[0]}")
@@ -171,7 +171,7 @@ class KvmDbusService(ServiceInterface):
     @dbus_next.service.method()
     def SendMouseUsbTelegram(self, buttons: 'ab', x_pos: 'i', y_pos: 'i', v_wheel: 'i', h_wheel: 'i') -> None:
         action = self._hotkey_detector.evaluate_new_mouse_input(buttons)
-        if action == HotkeyAktion.SwitchToNextHost:
+        if action == HotkeyAction.SwitchToNextHost:
             self._bt_server.switch_to_next_connected_host()
             client_names = self._bt_server.get_connected_client_names()
             logging.info(f"D-Bus: {action.name}: {client_names[0]}")
@@ -243,7 +243,7 @@ async def main():
         main_future.set_result("")
     signal.signal(signal.SIGINT, signal_handler)
 
-    await main_future # wait unitl signal interrupts
+    await main_future # wait until signal interrupts
 
     kvm_dbus_service.stop()
     await kvm_dbus_service_task
