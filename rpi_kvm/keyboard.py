@@ -9,25 +9,26 @@ import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
 # from bt_server import BtServer
-#Testing out using reTerminal status lights
+# Testing out using reTerminal status lights
 # from leds import _Leds as reTerminal
 import leds as reTerminal
+
 
 class Keyboard(object):
     # def __init__(self, input_device):
     def __init__(self, input_device=None):
         self._is_alive = False
         self._idev = input_device
-        self._clients_connected_count = int() #Setting up an integer variable for count.
-        self._modifiers = [ # One byte size (bit map) to represent the pressed modifier keys
-            False, # Right GUI
-            False, # Right Alt
-            False, # Right Shift
-            False, # Right Control
-            False, # Left GUI
-            False, # Left Alt
-            False, # Left Shift
-            False] # Left Control
+        self._clients_connected_count = int()  # Setting up an integer variable for count.
+        self._modifiers = [  # One byte size (bit map) to represent the pressed modifier keys
+            False,  # Right GUI
+            False,  # Right Alt
+            False,  # Right Shift
+            False,  # Right Control
+            False,  # Left GUI
+            False,  # Left Alt
+            False,  # Left Shift
+            False]  # Left Control
         # Place for 6 simultaneously pressed regular keys
         self._keys = [0, 0, 0, 0, 0, 0]
 
@@ -161,10 +162,11 @@ class Keyboard(object):
             usb_key_code = UsbHidDecoder.encode_regular_key(evdev_code)
             for i in range(0, 6):
                 if self._keys[i] == usb_key_code and event.value == 0:
-                    self._keys[i] = 0x00 # Code 0x00 represents a key release
+                    self._keys[i] = 0x00  # Code 0x00 represents a key release
                 elif self._keys[i] == 0x00 and event.value == 1:
                     self._keys[i] = usb_key_code
                     break
+
 
 async def main():
     logging.basicConfig(format='KB %(levelname)s: %(message)s', level=logging.DEBUG)

@@ -4,11 +4,13 @@ from aiohttp import web
 import datetime
 from json import JSONEncoder
 
+
 class DateTimeEncoder(JSONEncoder):
-        #Override the default method
-        def default(self, obj):
-            if isinstance(obj, (datetime.date, datetime.datetime)):
-                return obj.isoformat()
+    # Override the default method
+    def default(self, obj):
+        if isinstance(obj, (datetime.date, datetime.datetime)):
+            return obj.isoformat()
+
 
 class Clipboard(object):
     MAX_HISTORY_SIZE = 5
@@ -29,7 +31,6 @@ class Clipboard(object):
                 print(f'Clipboard: expired: {self._history[-1]["content"]}')
                 self._history = self._history[:-1]
                 self._update_event.set()
-
 
     async def websocket_handler(self, request):
         ws = web.WebSocketResponse()

@@ -1,5 +1,6 @@
 import asyncio
 
+
 class System(object):
     @staticmethod
     async def exec_cmd(cmd):

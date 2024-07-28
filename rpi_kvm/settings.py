@@ -4,6 +4,7 @@ import os
 import json
 import logging
 
+
 class Settings(object):
     PATH_TO_FILE = "./conf/rpi-kvm-settings.json"
 
@@ -13,19 +14,19 @@ class Settings(object):
                 "port": 8080
             },
             "hotkeys": {
-                            # Bit mask for modifier keys
-                            # |- Right GUI
-                            # |      |- Right ALT
-                            # |      |      |- Right Shift
-                            # |      |      |      |- Right Control
-                            # |      |      |      |      |- Left GUI
-                            # |      |      |      |      |      |- Left ALT
-                            # |      |      |      |      |      |      |- Left Shift
-                            # |      |      |      |      |      |      |      |- Left Control
-                            #[False, False, False, False, False, False, False, False]
+                # Bit mask for modifier keys
+                # |- Right GUI
+                # |      |- Right ALT
+                # |      |      |- Right Shift
+                # |      |      |      |- Right Control
+                # |      |      |      |      |- Left GUI
+                # |      |      |      |      |      |- Left ALT
+                # |      |      |      |      |      |      |- Left Shift
+                # |      |      |      |      |      |      |      |- Left Control
+                # [False, False, False, False, False, False, False, False]
                 "nextHost": [[False, False, False, False, False, False, False, False],
-                            # 6 pressed keys
-                            71, 0, 0, 0, 0, 0] # KEY_SCROLLOCK 71
+                    # 6 pressed keys
+                    71, 0, 0, 0, 0, 0]  # KEY_SCROLLOCK 71
             }
         }
 
@@ -91,6 +92,7 @@ def main():
     settings.load_from_file()
     settings.save_to_file()
     print(settings)
+
 
 if __name__ == "__main__":
     main()

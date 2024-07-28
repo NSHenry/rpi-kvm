@@ -11,10 +11,11 @@ import common
 from bt_client import BtClient
 from client_order import PersistentClientOrder
 
+
 class BtServer(object):
     NAME = "RPI-KVM"
-    BT_HID_UUID = "00001124-0000-1000-8000-00805f9b34fb" # https://www.bluetooth.com/specifications/assigned-numbers/service-discovery/
-    SDP_RECORD_PATH = sys.path[0] + "/../conf/sdp_record.xml" # file path of the sdp record to load
+    BT_HID_UUID = "00001124-0000-1000-8000-00805f9b34fb"  # https://www.bluetooth.com/specifications/assigned-numbers/service-discovery/
+    SDP_RECORD_PATH = sys.path[0] + "/../conf/sdp_record.xml"  # file path of the sdp record to load
 
     BT_CONTROL_PORT = 17  # Service port - control port specified in the bluetooth HID specification
     BT_INTERRUPT_PORT = 19  # Service port - interrupt port specified in the bluetooth HID specification
@@ -291,4 +292,3 @@ class BtServer(object):
     def send(self, message):
         if self._active_host:
             self._active_host.send(message)
-

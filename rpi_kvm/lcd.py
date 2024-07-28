@@ -8,7 +8,7 @@ import logging
 
 # Define GPIO to LCD mapping
 LCD_RS = 7
-LCD_E  = 8
+LCD_E = 8
 LCD_D4 = 25
 LCD_D5 = 24
 LCD_D6 = 23
@@ -19,21 +19,24 @@ LED_ON = 15
 LCD_CHR = True
 LCD_CMD = False
 
+
 class LcdLineStyle(enum.Enum):
     LeftJustified = 1
     Centred = 2
     RightJustified = 3
+
 
 class LcdCmd(enum.Enum):
     SendString = 1
     Blank = 2
     BacklightSet = 3
 
+
 class LcdDisplay(object):
-    LCD_LINE_1 = 0x80 # LCD RAM address for the 1st line
-    LCD_LINE_2 = 0xC0 # LCD RAM address for the 2nd line
-    LCD_LINE_3 = 0x94 # LCD RAM address for the 3rd line
-    LCD_LINE_4 = 0xD4 # LCD RAM address for the 4th line
+    LCD_LINE_1 = 0x80  # LCD RAM address for the 1st line
+    LCD_LINE_2 = 0xC0  # LCD RAM address for the 2nd line
+    LCD_LINE_3 = 0x94  # LCD RAM address for the 3rd line
+    LCD_LINE_4 = 0xD4  # LCD RAM address for the 4th line
 
     # Timing constants
     E_PULSE = 0.0005
@@ -96,21 +99,21 @@ class LcdDisplay(object):
     def _init_gpio(self):
         GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
         GPIO.setup(LCD_E, GPIO.OUT)  # E
-        GPIO.setup(LCD_RS, GPIO.OUT) # RS
-        GPIO.setup(LCD_D4, GPIO.OUT) # DB4
-        GPIO.setup(LCD_D5, GPIO.OUT) # DB5
-        GPIO.setup(LCD_D6, GPIO.OUT) # DB6
-        GPIO.setup(LCD_D7, GPIO.OUT) # DB7
-        GPIO.setup(LED_ON, GPIO.OUT) # Backlight enable
+        GPIO.setup(LCD_RS, GPIO.OUT)  # RS
+        GPIO.setup(LCD_D4, GPIO.OUT)  # DB4
+        GPIO.setup(LCD_D5, GPIO.OUT)  # DB5
+        GPIO.setup(LCD_D6, GPIO.OUT)  # DB6
+        GPIO.setup(LCD_D7, GPIO.OUT)  # DB7
+        GPIO.setup(LED_ON, GPIO.OUT)  # Backlight enable
 
     async def _init_lcd(self):
         # Initialise display
-        await self._send_byte(0x33,LCD_CMD) # 110011 Initialise
-        await self._send_byte(0x32,LCD_CMD) # 110010 Initialise
-        await self._send_byte(0x06,LCD_CMD) # 000110 Cursor move direction
-        await self._send_byte(0x0C,LCD_CMD) # 001100 Display On,Cursor Off, Blink Off
-        await self._send_byte(0x28,LCD_CMD) # 101000 Data length, number of lines, font size
-        await self._send_byte(0x01,LCD_CMD) # 000001 Clear display
+        await self._send_byte(0x33,LCD_CMD)  # 110011 Initialise
+        await self._send_byte(0x32,LCD_CMD)  # 110010 Initialise
+        await self._send_byte(0x06,LCD_CMD)  # 000110 Cursor move direction
+        await self._send_byte(0x0C,LCD_CMD)  # 001100 Display On,Cursor Off, Blink Off
+        await self._send_byte(0x28,LCD_CMD)  # 101000 Data length, number of lines, font size
+        await self._send_byte(0x01,LCD_CMD)  # 000001 Clear display
         await asyncio.sleep(LcdDisplay.E_DELAY)
 
     async def _blank(self):

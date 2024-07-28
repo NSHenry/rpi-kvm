@@ -1,5 +1,6 @@
 import logging
 
+
 class UsbHidDecoder(object):
     # Python translation of the USB - HID Usage Tables:
     # https://www.usb.org/sites/default/files/documents/hut1_12v2.pdf
@@ -8,7 +9,7 @@ class UsbHidDecoder(object):
     # The table can be found on page 53
     KEY_CODES = {
         "KEY_RESERVED": 0,
-        "KEY_ERR_OVF": 1, # Keyboard ErrorRollOver - Too many keys are pressed
+        "KEY_ERR_OVF": 1,  # Keyboard ErrorRollOver - Too many keys are pressed
         # Keyboard POSTFail: 2
         # Keyboard ErrorUndefined: 3
         "KEY_A": 4,
@@ -157,8 +158,8 @@ class UsbHidDecoder(object):
         "KEY_HIRAGANA": 147,
         "KEY_ZENKAKUHANKAKU": 148,
 
-        "KEY_KPLEFTPAREN": 182, # Keypad (
-        "KEY_KPRIGHTPAREN": 183, # Keypad )
+        "KEY_KPLEFTPAREN": 182,  # Keypad (
+        "KEY_KPRIGHTPAREN": 183,  # Keypad )
 
         "KEY_LEFTCTRL": 224,
         "KEY_LEFTSHIFT": 225,

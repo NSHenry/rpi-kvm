@@ -16,9 +16,10 @@ from settings import Settings
 from bt_server import BtServer
 from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAction
 from usb_hid_decoder import UsbHidDecoder
-#Testing out using reTerminal status lights
+# Testing out using reTerminal status lights
 # from leds import _Leds as reTerminal
 import leds as reTerminal
+
 
 class KvmDbusService(ServiceInterface):
     # Setting variables types so pylance doesn't complain
@@ -29,7 +30,6 @@ class KvmDbusService(ServiceInterface):
     y = int()
     # not sure if these last two will anger dbus_next
     ab = ay = list()
-
 
     def __init__(self, settings, hotkey_detector, bt_server):
         super().__init__("org.rpi.kvmservice")
@@ -68,7 +68,7 @@ class KvmDbusService(ServiceInterface):
         await self._bus.request_name("org.rpi.kvmservice")
 
     @dbus_next.service.method()
-    def GetConnectedClientNames(self) -> 'as': # type: ignore
+    def GetConnectedClientNames(self) -> 'as':  # type: ignore
         return self._bt_server.get_connected_client_names()
 
     @dbus_next.service.method()
@@ -203,11 +203,11 @@ class KvmDbusService(ServiceInterface):
             self._bt_server.send(mouse_usb_telegram)
 
     @dbus_next.service.signal()
-    def signal_host_change(self, client_names: 'as') -> 'as': # type: ignore
+    def signal_host_change(self, client_names: 'as') -> 'as':  # type: ignore
         return client_names
 
     @dbus_next.service.signal()
-    def signal_clients_change(self, client_names: 'as') -> 'as': # type: ignore
+    def signal_clients_change(self, client_names: 'as') -> 'as':  # type: ignore
         return client_names
 
     # @dbus_next.service.signal()
@@ -219,10 +219,11 @@ class KvmDbusService(ServiceInterface):
     def signal_connected_client_count(self, connected_client_count: 'y') -> 'y':
         return connected_client_count
 
+
 async def main():
     logging.basicConfig(format='BT %(levelname)s: %(message)s', level=logging.DEBUG)
 
-    if not os.geteuid() == 0: # Check if user is root
+    if not os.geteuid() == 0:  # Check if user is root
         logging.error("Root permissions required: Execute as root or with sudo")
         return
 
@@ -243,7 +244,7 @@ async def main():
         main_future.set_result("")
     signal.signal(signal.SIGINT, signal_handler)
 
-    await main_future # wait until signal interrupts
+    await main_future  # wait until signal interrupts
 
     kvm_dbus_service.stop()
     await kvm_dbus_service_task
@@ -253,4 +254,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run( main() )
-

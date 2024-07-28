@@ -10,8 +10,9 @@ import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
 
-#behold the evil global variable
-_clients_connected_count = int() #Setting up an integer variable for count.
+# behold the evil global variable
+_clients_connected_count = int()  # Setting up an integer variable for count.
+
 
 class KvmMouse(object):
     def __init__(self):
@@ -52,7 +53,6 @@ class KvmMouse(object):
         _clients_connected_count = clients_connected_count
         # logging.info(f"\033[0;36mConnected Clients: {_clients_connected_count} \033[0m")
 
-
     async def send_state(self, buttons, x_pos, y_pos, v_wheel, h_wheel):
         common_buttons = [False, False, False, False, False, False, False, False]
         for event_mouse in self.event_mice.values():
@@ -74,15 +74,15 @@ class EventMouse(object):
         self.__client_switch_button_index = 2
         self._is_alive = False
 
-        self._buttons = [ # One byte size (bit map) to represent the mouse buttons
-            False, # USB not defined
-            False, # USB not defined
-            False, # USB not defined. Not send via bluetooth -> placeholder for client switch
-            False, # Forward mouse button
-            False, # Backward mouse button
-            False, # Middle mouse button
-            False, # Right mouse button
-            False] # Left mouse button
+        self._buttons = [  # One byte size (bit map) to represent the mouse buttons
+            False,  # USB not defined
+            False,  # USB not defined
+            False,  # USB not defined. Not send via bluetooth -> placeholder for client switch
+            False,  # Forward mouse button
+            False,  # Backward mouse button
+            False,  # Middle mouse button
+            False,  # Right mouse button
+            False]  # Left mouse button
         self._x_pos = 0
         self._y_pos = 0
         self._v_wheel = 0
@@ -183,7 +183,7 @@ class EventMouse(object):
                 #     logging.debug(f"{self._idev.path}: Key event {ecodes.BTN[event.code]}: {event.value}")
                 # else:
                 #     logging.debug(f"{self._idev.path}: Key event {event.code}: {event.value}")
-            elif event.code == 125: # MX Master 3 - Gesture mouse button
+            elif event.code == 125:  # MX Master 3 - Gesture mouse button
                 # logging.debug(f"{self._idev.path}: Key event BTN_GESTURE: {event.value}")
                 self._have_buttons_changed = True
                 self._buttons[self.__client_switch_button_index] = (event.value == 1)
@@ -199,6 +199,7 @@ class EventMouse(object):
             elif event.code == 6:
                 # logging.debug(f"{self._idev.path}: H-Wheel movement: {event.value}")
                 self._h_wheel -= event.value
+
 
 async def main():
     logging.basicConfig(format='Mouse %(levelname)s: %(message)s', level=logging.DEBUG)

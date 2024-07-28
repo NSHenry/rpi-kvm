@@ -13,6 +13,7 @@ from settings import Settings
 from usb_hid_decoder import UsbHidDecoder
 # from clipboard import Clipboard
 
+
 class WebServer(object):
     def __init__(self, settings):
         self._settings = settings

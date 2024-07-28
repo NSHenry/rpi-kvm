@@ -5,6 +5,7 @@ import evdev
 import logging
 # from bt_server import BtServer
 
+
 class HidScanner(object):
     def __init__(self):
         self._devices = []
@@ -58,6 +59,7 @@ class HidScanner(object):
         logging.info(f"=== mice ===========================")
         for device in self._mice:
             logging.info(f"{device.path} {device.name} {device.phys}")
+
 
 async def main():
     logging.basicConfig(format='HID %(levelname)s: %(message)s', level=logging.DEBUG)

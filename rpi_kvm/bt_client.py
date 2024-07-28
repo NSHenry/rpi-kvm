@@ -6,10 +6,12 @@ import enum
 import logging
 import common
 
+
 class BtConnectionRole(enum.Enum):
     Master = 1
     Slave = 2
     NotConnected = 3
+
 
 class BtClient(object):
     BT_CONTROL_PORT = 17  # Service port - control port specified in the bluetooth HID specification

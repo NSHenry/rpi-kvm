@@ -5,9 +5,11 @@ import numpy
 from settings import Settings
 from usb_hid_decoder import UsbHidDecoder
 
+
 class HotkeyAction(enum.Enum):
     SwitchToNextHost = 1
     IndicateHost = 2
+
 
 class HotkeyConfig(object):
     def __init__(self, settings):
@@ -33,6 +35,7 @@ class HotkeyConfig(object):
         modifiers_int = UsbHidDecoder.convert_modifier_bit_mask_to_int(keyboard_input[0])
         return [modifiers_int, *keyboard_input[1:7]]
 
+
 class RingBuffer(object):
     def __init__(self, size):
         self.size = size
@@ -47,6 +50,7 @@ class RingBuffer(object):
 
     def get(self):
         return self.data
+
 
 class HotkeyDetector(object):
     def __init__(self, hotKeyConfig):

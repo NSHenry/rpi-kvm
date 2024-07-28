@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 
+
 class _Leds:
 
     __STA_LED_GREEN_BRIGHTNESS = "/sys/class/leds/usr_led2/brightness"
@@ -47,5 +48,6 @@ class _Leds:
     def __write_to_file(self, file_name, value):
         with open(file_name, "w") as f:
             f.write(value)
+
 
 sys.modules[__name__] = _Leds()

@@ -7,6 +7,7 @@ from lcd import LcdDisplay, LcdLineStyle
 import time
 import logging
 
+
 class InfoHub(object):
     def __init__(self):
         self._display = LcdDisplay()
@@ -89,7 +90,7 @@ class InfoHub(object):
             np1_host_string.ljust(LcdDisplay.LCD_WIDTH," ")
             np1_host_string = np1_host_string[:LcdDisplay.LCD_WIDTH-2] + " >"
         self._display.send_string(np1_host_string, LcdDisplay.LCD_LINE_4, LcdLineStyle.RightJustified)
-        #self._display.send_string("< " + self._prev_host, LcdDisplay.LCD_LINE_4, LcdLineStyle.LeftJustified)
+        # self._display.send_string("< " + self._prev_host, LcdDisplay.LCD_LINE_4, LcdLineStyle.LeftJustified)
 
     def cleanup(self):
         self._display.cleanup()
@@ -119,7 +120,7 @@ class InfoHub(object):
         if not is_restart:
             logging.info(f"D-Bus service connecting...")
             await self._connect_to_dbus_service()
-            await self._register_to_dbus_signals() # ready to handle signals and to display them
+            await self._register_to_dbus_signals()  # ready to handle signals and to display them
         await self._fetch_and_display_clients()
 
         logging.info(f"Starting date/time loop")
@@ -130,6 +131,7 @@ class InfoHub(object):
             time_str = f"{lt.tm_mday:02}.{lt.tm_mon:02}.{lt.tm_year}     {lt.tm_hour:02}:{lt.tm_min:02}"
             self._display.send_string(time_str, LcdDisplay.LCD_LINE_2, LcdLineStyle.Centred)
             await asyncio.sleep(5)
+
 
 async def main():
     logging.basicConfig(format='Hub %(levelname)s: %(message)s', level=logging.INFO)
