@@ -37,7 +37,7 @@ class HidScanner(object):
                 self._mice.append(device)
                 # logging.info(f"self._mice = {self._mice}")
             # Ignore reTerminal Keys & Touchscreen (Surface touchscreen too)
-            elif device.name == "gpio_keys" or device.name == "seeed-tp" or device.name == "gpio_ir_recv" or device.name == "vc4-hdmi-0" or device.name == "vc4-hdmi-1" or device.name == "ELAN9038:00 04F3:2A1C":
+            elif device.name == "gpio_keys" or device.name == "seeed-tp" or device.name == "gpio_ir_recv" or device.name == "vc4-hdmi-0" or device.name == "vc4-hdmi-1" or device.name == "vc4-hdmi-0 HDMI Jack" or device.name == "vc4-hdmi-1 HDMI Jack" or device.name == "ELAN9038:00 04F3:2A1C":
                 # logging.info(f"{device.name} ignored")
                 continue
             else:
