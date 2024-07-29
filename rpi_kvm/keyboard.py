@@ -70,8 +70,8 @@ class Keyboard(object):
                 self._idev.ungrab()
                 # logging.info(f"\033[0;36m FAKE Keyboard released \033[0m")
                 try:
-                    reTerminal.sta_led_green = False
-                    reTerminal.sta_led_red = True
+                    reTerminal.sta_led_green = True
+                    reTerminal.sta_led_red = False
                 except NameError:
                     print("reTerminal led not found.")
             except OSError:
@@ -86,8 +86,8 @@ class Keyboard(object):
                 self._idev.grab()
                 # logging.info(f"\033[0;36m FAKE Keyboard capture \033[0m")
                 try:
-                    reTerminal.sta_led_green = True
-                    reTerminal.sta_led_red = False
+                    reTerminal.sta_led_green = False
+                    reTerminal.sta_led_red = True
                 except NameError:
                     print("reTerminal led not found.")
             except OSError:
