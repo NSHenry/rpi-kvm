@@ -127,11 +127,6 @@ class KvmDbusService(ServiceInterface):
     def SwitchActiveHost(self, client_address: 's') -> None:
         self._bt_server.switch_active_host_to(client_address)
         client_names = self._bt_server.get_connected_client_names()
-        # reTerminal status lights
-        # try:
-        #     reTerminal.usr_led = True
-        # except NameError:
-        #     print("reTerminal led not found.")
         logging.info(f"D-Bus: Cleared active host")
         logging.info(f"D-Bus: Switch active host to: {client_names[0]}")
         # logging.info(f"\033[0;36mD-Bus Service: SwitchActiveHost\033[0m")
@@ -141,11 +136,6 @@ class KvmDbusService(ServiceInterface):
     @dbus_next.service.method()
     def ClearActiveHost(self) -> None:
         self._bt_server.clear_active_host()
-        # reTerminal usr light
-        # try:
-        #     reTerminal.usr_led = False
-        # except NameError:
-        #     print("reTerminal led not found.")
         logging.info(f"D-Bus: Cleared active host")
         client_names = self._bt_server.get_connected_client_names()
         self.signal_host_change(client_names)
