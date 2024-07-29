@@ -76,10 +76,21 @@ class KvmDbusService(ServiceInterface):
     def GetClientsInfo(self) -> 's':
         # This behavior isn't triggering until the browser is open because that's the only time it's called. 
         # Get connected client count from bt_server as an integer
-        # connected_client_count = len(self._bt_server._clients_connected)
+        connected_client_count = len(self._bt_server._clients_connected)
+        if connected_client_count > 0:
+            try:
+                reTerminal.usr_led = True
+            except NameError:
+                logging.info("reTerminal usr_led not found.")
+        elif connected_client_count == 0:
+            try:
+                reTerminal.usr_led = False
+            except NameError:
+                logging.info("reTerminal usr_led not found.")
         # logging.info(f"\033[0;36mD-Bus Service: connected_client_count = {connected_client_count}\033[0m")
         # Send the client count to the signal service
         # self.signal_connected_client_count(connected_client_count)
+        # Get active host status from bt_server as boolean
         is_host_active = bool(self._bt_server._active_host)
         # logging.info(f"\033[0;36mD-Bus Service: active_host = {is_host_active}\033[0m")
         # Send the active host status to the signal service
@@ -117,10 +128,10 @@ class KvmDbusService(ServiceInterface):
         self._bt_server.switch_active_host_to(client_address)
         client_names = self._bt_server.get_connected_client_names()
         # reTerminal status lights
-        try:
-            reTerminal.usr_led = True
-        except NameError:
-            print("reTerminal led not found.")
+        # try:
+        #     reTerminal.usr_led = True
+        # except NameError:
+        #     print("reTerminal led not found.")
         logging.info(f"D-Bus: Cleared active host")
         logging.info(f"D-Bus: Switch active host to: {client_names[0]}")
         # logging.info(f"\033[0;36mD-Bus Service: SwitchActiveHost\033[0m")

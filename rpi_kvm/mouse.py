@@ -42,7 +42,6 @@ class KvmMouse(object):
     async def _register_to_dbus_signals(self):
         logging.info("Register on D-Bus signals")
         try:
-            # self._kvm_dbus_iface.on_signal_connected_client_count(self._handle_connected_client_count)
             self._kvm_dbus_iface.on_signal_is_host_active(self._handle_active_host)
         except dbus_next.DBusError:
             logging.warning("D-Bus service not available - reconnecting...")
