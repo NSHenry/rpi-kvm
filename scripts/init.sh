@@ -17,8 +17,8 @@ initRpiKvmTmux()
     tmux send-keys -t rpi-kvm:kvm.1 "cd $RPI_KVM_PATH && reset && ./rpi_kvm/web.py" C-m
     # tmux send-keys -t rpi-kvm:kvm.3 "cd $RPI_KVM_PATH && reset && ./rpi_kvm/mouse.py" C-m
     tmux send-keys -t rpi-kvm:kvm.2 "cd $RPI_KVM_PATH && reset && ./rpi_kvm/mouse.py" C-m
-    # tmux send-keys -t rpi-kvm:kvm.4 "cd $RPI_KVM_PATH && reset && ./rpi_kvm/keyboard.py"" C-m
-    tmux send-keys -t rpi-kvm:kvm.3 "cd $RPI_KVM_PATH && reset && ./rpi_kvm/keyboard.py"C-m
+    # tmux send-keys -t rpi-kvm:kvm.4 "cd $RPI_KVM_PATH && reset && ./rpi_kvm/keyboard.py" C-m
+    tmux send-keys -t rpi-kvm:kvm.3 "cd $RPI_KVM_PATH && reset && ./rpi_kvm/keyboard.py" C-m
 
 	tmux select-pane -t rpi-kvm:kvm.0
 }

@@ -32,11 +32,11 @@ class BtClient(object):
 
     @staticmethod
     def get_mac_address_from_device_object_path(device_object_path):
-        return device_object_path[-17:].replace("_",":")
+        return device_object_path[-17:].replace("_", ":")
 
     @staticmethod
     def get_device_object_path_from_mac_address(device_object_path):
-        return "/org/bluez/hci0/dev_" + device_object_path.replace(":","_")
+        return "/org/bluez/hci0/dev_" + device_object_path.replace(":", "_")
 
     def __init__(self, address):
         self._address = address
@@ -164,7 +164,8 @@ class BtClient(object):
                 self._is_bluez_connected = variant.value
 
     async def _run(self):
-        if self._stop_event: return
+        if self._stop_event:
+            return
         await self._establish_socket_connection()
         if self._is_connected:
             logging.info(f"\033[0;32m{self.name}: Connection established ({self.address})\033[0m")
@@ -181,7 +182,7 @@ class BtClient(object):
             except socket.error:
                 logging.error(f"{self._name}: Socket error during send")
                 self._disconnect()
-            except:
+            except Exception:
                 logging.error(f"{self._name}: Message could not be sed: {message}")
                 raise
 

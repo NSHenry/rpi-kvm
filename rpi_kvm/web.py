@@ -16,6 +16,8 @@ from usb_hid_decoder import UsbHidDecoder
 
 class WebServer(object):
     def __init__(self, settings):
+        # self._site = None
+        # self._runner = None
         self._settings = settings
         self._server_url = ""
         self._is_alive = False
@@ -127,14 +129,6 @@ class WebServer(object):
             await self._connect_to_dbus_service()
             await self._trigger_reload_settings()
 
-    # async def _trigger_restart_info_hub(self):
-    #     try:
-    #         await self._kvm_dbus_iface.call_restart_info_hub()
-    #     except dbus_next.DBusError:
-    #         logging.warning(f"D-Bus connection terminated - reconnecting...")
-    #         await self._connect_to_dbus_service()
-    #         await self._trigger_restart_info_hub()
-
     async def run(self):
         logging.info(f"D-Bus service connecting...")
         await self._connect_to_dbus_service()
@@ -220,8 +214,8 @@ class WebServer(object):
         data = await request.json()
         if "service" in data:
             # if data["service"] == "info-hub":
-                # logging.warning("Restart info hub")
-                # await self._trigger_restart_info_hub()
+            #     logging.warning("Restart info hub")
+            #     await self._trigger_restart_info_hub()
             if data["service"] == "web":
                 logging.warning("Restart web service")
                 self._server_future.set_result("")
@@ -279,4 +273,4 @@ async def main():
     await server.run()
 
 if __name__ == "__main__":
-    asyncio.run( main() )
+    asyncio.run(main())

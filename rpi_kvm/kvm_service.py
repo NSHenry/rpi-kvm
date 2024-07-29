@@ -17,7 +17,6 @@ from bt_server import BtServer
 from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAction
 from usb_hid_decoder import UsbHidDecoder
 # Testing out using reTerminal status lights
-# from leds import _Leds as reTerminal
 import leds as reTerminal
 
 
@@ -28,6 +27,7 @@ class KvmDbusService(ServiceInterface):
     s = str()
     i = int()
     y = int()
+    b = bool
     # not sure if these last two will anger dbus_next
     ab = ay = list()
 
@@ -44,6 +44,7 @@ class KvmDbusService(ServiceInterface):
         try:
             reTerminal.sta_led_green = False
             reTerminal.sta_led_red = False
+            reTerminal.usr_led = False
         except NameError:
             print("reTerminal led not found.")
 
@@ -75,10 +76,14 @@ class KvmDbusService(ServiceInterface):
     def GetClientsInfo(self) -> 's':
         # This behavior isn't triggering until the browser is open because that's the only time it's called. 
         # Get connected client count from bt_server as an integer
-        connected_client_count = len(self._bt_server._clients_connected)
+        # connected_client_count = len(self._bt_server._clients_connected)
         # logging.info(f"\033[0;36mD-Bus Service: connected_client_count = {connected_client_count}\033[0m")
         # Send the client count to the signal service
-        self.signal_connected_client_count(connected_client_count)
+        # self.signal_connected_client_count(connected_client_count)
+        is_host_active = bool(self._bt_server._active_host)
+        # logging.info(f"\033[0;36mD-Bus Service: active_host = {is_host_active}\033[0m")
+        # Send the active host status to the signal service
+        self.signal_is_host_active(is_host_active)
         return json.dumps(self._bt_server.get_clients_info_dict())
 
     @dbus_next.service.method()
@@ -106,12 +111,6 @@ class KvmDbusService(ServiceInterface):
         logging.info(f"D-Bus: Reload settings")
         self._hotkey_detector.reload_settings()
         return
-    
-    # @dbus_next.service.method()
-    # def RestartInfoHub(self) -> None:
-    #     logging.info(f"D-Bus: Restart Info Hub")
-    #     self.signal_restart_info_hub()
-    #     return
 
     @dbus_next.service.method()
     def SwitchActiveHost(self, client_address: 's') -> None:
@@ -132,17 +131,17 @@ class KvmDbusService(ServiceInterface):
     def ClearActiveHost(self) -> None:
         self._bt_server.clear_active_host()
         # reTerminal usr light
-        try:
-            reTerminal.usr_led = False
-        except NameError:
-            print("reTerminal led not found.")
+        # try:
+        #     reTerminal.usr_led = False
+        # except NameError:
+        #     print("reTerminal led not found.")
         logging.info(f"D-Bus: Cleared active host")
         client_names = self._bt_server.get_connected_client_names()
         self.signal_host_change(client_names)
 
     @dbus_next.service.method()
     def SendKeyboardUsbTelegram(self, modifiers: 'ab', keys: 'ay') -> None:
-        modifiers_int =  UsbHidDecoder.convert_modifier_bit_mask_to_int(modifiers)
+        modifiers_int = UsbHidDecoder.convert_modifier_bit_mask_to_int(modifiers)
         action = self._hotkey_detector.evaluate_new_input([modifiers_int, *keys])
         # Only the last key of the hot key combination will not be sent
         if action == HotkeyAction.SwitchToNextHost:
@@ -198,7 +197,7 @@ class KvmDbusService(ServiceInterface):
             # |     |     |     |     |- Mouse y position
             # |     |     |     |     |     |- Vertical wheel position
             # |     |     |     |     |     |     |- Horizontal wheel position
-            # 0xA1, 0x02, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX]
+            # 0xA1, 0x02, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX
             mouse_usb_telegram = [0xA1, 2, buttons_byte, x_pos_byte, y_pos_byte, v_wheel_byte, h_wheel_byte]
             self._bt_server.send(mouse_usb_telegram)
 
@@ -209,15 +208,14 @@ class KvmDbusService(ServiceInterface):
     @dbus_next.service.signal()
     def signal_clients_change(self, client_names: 'as') -> 'as':  # type: ignore
         return client_names
-
-    # @dbus_next.service.signal()
-    # def signal_restart_info_hub(self) -> None:
-    #     return
     
+    # @dbus_next.service.signal()
+    # def signal_connected_client_count(self, connected_client_count: 'y') -> 'y':
+    #     return connected_client_count
+
     @dbus_next.service.signal()
-    # y is the integer byte type. This "high-level" language is so FUN!!!!!!
-    def signal_connected_client_count(self, connected_client_count: 'y') -> 'y':
-        return connected_client_count
+    def signal_is_host_active(self, is_host_active: 'b') -> 'b':
+        return is_host_active
 
 
 async def main():
@@ -228,14 +226,14 @@ async def main():
         return
 
     bt_server = BtServer()
-    bt_server_task = asyncio.create_task( bt_server.run() )
+    bt_server_task = asyncio.create_task(bt_server.run())
 
     settings = Settings()
     settings.load_from_file()
     hotkey_config = HotkeyConfig(settings)
     hotkey_detector = HotkeyDetector(hotkey_config)
     kvm_dbus_service = KvmDbusService(settings, hotkey_detector, bt_server)
-    kvm_dbus_service_task = asyncio.create_task( kvm_dbus_service.run() )
+    kvm_dbus_service_task = asyncio.create_task(kvm_dbus_service.run())
 
     main_future = asyncio.Future()
 
@@ -253,4 +251,4 @@ async def main():
     logging.error("System: Shut down completed")
 
 if __name__ == "__main__":
-    asyncio.run( main() )
+    asyncio.run(main())

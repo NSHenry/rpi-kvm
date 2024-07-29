@@ -3,7 +3,6 @@
 import asyncio
 import evdev
 import logging
-# from bt_server import BtServer
 
 
 class HidScanner(object):
@@ -37,9 +36,8 @@ class HidScanner(object):
             if evdev.ecodes.BTN_RIGHT in device.capabilities().get(evdev.ecodes.EV_KEY, []):
                 self._mice.append(device)
                 # logging.info(f"self._mice = {self._mice}")
-            # Ignore reTerminal Keys and Touchscreen
-            # elif device.name == "gpio_keys" or device.name == "seeed-tp" or device.name == "gpio_ir_recv" or device.name == "vc4-hdmi-0" or device.name == "vc4-hdmi-1" or device.name == "ST LIS3LV02DL Accelerometer":
-            elif device.name == "gpio_keys" or device.name == "seeed-tp" or device.name == "gpio_ir_recv" or device.name == "vc4-hdmi-0" or device.name == "vc4-hdmi-1":
+            # Ignore reTerminal Keys & Touchscreen (Surface touchscreen too)
+            elif device.name == "gpio_keys" or device.name == "seeed-tp" or device.name == "gpio_ir_recv" or device.name == "vc4-hdmi-0" or device.name == "vc4-hdmi-1" or device.name == "ELAN9038:00 04F3:2A1C":
                 # logging.info(f"{device.name} ignored")
                 continue
             else:
@@ -68,4 +66,4 @@ async def main():
     hid_manager.info()
 
 if __name__ == "__main__":
-    asyncio.run( main() )
+    asyncio.run(main())

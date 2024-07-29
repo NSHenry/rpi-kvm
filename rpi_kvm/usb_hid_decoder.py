@@ -247,7 +247,7 @@ class UsbHidDecoder(object):
 
     @staticmethod
     def encode_mouse_button_index(evdev_event_code):
-        if evdev_event_code >= 272 and evdev_event_code <= 276:
+        if 272 <= evdev_event_code <= 276:
             return 279 - evdev_event_code
         else:
             return -1

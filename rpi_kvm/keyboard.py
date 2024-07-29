@@ -10,7 +10,6 @@ from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
 # from bt_server import BtServer
 # Testing out using reTerminal status lights
-# from leds import _Leds as reTerminal
 import leds as reTerminal
 
 
@@ -19,7 +18,8 @@ class Keyboard(object):
     def __init__(self, input_device=None):
         self._is_alive = False
         self._idev = input_device
-        self._clients_connected_count = int()  # Setting up an integer variable for count.
+        # self._clients_connected_count = int()  # Setting up an integer variable for count.
+        self._is_host_active = bool
         self._modifiers = [  # One byte size (bit map) to represent the pressed modifier keys
             False,  # Right GUI
             False,  # Right Alt
@@ -62,11 +62,10 @@ class Keyboard(object):
         await self._connect_to_dbus_service()
         await self._clear_active_host()
 
-    # Only capture if there are connected clients
-    def _handle_connected_client_count(self, clients_connected_count):
-        self._clients_connected_count = clients_connected_count
+    def _handle_active_host(self, is_host_active):
+        self._is_host_active = is_host_active
         # logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033[0m")
-        if self._clients_connected_count == 0:
+        if self._is_host_active is False:
             try:
                 self._idev.ungrab()
                 # logging.info(f"\033[0;36m FAKE Keyboard released \033[0m")
@@ -75,26 +74,29 @@ class Keyboard(object):
                     reTerminal.sta_led_red = True
                 except NameError:
                     print("reTerminal led not found.")
-            except OSError as e:
-                # If the device is already grabbed, print a message
+            except OSError:
+                # If the device is already released, print a message
                 # logging.info(f"\033[0;36mKeyboard already released. \033[0m")
                 pass
             else:
-                # If the device is successfully grabbed, print a message
+                # If the device is successfully released, print a message
                 logging.info(f"\033[0;36mKeyboard Released \033[0m")
-        elif self._clients_connected_count > 0:
+        elif self._is_host_active is True:
             try:
                 self._idev.grab()
-                # logging.info(f"\033[0;36m FAKE Keyboard Grabbed \033[0m")
-                reTerminal.sta_led_green = True
-                reTerminal.sta_led_red = False
-            except OSError as e:
-                # If the device is already grabbed, print a message
-                # logging.info(f"\033[0;36mKeyboard already grabbed by another process. \033[0m")
+                # logging.info(f"\033[0;36m FAKE Keyboard capture \033[0m")
+                try:
+                    reTerminal.sta_led_green = True
+                    reTerminal.sta_led_red = False
+                except NameError:
+                    print("reTerminal led not found.")
+            except OSError:
+                # If the device is already captured, print a message
+                # logging.info(f"\033[0;36mKeyboard already captured by another process. \033[0m")
                 pass
             # else:
-                # If the device is successfully grabbed, print a message
-                # logging.info(f"\033[0;36mKeyboard Grabbed \033[0m")
+                # If the device is successfully captured, print a message
+                # logging.info(f"\033[0;36mKeyboard Captured \033[0m")
 
     # poll for keyboard events
     async def _event_loop(self):
@@ -123,7 +125,7 @@ class Keyboard(object):
     async def _register_to_dbus_signals(self):
         logging.info("Register on D-Bus signals")
         try:
-            self._kvm_dbus_iface.on_signal_connected_client_count(self._handle_connected_client_count)
+            self._kvm_dbus_iface.on_signal_is_host_active(self._handle_active_host)
         except dbus_next.DBusError:
             logging.warning("D-Bus service not available - reconnecting...")
             await self._connect_to_dbus_service()
@@ -202,4 +204,4 @@ async def main():
         await asyncio.sleep(5)
 
 if __name__ == "__main__":
-    asyncio.run( main() )
+    asyncio.run(main())

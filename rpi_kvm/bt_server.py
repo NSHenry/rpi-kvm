@@ -91,7 +91,7 @@ class BtServer(object):
 
         for obj_path in list(managed_objects):
             if "org.bluez.Device1" in managed_objects[obj_path]:
-                asyncio.create_task( self._connect_to_client(obj_path) )
+                asyncio.create_task(self._connect_to_client(obj_path))
 
     async def _connect_to_client(self, device_object_path):
         client = await BtClient.create_via_device_object_path(device_object_path)
@@ -202,7 +202,7 @@ class BtServer(object):
 
     def _get_connected_client_addresses(self):
         if self._active_host and len(self._clients_connected) > 0:
-            client_addresses = self._clients_order.sort_clients( list(self._clients_connected.keys()) )
+            client_addresses = self._clients_order.sort_clients(list(self._clients_connected.keys()))
             if self._active_host.address in client_addresses:
                 cur_active_index = client_addresses.index(self._active_host.address)
             else:
@@ -222,7 +222,7 @@ class BtServer(object):
             client_addresses = self._get_connected_client_addresses()
             if client_addresses:
                 client_names = [self._clients[client_address].name for client_address in client_addresses]
-                if not self._active_host.address in client_addresses:
+                if self._active_host.address not in client_addresses:
                     client_names.insert(0, f"off: {self._active_host.name}")
             else:
                 client_names.insert(0, f"off: {self._active_host.name}")
@@ -270,7 +270,7 @@ class BtServer(object):
             logging.info(f"Server: External trigger: Remove {client.name} ({client.address})")
             self._clients.pop(client.address)
             self._notify_on_clients_change()
-            asyncio.create_task( self._remove_client_from_system(client) )
+            asyncio.create_task(self._remove_client_from_system(client))
             
     async def _remove_client_from_system(self, client):
         logging.info(f"Server: Stopping client: {client.name} ({client.address})")
