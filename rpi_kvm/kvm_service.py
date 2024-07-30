@@ -136,7 +136,15 @@ class KvmDbusService(ServiceInterface):
             reTerminal.sta_led_green = True
             reTerminal.sta_led_red = False
         except NameError:
-            print("reTerminal led not found.")
+            # print("reTerminal led not found.")
+            pass
+
+    @dbus_next.service.method()
+    def SwitchToFirstActiveHost(self) -> None:
+        self._bt_server.switch_to_next_connected_host()
+        client_names = self._bt_server.get_connected_client_names()
+        logging.info(f"D-Bus: KB Detected Activating: {client_names[0]}")
+        self.signal_host_change(client_names)
 
     @dbus_next.service.method()
     def SendKeyboardUsbTelegram(self, modifiers: 'ab', keys: 'ay') -> None:

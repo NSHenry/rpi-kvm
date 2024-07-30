@@ -8,8 +8,7 @@ from dbus_next.aio import MessageBus
 import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
-# from bt_server import BtServer
-# Testing out using reTerminal status lights
+# reTerminal Status Lights
 import leds as reTerminal
 
 
@@ -18,6 +17,7 @@ class Keyboard(object):
     def __init__(self, input_device=None):
         self._is_alive = False
         self._idev = input_device
+        # self._bt_server = bt_server
         # self._clients_connected_count = int()  # Setting up an integer variable for count.
         self._is_host_active = bool
         self._modifiers = [  # One byte size (bit map) to represent the pressed modifier keys
@@ -49,6 +49,7 @@ class Keyboard(object):
         logging.info(f"{self._idev.path}: D-Bus service connecting...")
         await self._connect_to_dbus_service()
         await self._register_to_dbus_signals()
+        await self._make_next_host_active()
         logging.info(f"{self._idev.path}: Starting event loop")
         self._is_alive = True
         try:
@@ -56,11 +57,6 @@ class Keyboard(object):
         except Exception as e:
             logging.error(f"{self._idev.path}: {e}")
         self._is_alive = False
-
-    # async def run_clear_host(self):
-    #     logging.info("KBD Disconnect: D-Bus service connecting...")
-    #     await self._connect_to_dbus_service()
-    #     await self._clear_active_host()
 
     def _handle_active_host(self, is_host_active):
         self._is_host_active = is_host_active
@@ -73,25 +69,23 @@ class Keyboard(object):
                     reTerminal.sta_led_green = True
                     reTerminal.sta_led_red = False
                 except NameError:
-                    print("reTerminal led not found.")
+                    # print("reTerminal led not found.")
+                    pass
             except OSError:
-                # If the device is already released, print a message
                 # logging.info(f"\033[0;36mKeyboard already released. \033[0m")
                 pass
             else:
-                # If the device is successfully released, print a message
                 logging.info(f"\033[0;36mKeyboard Released \033[0m")
         elif self._is_host_active is True:
             try:
                 self._idev.grab()
-                # logging.info(f"\033[0;36m FAKE Keyboard capture \033[0m")
                 try:
                     reTerminal.sta_led_green = False
                     reTerminal.sta_led_red = True
                 except NameError:
-                    print("reTerminal led not found.")
+                    # print("reTerminal led not found.")
+                    pass
             except OSError:
-                # If the device is already captured, print a message
                 # logging.info(f"\033[0;36mKeyboard already captured by another process. \033[0m")
                 pass
             # else:
@@ -133,16 +127,24 @@ class Keyboard(object):
             await self._connect_to_dbus_service()
             await self._register_to_dbus_signals()
 
-    # attempt at creating a disconnect triggered by no keyboard presence that goes through d-bus
+    # Clear active host when no keyboard is present.
     async def kb_clear_active_bt_host(self):
         await self._connect_to_dbus_service()
-        # await self._register_to_dbus_signals()
         try:
             await self._kvm_dbus_iface.call_clear_active_host()
         except dbus_next.DBusError:
             logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self.kb_clear_active_bt_host()
+
+    async def _make_next_host_active(self):
+        try:
+            # TODO: Add function to reactivate the host when a keyboard is connected.
+            await self._kvm_dbus_iface.call_switch_to_first_active_host()
+        except dbus_next.DBusError:
+            logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
+            await self._connect_to_dbus_service()
+            await self._make_next_host_active()
 
     async def _send_state(self):
         modifier_str = ''
@@ -187,12 +189,6 @@ async def main():
 
         removed_keyboards = [keyboard for keyboard in keyboards.values() if not keyboard.is_alive]
         for keyboard in removed_keyboards:
-            # If no more keyboards are connected then clear active host.
-            if len(device_paths) == 0:
-                logging.warning(f"we're in the LEN condition!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                kb = Keyboard()
-                asyncio.create_task(kb.kb_clear_active_bt_host())
-                logging.info("No more keyboards connected, clearing active host.")
             logging.info(f"Removing keyboard: {keyboard.path}")
             del keyboards[keyboard.path]
 
@@ -201,7 +197,7 @@ async def main():
         
         if len(device_paths) == 0:
             logging.warning("No keyboard found, waiting till next device scan")
-            # asyncio.create_task(Keyboard().kb_clear_active_bt_host())
+            # Call the function to clear the active keyboard host.
             await asyncio.create_task(Keyboard().kb_clear_active_bt_host())
             logging.info("No more keyboards connected, clearing active host.")
         else:
