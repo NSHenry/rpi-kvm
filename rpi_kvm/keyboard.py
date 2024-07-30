@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import asyncio
+from operator import is_
 import evdev
 from evdev import *
 import dbus_next
@@ -49,7 +50,7 @@ class Keyboard(object):
         logging.info(f"{self._idev.path}: D-Bus service connecting...")
         await self._connect_to_dbus_service()
         await self._register_to_dbus_signals()
-        await self._make_next_host_active()
+        await self._make_next_host_active(self._is_host_active)
         logging.info(f"{self._idev.path}: Starting event loop")
         self._is_alive = True
         try:
@@ -137,14 +138,18 @@ class Keyboard(object):
             await self._connect_to_dbus_service()
             await self.kb_clear_active_bt_host()
 
-    async def _make_next_host_active(self):
-        try:
-            # TODO: Add function to reactivate the host when a keyboard is connected.
-            await self._kvm_dbus_iface.call_switch_to_first_active_host()
-        except dbus_next.DBusError:
-            logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
-            await self._connect_to_dbus_service()
-            await self._make_next_host_active()
+    async def _make_next_host_active(self, is_host_active):
+        self._is_host_active = is_host_active
+        if self._is_host_active is False:
+            try:
+                # TODO: Add function to reactivate the host when a keyboard is connected.
+                await self._kvm_dbus_iface.call_switch_to_first_active_host()
+            except dbus_next.DBusError:
+                logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
+                await self._connect_to_dbus_service()
+                await self._make_next_host_active(is_host_active)
+        elif self._is_host_active is True:
+            logging.info(f"Host is already active.")
 
     async def _send_state(self):
         modifier_str = ''
