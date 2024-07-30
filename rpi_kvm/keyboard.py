@@ -137,18 +137,15 @@ class Keyboard(object):
             await self._connect_to_dbus_service()
             await self.kb_clear_active_bt_host()
 
-    async def _make_next_host_active(self, is_host_active):
-        self._is_host_active = is_host_active
-        if self._is_host_active is False:
-            try:
-                # TODO: Add function to reactivate the host when a keyboard is connected.
-                await self._kvm_dbus_iface.call_switch_to_first_active_host()
-            except dbus_next.DBusError:
-                logging.warning(f"_make_next_host_active: D-Bus connection terminated - reconnecting...")
-                await self._connect_to_dbus_service()
-                await self._make_next_host_active(is_host_active)
-        elif self._is_host_active is True:
-            logging.info(f"Host is already active.")
+    async def make_first_host_active(self):
+        await self._connect_to_dbus_service()
+        try:
+            # TODO: Add function to reactivate the host when a keyboard is connected.
+            await self._kvm_dbus_iface.call_connect_active_host()
+        except dbus_next.DBusError:
+            logging.warning(f"_make_next_host_active: D-Bus connection terminated - reconnecting...")
+            await self._connect_to_dbus_service()
+            await self.make_first_host_active()
 
     async def _send_state(self):
         modifier_str = ''
@@ -204,6 +201,7 @@ async def main():
             await asyncio.create_task(Keyboard().kb_clear_active_bt_host())
             logging.info("No more keyboards connected, clearing active host.")
         else:
+            await asyncio.create_task(Keyboard().make_first_host_active())
             new_keyboards = [keyboard_device for keyboard_device in hid_manager.keyboard_devices if keyboard_device.path not in keyboards]
             for keyboard_device in new_keyboards:
                 kb = Keyboard(keyboard_device)

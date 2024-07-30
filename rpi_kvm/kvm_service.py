@@ -140,10 +140,10 @@ class KvmDbusService(ServiceInterface):
             pass
 
     @dbus_next.service.method()
-    def SwitchToFirstActiveHost(self) -> None:
+    def ConnectActiveHost(self) -> None:
         self._bt_server.switch_to_next_connected_host()
         client_names = self._bt_server.get_connected_client_names()
-        logging.info(f"D-Bus: KB Detected Activating: {client_names[0]}")
+        # logging.info(f"D-Bus: KB Detected Activating: {client_names[0]}")
         self.signal_host_change(client_names)
 
     @dbus_next.service.method()
