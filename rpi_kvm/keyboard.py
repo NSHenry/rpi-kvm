@@ -184,11 +184,10 @@ async def main():
         removed_keyboards = [keyboard for keyboard in keyboards.values() if not keyboard.is_alive]
         for keyboard in removed_keyboards:
             # If no more keyboards are connected then clear active host.
-            # if len(device_paths) == 0:
-            #     kb = Keyboard()
-            #     asyncio.create_task(kb.run_clear_host())
-            #     logging.info("No more keyboards connected, clearing active host.")
-            #     await kb_task
+            if len(device_paths) == 0:
+                kb = Keyboard()
+                asyncio.create_task(kb.kb_clear_active_bt_host())
+                logging.info("No more keyboards connected, clearing active host.")
             logging.info(f"Removing keyboard: {keyboard.path}")
             del keyboards[keyboard.path]
 
@@ -197,8 +196,8 @@ async def main():
         
         if len(device_paths) == 0:
             logging.warning("No keyboard found, waiting till next device scan")
-            await asyncio.create_task(Keyboard().kb_clear_active_bt_host())
-            logging.info("No more keyboards connected, clearing active host.")
+            # await asyncio.create_task(Keyboard().kb_clear_active_bt_host())
+            # logging.info("No more keyboards connected, clearing active host.")
         else:
             new_keyboards = [keyboard_device for keyboard_device in hid_manager.keyboard_devices if keyboard_device.path not in keyboards]
             for keyboard_device in new_keyboards:
