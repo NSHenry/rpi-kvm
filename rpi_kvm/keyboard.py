@@ -18,7 +18,6 @@ class Keyboard(object):
     def __init__(self, input_device=None):
         self._is_alive = False
         self._idev = input_device
-        # self._bt_server = bt_server
         # self._clients_connected_count = int()  # Setting up an integer variable for count.
         self._is_host_active = bool
         self._modifiers = [  # One byte size (bit map) to represent the pressed modifier keys
@@ -145,7 +144,7 @@ class Keyboard(object):
                 # TODO: Add function to reactivate the host when a keyboard is connected.
                 await self._kvm_dbus_iface.call_switch_to_first_active_host()
             except dbus_next.DBusError:
-                logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
+                logging.warning(f"_make_next_host_active: D-Bus connection terminated - reconnecting...")
                 await self._connect_to_dbus_service()
                 await self._make_next_host_active(is_host_active)
         elif self._is_host_active is True:
@@ -187,7 +186,6 @@ async def main():
     logging.info("Creating HID Manager")
     hid_manager = HidScanner()
     keyboards = dict()
-    # bt_server = BtServer()
 
     while True:
         await hid_manager.scan()
