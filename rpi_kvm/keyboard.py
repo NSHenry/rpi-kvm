@@ -132,12 +132,13 @@ class Keyboard(object):
             await self._register_to_dbus_signals()
 
     # attempt at creating a disconnect triggered by no keyboard presence that goes through d-bus
-    async def clear_active_host(self):
+    async def kb_clear_active_bt_host(self):
         try:
             await self._kvm_dbus_iface.call_clear_active_host()
         except dbus_next.DBusError:
             logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
+            await self.kb_clear_active_bt_host()
 
     async def _send_state(self):
         modifier_str = ''
@@ -196,7 +197,7 @@ async def main():
         
         if len(device_paths) == 0:
             logging.warning("No keyboard found, waiting till next device scan")
-            await asyncio.create_task(Keyboard().clear_active_host())
+            await asyncio.create_task(Keyboard().kb_clear_active_bt_host())
             logging.info("No more keyboards connected, clearing active host.")
         else:
             new_keyboards = [keyboard_device for keyboard_device in hid_manager.keyboard_devices if keyboard_device.path not in keyboards]
