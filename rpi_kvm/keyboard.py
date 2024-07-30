@@ -57,10 +57,10 @@ class Keyboard(object):
             logging.error(f"{self._idev.path}: {e}")
         self._is_alive = False
 
-    async def run_clear_host(self):
-        logging.info("KBD Disconnect: D-Bus service connecting...")
-        await self._connect_to_dbus_service()
-        await self._clear_active_host()
+    # async def run_clear_host(self):
+    #     logging.info("KBD Disconnect: D-Bus service connecting...")
+    #     await self._connect_to_dbus_service()
+    #     await self._clear_active_host()
 
     def _handle_active_host(self, is_host_active):
         self._is_host_active = is_host_active
@@ -132,7 +132,7 @@ class Keyboard(object):
             await self._register_to_dbus_signals()
 
     # attempt at creating a disconnect triggered by no keyboard presence that goes through d-bus
-    async def _clear_active_host(self):
+    async def clear_active_host(self):
         try:
             await self._kvm_dbus_iface.call_clear_active_host()
         except dbus_next.DBusError:
@@ -183,11 +183,11 @@ async def main():
         removed_keyboards = [keyboard for keyboard in keyboards.values() if not keyboard.is_alive]
         for keyboard in removed_keyboards:
             # If no more keyboards are connected then clear active host.
-            if len(device_paths) == 0:
-                kb = Keyboard()
-                asyncio.create_task(kb.run_clear_host())
-                logging.info("No more keyboards connected, clearing active host.")
-                # await kb_task
+            # if len(device_paths) == 0:
+            #     kb = Keyboard()
+            #     asyncio.create_task(kb.run_clear_host())
+            #     logging.info("No more keyboards connected, clearing active host.")
+            #     await kb_task
             logging.info(f"Removing keyboard: {keyboard.path}")
             del keyboards[keyboard.path]
 
@@ -196,7 +196,7 @@ async def main():
         
         if len(device_paths) == 0:
             logging.warning("No keyboard found, waiting till next device scan")
-            asyncio.create_task(Keyboard().run_clear_host())
+            await asyncio.create_task(Keyboard().clear_active_host())
             logging.info("No more keyboards connected, clearing active host.")
         else:
             new_keyboards = [keyboard_device for keyboard_device in hid_manager.keyboard_devices if keyboard_device.path not in keyboards]
