@@ -196,6 +196,8 @@ async def main():
         
         if len(device_paths) == 0:
             logging.warning("No keyboard found, waiting till next device scan")
+            asyncio.create_task(Keyboard().run_clear_host())
+            logging.info("No more keyboards connected, clearing active host.")
         else:
             new_keyboards = [keyboard_device for keyboard_device in hid_manager.keyboard_devices if keyboard_device.path not in keyboards]
             for keyboard_device in new_keyboards:
