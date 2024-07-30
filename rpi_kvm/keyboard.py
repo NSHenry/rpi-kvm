@@ -185,8 +185,8 @@ async def main():
             # If no more keyboards are connected then clear active host.
             if len(device_paths) == 0:
                 kb = Keyboard()
-                kb_task = asyncio.create_task(kb.run_clear_host())
-                await kb_task
+                asyncio.create_task(kb.run_clear_host())
+                # await kb_task
             logging.info(f"Removing keyboard: {keyboard.path}")
             del keyboards[keyboard.path]
 

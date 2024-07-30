@@ -40,13 +40,6 @@ class KvmDbusService(ServiceInterface):
 
     def stop(self):
         self._stop_event = True
-        # reTerminal status lights
-        try:
-            reTerminal.sta_led_green = False
-            reTerminal.sta_led_red = False
-            reTerminal.usr_led = False
-        except NameError:
-            print("reTerminal led not found.")
 
     def on_clients_change(self, clients):
         self.signal_clients_change(clients)
@@ -139,6 +132,11 @@ class KvmDbusService(ServiceInterface):
         logging.info(f"D-Bus: Cleared active host")
         client_names = self._bt_server.get_connected_client_names()
         self.signal_host_change(client_names)
+        try:
+            reTerminal.sta_led_green = True
+            reTerminal.sta_led_red = False
+        except NameError:
+            print("reTerminal led not found.")
 
     @dbus_next.service.method()
     def SendKeyboardUsbTelegram(self, modifiers: 'ab', keys: 'ay') -> None:
