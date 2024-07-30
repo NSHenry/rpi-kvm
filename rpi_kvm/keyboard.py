@@ -116,9 +116,11 @@ class Keyboard(object):
                 kvm_service_obj = bus.get_proxy_object(
                     'org.rpi.kvmservice', '/org/rpi/kvmservice', introspection)
                 self._kvm_dbus_iface = kvm_service_obj.get_interface('org.rpi.kvmservice')
-                logging.info(f"{self._idev.path}: D-Bus service connected")
+                logging.info(f"KB: D-Bus Service Connected")
+                # logging.info(f"{self._idev.path}: D-Bus service connected")
             except dbus_next.DBusError:
-                logging.warning(f"{self._idev.path}: D-Bus service not available - reconnecting...")
+                logging.info(f"KB: D-Bus service not available - reconnecting...")
+                # logging.warning(f"{self._idev.path}: D-Bus service not available - reconnecting...")
                 await asyncio.sleep(5)
 
     # Copied over from info_hub
@@ -194,16 +196,14 @@ async def main():
             logging.info(f"Removing keyboard: {keyboard.path}")
             del keyboards[keyboard.path]
 
-        logging.info(f"Do device paths exist before they're defined? This is running in a loop: {len(device_paths)}")
-
         device_paths = [keyboard_device.path for keyboard_device in hid_manager.keyboard_devices]
         logging.info(f"Keyboard Count: {len(device_paths)}")
         
         if len(device_paths) == 0:
             logging.warning("No keyboard found, waiting till next device scan")
             # asyncio.create_task(Keyboard().kb_clear_active_bt_host())
-            # await asyncio.create_task(Keyboard().kb_clear_active_bt_host())
-            # logging.info("No more keyboards connected, clearing active host.")
+            await asyncio.create_task(Keyboard().kb_clear_active_bt_host())
+            logging.info("No more keyboards connected, clearing active host.")
         else:
             new_keyboards = [keyboard_device for keyboard_device in hid_manager.keyboard_devices if keyboard_device.path not in keyboards]
             for keyboard_device in new_keyboards:
