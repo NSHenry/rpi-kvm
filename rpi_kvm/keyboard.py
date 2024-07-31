@@ -14,6 +14,8 @@ import leds as reTerminal
 
 # Global Variable for active host
 _is_host_active = bool
+is_kb_connected = bool
+
 
 class Keyboard(object):
     # def __init__(self, input_device):
@@ -67,13 +69,13 @@ class Keyboard(object):
         if self._is_host_active is False:
             try:
                 self._idev.ungrab()
-                # logging.info(f"\033[0;36m FAKE Keyboard released \033[0m")
-                # try:
-                #     reTerminal.sta_led_green = True
-                #     reTerminal.sta_led_red = False
-                # except NameError:
-                #     # print("reTerminal led not found.")
-                #     pass
+                logging.info(f"\033[0;36m FAKE Keyboard released \033[0m")
+                try:
+                    reTerminal.sta_led_green = True
+                    reTerminal.sta_led_red = False
+                except NameError:
+                    # print("reTerminal led not found.")
+                    pass
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already released. \033[0m")
                 pass
@@ -82,12 +84,12 @@ class Keyboard(object):
         elif self._is_host_active is True:
             try:
                 self._idev.grab()
-                # try:
-                #     reTerminal.sta_led_green = False
-                #     reTerminal.sta_led_red = True
-                # except NameError:
-                #     # print("reTerminal led not found.")
-                #     pass
+                try:
+                    reTerminal.sta_led_green = False
+                    reTerminal.sta_led_red = True
+                except NameError:
+                    # print("reTerminal led not found.")
+                    pass
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already captured by another process. \033[0m")
                 pass
@@ -99,7 +101,7 @@ class Keyboard(object):
         self._clients_connected_count = clients_connected_count
         if self._clients_connected_count == 0:
             logging.info(f"\033[0;36mNo Clients Connected \033[0m")
-        elif self._clients_connected_count > 0 and _is_host_active is False:
+        elif self._clients_connected_count > 0 and is_kb_connected is True and _is_host_active is False:
             await self.make_first_host_active()
             logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033[0m")
         # logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033
@@ -150,7 +152,7 @@ class Keyboard(object):
             await self._connect_to_dbus_service()
             await self.kb_clear_active_bt_host()
 
-    # TODO: Add function to reactivate the host when a keyboard is connected.
+    # Calls the dbus method to make the next host active.
     async def make_first_host_active(self):
         await self._connect_to_dbus_service()
         try:
@@ -196,6 +198,7 @@ async def main():
     logging.info("Creating HID Manager")
     hid_manager = HidScanner()
     keyboards = dict()
+    global is_kb_connected
 
     while True:
         await hid_manager.scan()
@@ -207,14 +210,17 @@ async def main():
 
         device_paths = [keyboard_device.path for keyboard_device in hid_manager.keyboard_devices]
         # logging.info(f"Keyboard Count: {len(device_paths)}")
+
         
         if len(device_paths) == 0:
+            is_kb_connected = False
             logging.warning("No keyboard found, waiting till next device scan")
             # Call the function to clear the active keyboard host.
             await asyncio.create_task(Keyboard().kb_clear_active_bt_host())
             logging.info("No more keyboards connected, clearing active host.")
         else:
             # await asyncio.create_task(Keyboard().make_first_host_active())
+            is_kb_connected = True
             new_keyboards = [keyboard_device for keyboard_device in hid_manager.keyboard_devices if keyboard_device.path not in keyboards]
             for keyboard_device in new_keyboards:
                 kb = Keyboard(keyboard_device)
