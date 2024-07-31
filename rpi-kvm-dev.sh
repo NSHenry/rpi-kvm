@@ -24,11 +24,11 @@ case "$1" in
         sudo tmux kill-session -t rpi-kvm
         ;;
     start)
-        sudo ./scripts/init.sh
+        sudo ./scripts/init-dev.sh
         ;;
     restart)
         sudo tmux kill-session -t rpi-kvm
-        sudo ./scripts/init.sh
+        sudo ./scripts/init-dev.sh
         ;;
     update-mac)
         sudo ./scripts/update-mac.sh
