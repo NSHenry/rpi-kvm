@@ -70,16 +70,16 @@ class KvmDbusService(ServiceInterface):
         # This behavior isn't triggering until the browser is open because that's the only time it's called. 
         # Get connected client count from bt_server as an integer
         connected_client_count = len(self._bt_server._clients_connected)
-        if connected_client_count > 0:
-            try:
-                reTerminal.usr_led = True
-            except NameError:
-                logging.info("reTerminal usr_led not found.")
-        elif connected_client_count == 0:
-            try:
-                reTerminal.usr_led = False
-            except NameError:
-                logging.info("reTerminal usr_led not found.")
+        # if connected_client_count > 0:
+        #     try:
+        #         reTerminal.usr_led = True
+        #     except NameError:
+        #         logging.info("reTerminal usr_led not found.")
+        # elif connected_client_count == 0:
+        #     try:
+        #         reTerminal.usr_led = False
+        #     except NameError:
+        #         logging.info("reTerminal usr_led not found.")
         # logging.info(f"\033[0;36mD-Bus Service: connected_client_count = {connected_client_count}\033[0m")
         # Send the client count to the signal service
         # self.signal_connected_client_count(connected_client_count)
@@ -132,16 +132,21 @@ class KvmDbusService(ServiceInterface):
         logging.info(f"D-Bus: Cleared active host")
         client_names = self._bt_server.get_connected_client_names()
         self.signal_host_change(client_names)
-        try:
-            reTerminal.sta_led_green = True
-            reTerminal.sta_led_red = False
-        except NameError:
-            # print("reTerminal led not found.")
-            pass
+        # try:
+        #     reTerminal.sta_led_green = True
+        #     reTerminal.sta_led_red = False
+        # except NameError:
+        #     # print("reTerminal led not found.")
+        #     pass
 
     @dbus_next.service.method()
     def ConnectActiveHost(self) -> None:
-        self._bt_server.switch_to_next_connected_host()
+        # This throws "TypeError: 'NoneType' object is not subscriptable"
+        self._bt_server.reactivate_last_host()
+        # TODO: See what this does.
+        # self._bt_server._connect_to_paired_clients()
+        # TODO: See what this does.
+        # self._bt_server.switch_to_next_connected_host()
         client_names = self._bt_server.get_connected_client_names()
         # logging.info(f"D-Bus: KB Detected Activating: {client_names[0]}")
         self.signal_host_change(client_names)
@@ -216,9 +221,10 @@ class KvmDbusService(ServiceInterface):
     def signal_clients_change(self, client_names: 'as') -> 'as':  # type: ignore
         return client_names
     
-    # @dbus_next.service.signal()
-    # def signal_connected_client_count(self, connected_client_count: 'y') -> 'y':
-    #     return connected_client_count
+    # Lets the keyboard service know how many clients are connected
+    @dbus_next.service.signal()
+    def signal_connected_client_count(self, connected_client_count: 'y') -> 'y':  # type: ignore
+        return connected_client_count
 
     @dbus_next.service.signal()
     def signal_is_host_active(self, is_host_active: 'b') -> 'b':

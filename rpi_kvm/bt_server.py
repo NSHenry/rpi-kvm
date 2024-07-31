@@ -194,8 +194,13 @@ class BtServer(object):
         logging.warning(f"Server: clear_active_host triggered.")
     
     # Function to reconnect to the last active host. (Keyboard reconnection will trigger this via kvm_service.py)
+    # TODO: Pretty sure this is broken. Fix it.
+    # This throws "TypeError: 'NoneType' object is not subscriptable"
     def reactivate_last_host(self):
         if len(self._clients_connected) >= 1:
+            # In theory this should match the hotkey activation above in the switch_to_next_connected_host fuction.
+            # However, we may need to go about it as if reinitlizing in the _connect_to_paired_clients fucntion
+            # Not sure. This seems to be connected to introspection and the dbus service. It's not just a string I'm clearing when I clear the active host.
             last_host = self._get_connected_client_addresses()[0]
             self._active_host = self._clients_connected[last_host]
         self._clients_order.active_client = self._active_host.address
@@ -209,6 +214,12 @@ class BtServer(object):
                 cur_active_index = 0
             client_addresses = [*client_addresses[cur_active_index:], *client_addresses[:cur_active_index]]
             return client_addresses
+        # TODO: Not sure how this will affect other fucntions. Need to test.
+        # elif self._active_host is None and len(self._clients_connected) > 0:
+        #     client_addresses = self._clients_order.sort_clients(list(self._clients_connected.keys()))
+        #     cur_active_index = 0
+        #     client_addresses = [*client_addresses[cur_active_index:], *client_addresses[:cur_active_index]]
+        #     return client_addresses
         else:
             return None
 
