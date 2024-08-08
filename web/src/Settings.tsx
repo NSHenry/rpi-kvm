@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { ServerConfig, InfoBanner, WelcomeBanner } from './Common';
-// import UpdatePerformer from './UpdatePerformer';
+import UpdatePerformer from './UpdatePerformer';
 import { NotificationContext, NotifyType } from './Notifications';
 
 type KeyboardCodes = {
@@ -20,6 +20,9 @@ type SettingsState = {
 export default class Settings extends React.Component<any, SettingsState> {
 
   static contextType = NotificationContext;
+  // React 18 Refactoring
+  context: any;
+  //declare context: React.ContextType<typeof NotificationContext>
 
   constructor(props: any) {
     super(props)
@@ -59,6 +62,24 @@ export default class Settings extends React.Component<any, SettingsState> {
       )
   }
 
+  // fetchSettings() {
+  //   fetch(ServerConfig.url + 'get_settings')
+  //       .then((response) => {
+  //         if (response.ok) {
+  //           response.json()
+  //               .then((result) => {
+  //                 this.setState({
+  //                   settings: result.settings})
+  //               })
+  //         } else {
+  //           throw Error
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         this.context.addNotification(NotifyType.error, 'Something went wrong during settings fetch...')
+  //       })
+  // }
+
   fetchKeyboardCods() {
     fetch(ServerConfig.url + 'get_keyboard_codes')
       .then(response => response.json())
@@ -72,6 +93,27 @@ export default class Settings extends React.Component<any, SettingsState> {
         }
       )
   }
+
+  // fetchKeyboardCods() {
+  //   fetch(ServerConfig.url + 'get_keyboard_codes')
+  //       .then((response) => {
+  //             if (response.ok) {
+  //               response.json()
+  //                   .then((result) => {
+  //                         this.setState({
+  //                           keyboardCodes: result.keyboardCodes
+  //                         })
+  //                       })
+  //             } else {
+  //               throw Error("")
+  //             }
+  //           })
+  //       .catch((error) => {
+  //           console.log("error")
+  //           this.context.addNotification(NotifyType.error, 'Something went wrong during keyboard codes fetch...')
+  //       }
+  //       )
+  // }
 
   sendSettings() {
     const requestOptions = {
@@ -186,6 +228,9 @@ export default class Settings extends React.Component<any, SettingsState> {
 class ServiceRestartSection extends React.Component {
 
   static contextType = NotificationContext;
+  // React 18 Refactoring
+  context: any;
+  // declare context: React.ContextType<typeof NotificationContext>
 
   sendServiceRestart(serviceName: string) {
     const requestOptions = {

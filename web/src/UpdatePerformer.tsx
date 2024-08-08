@@ -11,6 +11,8 @@ type UpdatePerformerState = {
 export default class UpdatePerformer extends React.Component<any, UpdatePerformerState> {
 
   static contextType = NotificationContext;
+  // React 18 Refactoring
+  declare context: React.ContextType<typeof NotificationContext>
 
   constructor(props: any) {
     super(props)
@@ -26,19 +28,50 @@ export default class UpdatePerformer extends React.Component<any, UpdatePerforme
     this.fetchUpdateAvailable();
   }
 
+  // fetchUpdateAvailable() {
+  //   fetch(ServerConfig.url + 'is_update_available')
+  //     .then(response => response.json())
+  //     .then(
+  //       (result) => {
+  //         this.setState({
+  //           isUpdateAvailable: result.isUpdateAvailable})
+  //       },
+  //       (error) => {
+  //         this.context.addNotification(NotifyType.error, 'Something went wrong during check for updates...')
+  //       }
+  //     )
+  // }
+
   fetchUpdateAvailable() {
     fetch(ServerConfig.url + 'is_update_available')
-      .then(response => response.json())
-      .then(
-        (result) => {
-          this.setState({
-            isUpdateAvailable: result.isUpdateAvailable})
-        },
-        (error) => {
-          this.context.addNotification(NotifyType.error, 'Something went wrong during check for updates...')
-        }
-      )
+        .then(response => response.json())
+        .then(
+            (result) => {
+              this.setState({
+                isUpdateAvailable: result.isUpdateAvailable})
+            },
+            (error) => {
+                if (error instanceof Error) {
+                    console.log(error.message)
+                    this.context.addNotification(NotifyType.error, 'Something went wrong during check for updates...')
+                }
+
+            }
+        )
   }
+// .then(
+// (response) => {
+//   if(response.ok) {
+//   this.context.addNotification(NotifyType.success, 'Applying settings requested successfully')
+// } else {
+//   throw Error("")
+// }
+// })
+// .catch((error) => {
+//   console.log("error")
+//   this.context.addNotification(NotifyType.error, 'Something went wrong during settings send...')
+// })
+// }
 
   performUpdate() {
     fetch(ServerConfig.url + 'perform_update')

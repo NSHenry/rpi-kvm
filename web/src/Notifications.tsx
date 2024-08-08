@@ -89,7 +89,7 @@ export function NotificationProvider({ children }: any) {
 export function NotificationOutlet() {
     const { notifications } = React.useContext(NotificationContext)
   
-    var notificationsContent = notifications.map(notification => (
+    let notificationsContent = notifications.map(notification => (
         <Notification key={notification.id} {...notification}/>
     ));
 
@@ -105,8 +105,8 @@ export function NotificationOutlet() {
 export function Notification(props: NotificationProps) {
     const { clearNotification } = React.useContext(NotificationContext)
 
-    var toastHeader = ""
-    var toastTitle = ""
+    let toastHeader = ""
+    let toastTitle = ""
     if(props.type === NotifyType.success) {
         toastHeader = "toast-header bg-success text-white"
         toastTitle = "Success"
