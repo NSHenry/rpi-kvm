@@ -40,7 +40,7 @@ class RingBuffer(object):
     def __init__(self, size):
         self.size = size
         self.reset()
-        self.data = None
+        # self.data = None
 
     def reset(self):
         self.data = [None for i in range(self.size)]

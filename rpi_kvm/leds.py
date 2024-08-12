@@ -1,5 +1,5 @@
-# import sys
-# import os
+import sys
+import os
 
 
 class _Leds:
@@ -51,5 +51,5 @@ class _Leds:
             f.write(value)
 
 
-# sys.modules[__name__] = _Leds()
-leds_instance = _Leds()
+sys.modules[__name__] = _Leds()
+# leds_instance = _Leds()
