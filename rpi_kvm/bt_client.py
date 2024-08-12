@@ -101,6 +101,8 @@ class BtClient(object):
         else:
             logging.debug(f"{self.name}: Establish socket connection to {self.name} ({self.address})")
             try:
+                # This is fine. See docs.python.org/3/library/socket.html#socket.socket
+                # Auto-detection is overruled by the explicit protocol parameter and linters are not aware of this.
                 self._control_socket = socket.socket(
                     socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP)
                 await self._loop.run_in_executor(None, lambda: self._control_socket.connect((self.address, self.BT_CONTROL_PORT)))

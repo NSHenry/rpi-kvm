@@ -103,6 +103,8 @@ class BtServer(object):
 
     async def _listen_for_incoming_requests(self):
         logging.info("Server: Waiting for incoming connections")
+        # This is fine. See docs.python.org/3/library/socket.html#socket.socket
+        # Auto-detection is overruled by the explicit protocol parameter and linters are not aware of this.
         self.control_socket = socket.socket(
             socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP)
         self.interrupt_socket = socket.socket(
