@@ -1,9 +1,8 @@
-import sys
-from pathlib import Path
+# import sys
+# import os
 
 
 class _Leds:
-
     __STA_LED_GREEN_BRIGHTNESS = "/sys/class/leds/usr_led2/brightness"
     __STA_LED_RED_BRIGHTNESS = "/sys/class/leds/usr_led1/brightness"
     __USR_LED_GREEN_BRIGHTNESS = "/sys/class/leds/usr_led0/brightness"
@@ -52,4 +51,5 @@ class _Leds:
             f.write(value)
 
 
-sys.modules[__name__] = _Leds()
+# sys.modules[__name__] = _Leds()
+leds_instance = _Leds()

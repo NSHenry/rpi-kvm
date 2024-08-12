@@ -78,10 +78,8 @@ class BtClient(object):
 
     @property
     def info(self):
-        info_dict = {}
-        info_dict["name"] = self.name
-        info_dict["address"] = self.address
-        info_dict["isConnected"] = self.is_connected
+        # Rewritten as dictionary literal.
+        info_dict = {"name": self.name, "address": self.address, "isConnected": self.is_connected}
         return info_dict
 
     def connect(self):

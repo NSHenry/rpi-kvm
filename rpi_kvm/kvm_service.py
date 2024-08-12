@@ -3,12 +3,13 @@
 # Bluetooth D-Bus Service
 
 import os
-import sys
+# import sys
 import asyncio
 import dbus_next
-from dbus_next.aio import MessageBus
+import dbus_next.aio
+from dbus_next.aio.message_bus import MessageBus
 from dbus_next.service import ServiceInterface
-from dbus_next import Variant
+# from dbus_next import Variant
 import signal
 import logging
 import json

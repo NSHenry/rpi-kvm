@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 import asyncio
-from operator import is_
-import evdev
+# from operator import is_
+# import evdev
 from evdev import *
 import dbus_next
 from dbus_next.aio import MessageBus
@@ -211,7 +211,6 @@ async def main():
         device_paths = [keyboard_device.path for keyboard_device in hid_manager.keyboard_devices]
         # logging.info(f"Keyboard Count: {len(device_paths)}")
 
-        
         if len(device_paths) == 0:
             is_kb_connected = False
             logging.warning("No keyboard found, waiting till next device scan")

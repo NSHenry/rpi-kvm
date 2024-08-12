@@ -1,6 +1,8 @@
 #!/bin/bash
 
-export RPI_KVM_PATH=$(pwd)
+# export RPI_KVM_PATH=$(pwd)
+export "$(pwd)"
+RPI_KVM_PATH=$(pwd)
 
 initRpiKvmTmux()
 {

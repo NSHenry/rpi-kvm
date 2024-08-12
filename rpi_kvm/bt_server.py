@@ -73,7 +73,7 @@ class BtServer(object):
         await manager_itf.call_register_profile("/org/bluez/hci0", BtServer.BT_HID_UUID, opts)
 
     def _read_sdp_service_record(self):
-        content = ""
+        # content = ""
         with open(BtServer.SDP_RECORD_PATH, 'r') as f:
             content = f.read()
         return content

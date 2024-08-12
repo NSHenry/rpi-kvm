@@ -214,21 +214,22 @@ class UsbHidDecoder(object):
 
     @staticmethod
     def is_modifier_key(evdev_keycode):
-        if type(evdev_keycode) == list:
+        if type(evdev_keycode) is list:
             return False
         else:
-            return (evdev_keycode in UsbHidDecoder.MODIFIER_KEYS_BIT_MASK_INDEX)
+            return evdev_keycode in UsbHidDecoder.MODIFIER_KEYS_BIT_MASK_INDEX
 
     @staticmethod
     def convert_modifier_bit_mask_to_int(modifier_bit_mask):
         modifier_int = 0
         for i in range(0, 8):
-            if modifier_bit_mask[i]: modifier_int += UsbHidDecoder.BIT_MASK[i]
+            if modifier_bit_mask[i]:
+                modifier_int += UsbHidDecoder.BIT_MASK[i]
         return modifier_int
 
     @staticmethod
     def encode_regular_key(evdev_keycode):
-        if type(evdev_keycode) == list:
+        if type(evdev_keycode) is list:
             for keycode in evdev_keycode:
                 if keycode in UsbHidDecoder.KEY_CODES:
                     return UsbHidDecoder.KEY_CODES[keycode]

@@ -4,20 +4,22 @@ import os
 import asyncio
 import dbus_next
 import socket
-from dbus_next.aio import MessageBus
+# MessageBus not exported from module dbus_next.aio. Import from dbus_next.aio.message_bus instead
+import dbus_next.aio
+from dbus_next.aio.message_bus import MessageBus
+from dbus_next.errors import DBusError
 from aiohttp import web
 import json
 import logging
 import common
 from settings import Settings
 from usb_hid_decoder import UsbHidDecoder
-# from clipboard import Clipboard
 
 
 class WebServer(object):
     def __init__(self, settings):
-        # self._site = None
-        # self._runner = None
+        self._site = None
+        self._runner = None
         self._settings = settings
         self._server_url = ""
         self._is_alive = False
@@ -59,7 +61,7 @@ class WebServer(object):
                     'org.rpi.kvmservice', '/org/rpi/kvmservice', introspection)
                 self._kvm_dbus_iface = kvm_service_obj.get_interface('org.rpi.kvmservice')
                 logging.info("D-Bus service connected")
-            except dbus_next.DBusError:
+            except DBusError:
                 logging.warning("D-Bus service not available - reconnecting...")
                 await asyncio.sleep(5)
 
@@ -67,7 +69,7 @@ class WebServer(object):
         try:
             clients_info = await self._kvm_dbus_iface.call_get_clients_info()
             return clients_info
-        except dbus_next.DBusError:
+        except DBusError:
             logging.warning(f"D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self._fetch_bt_clients()
@@ -75,7 +77,7 @@ class WebServer(object):
     async def _connect_bt_client(self, client_address):
         try:
             await self._kvm_dbus_iface.call_connect_client(client_address)
-        except dbus_next.DBusError:
+        except DBusError:
             logging.warning(f"D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self._connect_bt_client(client_address)
@@ -83,7 +85,7 @@ class WebServer(object):
     async def _disconnect_bt_client(self, client_address):
         try:
             await self._kvm_dbus_iface.call_disconnect_client(client_address)
-        except dbus_next.DBusError:
+        except DBusError:
             logging.warning(f"D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self._disconnect_bt_client(client_address)
@@ -91,7 +93,7 @@ class WebServer(object):
     async def _remove_bt_client(self, client_address):
         try:
             await self._kvm_dbus_iface.call_remove_client(client_address)
-        except dbus_next.DBusError:
+        except DBusError:
             logging.warning(f"D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self._remove_bt_client(client_address)
@@ -99,7 +101,7 @@ class WebServer(object):
     async def _change_client_order(self, client_address, order_type):
         try:
             await self._kvm_dbus_iface.call_change_client_order(client_address, order_type)
-        except dbus_next.DBusError:
+        except DBusError:
             logging.warning(f"D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self._change_client_order(client_address, order_type)
@@ -107,7 +109,7 @@ class WebServer(object):
     async def _switch_active_bt_host(self, client_address):
         try:
             await self._kvm_dbus_iface.call_switch_active_host(client_address)
-        except dbus_next.DBusError:
+        except DBusError:
             logging.warning(f"D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self._switch_active_bt_host(client_address)
@@ -116,7 +118,7 @@ class WebServer(object):
     async def _clear_active_bt_host(self):
         try:
             await self._kvm_dbus_iface.call_clear_active_host()
-        except dbus_next.DBusError:
+        except DBusError:
             logging.warning(f"D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self._clear_active_bt_host()
@@ -124,7 +126,7 @@ class WebServer(object):
     async def _trigger_reload_settings(self):
         try:
             await self._kvm_dbus_iface.call_reload_settings()
-        except dbus_next.DBusError:
+        except DBusError:
             logging.warning(f"D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self._trigger_reload_settings()
@@ -136,7 +138,8 @@ class WebServer(object):
         self._is_alive = True
         while self._is_alive:
             self._server_future = asyncio.Future()
-            self._server_url = f"http://{socket.gethostname()}:{self._settings['web']['port']}"
+            # Trying out https
+            self._server_url = f"https://{socket.gethostname()}:{self._settings['web']['port']}"
             logging.info(f"Starting web server on: {self._server_url}")
             self._runner = web.AppRunner(self._app)
             await self._runner.setup()
@@ -145,10 +148,12 @@ class WebServer(object):
             await self._server_future
             await self._site.stop()
     
-    async def root_handler(self, request):
+    @staticmethod
+    async def root_handler(request):
         return web.HTTPFound('/index.html')
 
-    async def hello(self, request):
+    @staticmethod
+    async def hello(request):
         return web.Response(text="Hello, world")
 
     async def get_bt_clients(self, request):
@@ -228,7 +233,8 @@ class WebServer(object):
                 os.system('sudo reboot -f')
         return web.Response()
 
-    async def get_keyboard_codes(self, request):
+    @staticmethod
+    async def get_keyboard_codes(request):
         return web.Response(text=json.dumps({
             "keyboardCodes": {
                 "keyCodes": UsbHidDecoder.KEY_CODES,
@@ -236,9 +242,10 @@ class WebServer(object):
                 }
             }))
 
-    async def _is_git_update_available(self):
+    @staticmethod
+    async def _is_git_update_available():
         _, stdout, _ = await common.System.exec_cmd("git rev-list HEAD...origin/main --count")
-        return (stdout != b'0\n')
+        return stdout != b'0\n'
 
     async def is_update_available(self, request):
         is_updatable = await self._is_git_update_available()
