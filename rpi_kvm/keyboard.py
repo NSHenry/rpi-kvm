@@ -3,7 +3,7 @@
 import asyncio
 # from operator import is_
 # import evdev
-from evdev import *
+from evdev import ecodes
 import dbus_next
 from dbus_next.aio import MessageBus
 import logging
@@ -176,10 +176,10 @@ class Keyboard(object):
             await self._connect_to_dbus_service()
 
     def _handle_event(self, event):
-        if event.code not in ecodes.KEY:
+        if event.code not in ecodes.ecodes.KEY:
             # logging.warning(f"{self._idev.path}: unsupported key press code: {event.code}")
             return
-        evdev_code = ecodes.KEY[event.code]
+        evdev_code = ecodes.ecodes.KEY[event.code]
         if UsbHidDecoder.is_modifier_key(evdev_code):
             modifier_index = UsbHidDecoder.encode_modifier_key_index(evdev_code)
             self._modifiers[modifier_index] = not self._modifiers[modifier_index]

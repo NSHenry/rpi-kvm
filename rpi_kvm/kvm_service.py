@@ -66,6 +66,7 @@ class KvmDbusService(ServiceInterface):
     def GetConnectedClientNames(self) -> 'as':  # type: ignore
         return self._bt_server.get_connected_client_names()
 
+    # noinspection PyProtectedMember
     @dbus_next.service.method()
     def GetClientsInfo(self) -> 's':
         # This behavior isn't triggering until the browser is open because that's the only time it's called. 

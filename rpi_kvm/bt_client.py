@@ -151,6 +151,10 @@ class BtClient(object):
                 self._bluez_props = self._bluez_obj.get_interface("org.freedesktop.DBus.Properties")
                 logging.debug(f"{self._address}: D-Bus bluez object connected")
                 self._name = await self._bluez_itf.get_name()
+                # Testing out bus_name vs get_name
+                self._altName = await self._bluez_itf.bus_name
+                logging.debug(f"self._name: {self._name}")
+                logging.debug(f"self._altName: {self._altName}")
                 logging.debug(f"{self._address}: Name resolves to {self._name}")
                 self._bluez_props.on_properties_changed(self._on_properties_changed)
             except dbus_next.DBusError:
