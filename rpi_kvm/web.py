@@ -2,12 +2,12 @@
 
 import os
 import asyncio
-import dbus_next
+import dbus_fast
 import socket
-# MessageBus not exported from module dbus_next.aio. Import from dbus_next.aio.message_bus instead
-import dbus_next.aio
-from dbus_next.aio.message_bus import MessageBus
-from dbus_next.errors import DBusError
+# MessageBus not exported from module dbus_fast.aio. Import from dbus_fast.aio.message_bus instead
+import dbus_fast.aio
+from dbus_fast.aio.message_bus import MessageBus
+from dbus_fast.errors import DBusError
 from aiohttp import web
 import json
 import logging
@@ -54,7 +54,7 @@ class WebServer(object):
         self._kvm_dbus_iface = None
         while not self._kvm_dbus_iface:
             try:
-                bus = await MessageBus(bus_type=dbus_next.BusType.SYSTEM).connect()
+                bus = await MessageBus(bus_type=dbus_fast.BusType.SYSTEM).connect()
                 introspection = await bus.introspect(
                     'org.rpi.kvmservice', '/org/rpi/kvmservice')
                 kvm_service_obj = bus.get_proxy_object(

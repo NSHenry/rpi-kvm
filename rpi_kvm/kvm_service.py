@@ -5,11 +5,11 @@
 import os
 # import sys
 import asyncio
-import dbus_next
-import dbus_next.aio
-from dbus_next.aio.message_bus import MessageBus
-from dbus_next.service import ServiceInterface
-# from dbus_next import Variant
+import dbus_fast
+import dbus_fast.aio
+from dbus_fast.aio.message_bus import MessageBus
+from dbus_fast.service import ServiceInterface
+# from dbus_fast import Variant
 import signal
 import logging
 import json
@@ -23,13 +23,13 @@ import leds as reTerminal
 
 class KvmDbusService(ServiceInterface):
     # Setting variables types so pylance doesn't complain
-    # The dbus_next library uses all kinds of weird type conversions
+    # The dbus_fast library uses all kinds of weird type conversions
     # https://python-dbus-next.readthedocs.io/en/latest/type-system/index.html 
     s = str()
     i = int()
     y = int()
     b = bool
-    # not sure if these last two will anger dbus_next
+    # not sure if these last two will anger dbus_fast
     ab = ay = list()
 
     def __init__(self, settings, hotkey_detector, bt_server):
@@ -58,16 +58,16 @@ class KvmDbusService(ServiceInterface):
         logging.info("D-Bus: D-Bus service finished")
 
     async def _register_to_dbus(self):
-        self._bus = await MessageBus(bus_type=dbus_next.BusType.SYSTEM).connect()
+        self._bus = await MessageBus(bus_type=dbus_fast.BusType.SYSTEM).connect()
         self._bus.export("/org/rpi/kvmservice", self)
         await self._bus.request_name("org.rpi.kvmservice")
 
-    @dbus_next.service.method()
+    @dbus_fast.service.method()
     def GetConnectedClientNames(self) -> 'as':  # type: ignore
         return self._bt_server.get_connected_client_names()
 
     # noinspection PyProtectedMember
-    @dbus_next.service.method()
+    @dbus_fast.service.method()
     def GetClientsInfo(self) -> 's':
         # This behavior isn't triggering until the browser is open because that's the only time it's called. 
         # Get connected client count from bt_server as an integer
@@ -92,33 +92,33 @@ class KvmDbusService(ServiceInterface):
         self.signal_is_host_active(is_host_active)
         return json.dumps(self._bt_server.get_clients_info_dict())
 
-    @dbus_next.service.method()
+    @dbus_fast.service.method()
     def ConnectClient(self, client_address: 's') -> None:
         self._bt_server.connect_client(client_address)
         return
 
-    @dbus_next.service.method()
+    @dbus_fast.service.method()
     def DisconnectClient(self, client_address: 's') -> None:
         self._bt_server.disconnect_client(client_address)
         return
 
-    @dbus_next.service.method()
+    @dbus_fast.service.method()
     def RemoveClient(self, client_address: 's') -> None:
         self._bt_server.remove_client(client_address)
         return
 
-    @dbus_next.service.method()
+    @dbus_fast.service.method()
     def ChangeClientOrder(self, client_address: 's', order_type: 's') -> None:
         self._bt_server.change_client_order(client_address, order_type)
         return
 
-    @dbus_next.service.method()
+    @dbus_fast.service.method()
     def ReloadSettings(self) -> None:
         logging.info(f"D-Bus: Reload settings")
         self._hotkey_detector.reload_settings()
         return
 
-    @dbus_next.service.method()
+    @dbus_fast.service.method()
     def SwitchActiveHost(self, client_address: 's') -> None:
         self._bt_server.switch_active_host_to(client_address)
         client_names = self._bt_server.get_connected_client_names()
@@ -128,7 +128,7 @@ class KvmDbusService(ServiceInterface):
         self.signal_host_change(client_names)
 
     # Dbus method to clear the active host
-    @dbus_next.service.method()
+    @dbus_fast.service.method()
     def ClearActiveHost(self) -> None:
         self._bt_server.clear_active_host()
         logging.info(f"D-Bus: Cleared active host")
@@ -141,7 +141,7 @@ class KvmDbusService(ServiceInterface):
             # print("reTerminal led not found.")
             pass
 
-    @dbus_next.service.method()
+    @dbus_fast.service.method()
     def ConnectActiveHost(self) -> None:
         logging.warning(f"D-Bus: RUNNING CONNECT ACTIVE HOST")
         # This throws "TypeError: 'NoneType' object is not subscriptable"
@@ -154,7 +154,7 @@ class KvmDbusService(ServiceInterface):
         # logging.info(f"D-Bus: KB Detected Activating: {client_names[0]}")
         self.signal_host_change(client_names)
 
-    @dbus_next.service.method()
+    @dbus_fast.service.method()
     def SendKeyboardUsbTelegram(self, modifiers: 'ab', keys: 'ay') -> None:
         modifiers_int = UsbHidDecoder.convert_modifier_bit_mask_to_int(modifiers)
         action = self._hotkey_detector.evaluate_new_input([modifiers_int, *keys])
@@ -182,7 +182,7 @@ class KvmDbusService(ServiceInterface):
             keyboard_usb_telegram = [0xA1, 1, modifiers_int, 0, *keys]
             self._bt_server.send(keyboard_usb_telegram)
 
-    @dbus_next.service.method()
+    @dbus_fast.service.method()
     def SendMouseUsbTelegram(self, buttons: 'ab', x_pos: 'i', y_pos: 'i', v_wheel: 'i', h_wheel: 'i') -> None:
         action = self._hotkey_detector.evaluate_new_mouse_input(buttons)
         if action == HotkeyAction.SwitchToNextHost:
@@ -216,20 +216,20 @@ class KvmDbusService(ServiceInterface):
             mouse_usb_telegram = [0xA1, 2, buttons_byte, x_pos_byte, y_pos_byte, v_wheel_byte, h_wheel_byte]
             self._bt_server.send(mouse_usb_telegram)
 
-    @dbus_next.service.signal()
+    @dbus_fast.service.signal()
     def signal_host_change(self, client_names: 'as') -> 'as':  # type: ignore
         return client_names
 
-    @dbus_next.service.signal()
+    @dbus_fast.service.signal()
     def signal_clients_change(self, client_names: 'as') -> 'as':  # type: ignore
         return client_names
     
     # Lets the keyboard service know how many clients are connected
-    @dbus_next.service.signal()
+    @dbus_fast.service.signal()
     def signal_connected_client_count(self, connected_client_count: 'y') -> 'y':  # type: ignore
         return connected_client_count
 
-    @dbus_next.service.signal()
+    @dbus_fast.service.signal()
     def signal_is_host_active(self, is_host_active: 'b') -> 'b':
         return is_host_active
 

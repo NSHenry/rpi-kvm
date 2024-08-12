@@ -3,8 +3,8 @@
 import asyncio
 import evdev
 from evdev import *
-import dbus_next
-from dbus_next.aio import MessageBus
+import dbus_fast
+from dbus_fast.aio import MessageBus
 import time
 import logging
 from hid_scanner import HidScanner
@@ -27,14 +27,14 @@ class KvmMouse(object):
         self._kvm_dbus_iface = None
         while not self._kvm_dbus_iface:
             try:
-                bus = await MessageBus(bus_type=dbus_next.BusType.SYSTEM).connect()
+                bus = await MessageBus(bus_type=dbus_fast.BusType.SYSTEM).connect()
                 introspection = await bus.introspect(
                     'org.rpi.kvmservice', '/org/rpi/kvmservice')
                 kvm_service_obj = bus.get_proxy_object(
                     'org.rpi.kvmservice', '/org/rpi/kvmservice', introspection)
                 self._kvm_dbus_iface = kvm_service_obj.get_interface('org.rpi.kvmservice')
                 logging.info(f"D-Bus service connected")
-            except dbus_next.DBusError:
+            except dbus_fast.DBusError:
                 logging.warning(f"D-Bus service not available - reconnecting...")
                 await asyncio.sleep(5)
 
@@ -43,7 +43,7 @@ class KvmMouse(object):
         logging.info("Register on D-Bus signals")
         try:
             self._kvm_dbus_iface.on_signal_is_host_active(self._handle_active_host)
-        except dbus_next.DBusError:
+        except dbus_fast.DBusError:
             logging.warning("D-Bus service not available - reconnecting...")
             await self._connect_to_dbus_service()
             await self._register_to_dbus_signals()
@@ -57,11 +57,12 @@ class KvmMouse(object):
         for event_mouse in self.event_mice.values():
             for i, button_val in enumerate(event_mouse.buttons):
                 common_buttons[i] |= button_val
-
         try:
             await self._kvm_dbus_iface.call_send_mouse_usb_telegram(common_buttons, x_pos, y_pos, v_wheel, h_wheel)
-        except dbus_next.DBusError:
-            logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
+        except dbus_fast.DBusError:
+            # Testing EventMouse.path instead of self._idev.path
+            path = EventMouse.path
+            logging.warning(f"{path}: D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
 
 

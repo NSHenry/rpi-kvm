@@ -4,8 +4,8 @@ import asyncio
 # from operator import is_
 # import evdev
 from evdev import ecodes
-import dbus_next
-from dbus_next.aio import MessageBus
+import dbus_fast
+from dbus_fast.aio import MessageBus
 import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
@@ -118,7 +118,7 @@ class Keyboard(object):
         self._kvm_dbus_iface = None
         while not self._kvm_dbus_iface:
             try:
-                bus = await MessageBus(bus_type=dbus_next.BusType.SYSTEM).connect()
+                bus = await MessageBus(bus_type=dbus_fast.BusType.SYSTEM).connect()
                 introspection = await bus.introspect(
                     'org.rpi.kvmservice', '/org/rpi/kvmservice')
                 kvm_service_obj = bus.get_proxy_object(
@@ -126,7 +126,7 @@ class Keyboard(object):
                 self._kvm_dbus_iface = kvm_service_obj.get_interface('org.rpi.kvmservice')
                 logging.info(f"KB: D-Bus Service Connected")
                 # logging.info(f"{self._idev.path}: D-Bus service connected")
-            except dbus_next.DBusError:
+            except dbus_fast.DBusError:
                 logging.info(f"KB: D-Bus service not available - reconnecting...")
                 # logging.warning(f"{self._idev.path}: D-Bus service not available - reconnecting...")
                 await asyncio.sleep(5)
@@ -137,7 +137,7 @@ class Keyboard(object):
         try:
             self._kvm_dbus_iface.on_signal_is_host_active(self._handle_active_host)
             self._kvm_dbus_iface.on_signal_connected_client_count(self._handle_connected_client_count)
-        except dbus_next.DBusError:
+        except dbus_fast.DBusError:
             logging.warning("D-Bus service not available - reconnecting...")
             await self._connect_to_dbus_service()
             await self._register_to_dbus_signals()
@@ -147,7 +147,7 @@ class Keyboard(object):
         await self._connect_to_dbus_service()
         try:
             await self._kvm_dbus_iface.call_clear_active_host()
-        except dbus_next.DBusError:
+        except dbus_fast.DBusError:
             logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self.kb_clear_active_bt_host()
@@ -157,7 +157,7 @@ class Keyboard(object):
         await self._connect_to_dbus_service()
         try:
             await self._kvm_dbus_iface.call_connect_active_host()
-        except dbus_next.DBusError:
+        except dbus_fast.DBusError:
             logging.warning(f"_make_next_host_active: D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self.make_first_host_active()
@@ -171,7 +171,7 @@ class Keyboard(object):
         # logging.debug(f"{self._idev.path}: mod: {modifier_str} keys: {self._keys}")
         try:
             await self._kvm_dbus_iface.call_send_keyboard_usb_telegram(self._modifiers, bytes(self._keys))
-        except dbus_next.DBusError:
+        except dbus_fast.DBusError:
             logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
 

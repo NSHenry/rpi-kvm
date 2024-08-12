@@ -1,6 +1,6 @@
 import asyncio
-import dbus_next
-from dbus_next.aio import MessageBus
+import dbus_fast
+from dbus_fast.aio import MessageBus
 import socket
 import enum
 import logging
@@ -142,7 +142,7 @@ class BtClient(object):
         self._bluez_obj = None
         while not self._bluez_obj:
             try:
-                self._dbus = await MessageBus(bus_type=dbus_next.BusType.SYSTEM).connect()
+                self._dbus = await MessageBus(bus_type=dbus_fast.BusType.SYSTEM).connect()
                 introspection = await self._dbus.introspect(
                     "org.bluez", self._device_object_path)
                 self._bluez_obj = self._dbus.get_proxy_object(
@@ -152,12 +152,12 @@ class BtClient(object):
                 logging.debug(f"{self._address}: D-Bus bluez object connected")
                 self._name = await self._bluez_itf.get_name()
                 # Testing out bus_name vs get_name
-                self._altName = await self._bluez_itf.bus_name
+                # self._altName = await self._bluez_itf.bus_name
                 logging.debug(f"self._name: {self._name}")
                 logging.debug(f"self._altName: {self._altName}")
                 logging.debug(f"{self._address}: Name resolves to {self._name}")
                 self._bluez_props.on_properties_changed(self._on_properties_changed)
-            except dbus_next.DBusError:
+            except dbus_fast.DBusError:
                 logging.warning(f"{self._address}: D-Bus bluez object available - reconnecting...")
                 await asyncio.sleep(5)
 

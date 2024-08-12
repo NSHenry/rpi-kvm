@@ -2,9 +2,9 @@
 
 import sys
 import asyncio
-import dbus_next
-from dbus_next.aio import MessageBus
-from dbus_next import Variant
+import dbus_fast
+from dbus_fast.aio import MessageBus
+from dbus_fast import Variant
 import socket
 import logging
 import common
@@ -63,7 +63,7 @@ class BtServer(object):
             "AutoConnect": Variant('b', True),
             "ServiceRecord": Variant('s', service_record)
         }
-        bus = await MessageBus(bus_type=dbus_next.BusType.SYSTEM).connect()
+        bus = await MessageBus(bus_type=dbus_fast.BusType.SYSTEM).connect()
         # retrieve a proxy for the bluez profile interface
         introspection = await bus.introspect(
             "org.bluez", "/org/bluez")
@@ -80,7 +80,7 @@ class BtServer(object):
 
     async def _connect_to_paired_clients(self):
         logging.info("Server: Connect to already paired clients")
-        bus = await MessageBus(bus_type=dbus_next.BusType.SYSTEM).connect()
+        bus = await MessageBus(bus_type=dbus_fast.BusType.SYSTEM).connect()
         # retrieve a proxy for the bluez profile interface
         introspection = await bus.introspect(
             "org.bluez", "/")
@@ -293,7 +293,7 @@ class BtServer(object):
 
     async def _remove_client_from_bluez(self, client):
         logging.info(f"Server: Remove client {client.name} ({client.address}) from bluez")
-        dbus = await MessageBus(bus_type=dbus_next.BusType.SYSTEM).connect()
+        dbus = await MessageBus(bus_type=dbus_fast.BusType.SYSTEM).connect()
         introspection = await dbus.introspect(
             "org.bluez", "/org/bluez/hci0")
         bluez_obj = dbus.get_proxy_object(
