@@ -194,21 +194,20 @@ export class BtClient extends React.Component<BtClientProps, any> {
   renderConnectedCard() {
     const { client } = this.props;
     const isHostContent = client.isHost ? '(Active Host)' : '';
+    const isHostClass = client.isHost ? 'fw-bold' : '';
 
     return (
       <div className="col">
-        <div className="card h-100 mb-3 bg-dark border-success">
+        <div className="card text-white h-100 mb-3 bg-dark border-success">
           <div className="card-header bg-success d-flex align-items-center pb-0">
-            {/* <div className="row"> */}
-              <div className="text-center text-white col-2">
+              <div className="text-center col-2">
                 {this.renderOrderButtons()}
               </div>
-              <h5 className="text-center text-white fs-3 fw-bold col-8">{client.name}</h5>
-            {/* </div> */}
+              <h5 className={`text-center fs-3 col-8 ${isHostClass}`}>{client.name}</h5>
           </div>
           <div className="card-body h-100 d-flex flex-column">
             {/* <h6 className="card-title">Connected {isHostContent}</h6> */}
-            <p className="card-text fs-4 fw-bold">{client.address} {isHostContent}</p>
+            <p className={`card-text fs-4 ${isHostClass}`}>{client.address} {isHostContent}</p>
             <div className="d-grid h-100 gap-2">
               {this.renderSwitchActiveBtHostButton()}
               {this.renderClearActiveBtHostButton()}
@@ -230,20 +229,18 @@ export class BtClient extends React.Component<BtClientProps, any> {
     const { client } = this.props;
     return (
       <div className="col">
-        <div className="card h-100 mb-3 bg-dark border-secondary">
-          <div className="card-header bg-secondary d-flex align-items-center pb-0">
-            {/* <div className="row"> */}
-              <div className="text-center text-white col-2">
+        <div className="card text-secondary h-100 mb-3 bg-dark border-secondary">
+          <div className="card-header text-white bg-secondary d-flex align-items-center pb-0">
+              <div className="text-center col-2">
                 {this.renderOrderButtons()}
               </div>
-              <h5 className="text-center text-white fs-3 col-8">{client.name}</h5>
-              <div className="text-center text-white col-1 offset-1">
+              <h5 className="text-center fs-3 col-8">{client.name}</h5>
+              <div className="text-center col-1 offset-1">
                 <BtClientRemovalModalButton
                   name={client.name}
                   removeCB={() => this.removeClient()}
                 />
               </div>
-            {/* </div>  */}
           </div>
           <div className="card-body h-100 d-flex flex-column">
             {/* <h6 className="card-title">Disconnected</h6> */}

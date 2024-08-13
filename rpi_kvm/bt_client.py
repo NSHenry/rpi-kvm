@@ -103,10 +103,12 @@ class BtClient(object):
             try:
                 # socket.BTPROTO_L2CAP linter error is fine. See docs.python.org/3/library/socket.html#socket.socket
                 # Auto-detection is overruled by the explicit protocol parameter and linters are not aware of this.
+                # noinspection PyUnresolvedReferences
                 self._control_socket = socket.socket(
                     socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP)
                 await self._loop.run_in_executor(None, lambda: self._control_socket.connect((self.address, self.BT_CONTROL_PORT)))
                 self._control_socket.setblocking(False)
+                # noinspection PyUnresolvedReferences
                 self._interrupt_socket = socket.socket(
                     socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP)
                 await self._loop.run_in_executor(None, lambda: self._interrupt_socket.connect((self.address, self.BT_INTERRUPT_PORT)))
@@ -150,12 +152,11 @@ class BtClient(object):
                 self._bluez_itf = self._bluez_obj.get_interface("org.bluez.Device1")
                 self._bluez_props = self._bluez_obj.get_interface("org.freedesktop.DBus.Properties")
                 logging.debug(f"{self._address}: D-Bus bluez object connected")
+                # I believe this isn't resolving since it's reaching out to bluez on linux.
+                # noinspection PyUnresolvedReferences
                 self._name = await self._bluez_itf.get_name()
-                # Testing out bus_name vs get_name
-                # self._altName = await self._bluez_itf.bus_name
-                logging.debug(f"self._name: {self._name}")
-                # logging.debug(f"self._altName: {self._altName}")
                 logging.debug(f"{self._address}: Name resolves to {self._name}")
+                # noinspection PyUnresolvedReferences
                 self._bluez_props.on_properties_changed(self._on_properties_changed)
             except dbus_fast.DBusError:
                 logging.warning(f"{self._address}: D-Bus bluez object available - reconnecting...")

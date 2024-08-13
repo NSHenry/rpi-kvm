@@ -97,7 +97,9 @@ class Keyboard(object):
             except dbus_fast.DBusError:
                 logging.warning(f"_handle_connected_client_count: D-Bus connection terminated - reconnecting...")
                 await self._connect_to_dbus_service()
-                await self._handle_connected_client_count(self) 
+                await self._handle_connected_client_count(self)
+        # elif _is_host_active is True:
+        #     logging.info(f"Host is already active, no need to connect.")
 
     # poll for keyboard events
     async def _event_loop(self):
@@ -158,9 +160,11 @@ class Keyboard(object):
             await self._connect_to_dbus_service()
 
     def _handle_event(self, event):
+        # noinspection PyUnresolvedReferences
         if event.code not in ecodes.KEY:
             # logging.warning(f"{self._idev.path}: unsupported key press code: {event.code}")
             return
+        # noinspection PyUnresolvedReferences
         evdev_code = ecodes.KEY[event.code]
         if UsbHidDecoder.is_modifier_key(evdev_code):
             modifier_index = UsbHidDecoder.encode_modifier_key_index(evdev_code)

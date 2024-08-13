@@ -141,7 +141,7 @@ class KvmDbusService(ServiceInterface):
 
     @dbus_fast.service.method()
     def ConnectActiveHost(self) -> None:
-        logging.warning(f"D-Bus: RUNNING CONNECT ACTIVE HOST")
+        # logging.warning(f"D-Bus: RUNNING CONNECT ACTIVE HOST")
         # This throws "TypeError: 'NoneType' object is not subscriptable"
         # self._bt_server.reactivate_last_host()
         # NOTE: Switches to the next connected host similar to how the hotkey works. 

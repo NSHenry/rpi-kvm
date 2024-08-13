@@ -70,6 +70,8 @@ class BtServer(object):
         manager_obj = bus.get_proxy_object(
             "org.bluez", "/org/bluez", introspection)
         manager_itf = manager_obj.get_interface("org.bluez.ProfileManager1")
+        # PyCharm doesn't like how dbus_fast works. This is to spec.
+        # noinspection PyUnresolvedReferences
         await manager_itf.call_register_profile("/org/bluez/hci0", BtServer.BT_HID_UUID, opts)
 
     def _read_sdp_service_record(self):
@@ -87,6 +89,8 @@ class BtServer(object):
         dbus_object_manager_obj = bus.get_proxy_object(
             "org.bluez", "/", introspection)
         dbus_object_manager_itf = dbus_object_manager_obj.get_interface("org.freedesktop.DBus.ObjectManager")
+        # PyCharm doesn't like how dbus_fast works. This is to spec.
+        # noinspection PyUnresolvedReferences
         managed_objects = await dbus_object_manager_itf.call_get_managed_objects()
 
         for obj_path in list(managed_objects):
@@ -103,10 +107,12 @@ class BtServer(object):
 
     async def _listen_for_incoming_requests(self):
         logging.info("Server: Waiting for incoming connections")
-        # This is fine. See docs.python.org/3/library/socket.html#socket.socket
+        # socket.BTPROTO_L2CAP linter error is fine. See docs.python.org/3/library/socket.html#socket.socket
         # Auto-detection is overruled by the explicit protocol parameter and linters are not aware of this.
+        # noinspection PyUnresolvedReferences
         self.control_socket = socket.socket(
             socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP)
+        # noinspection PyUnresolvedReferences
         self.interrupt_socket = socket.socket(
             socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP)
         self.control_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -299,6 +305,8 @@ class BtServer(object):
         bluez_obj = dbus.get_proxy_object(
             "org.bluez", "/org/bluez/hci0", introspection)
         bluez_adapter_itf = bluez_obj.get_interface("org.bluez.Adapter1")
+        # PyCharm doesn't like how dbus_fast works. This is to spec.
+        # noinspection PyUnresolvedReferences
         await bluez_adapter_itf.call_remove_device(client.object_path)
         logging.info(f"Server: Remove client {client.name} ({client.address}) from bluez done")
 
