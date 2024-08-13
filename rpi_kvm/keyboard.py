@@ -21,7 +21,6 @@ class Keyboard(object):
     def __init__(self, input_device=None):
         self._is_alive = False
         self._idev = input_device
-        # self._clients_connected_count = int()  # Setting up an integer variable for count.
         self._is_host_active = bool
         self._modifiers = [  # One byte size (bit map) to represent the pressed modifier keys
             False,  # Right GUI
@@ -77,8 +76,6 @@ class Keyboard(object):
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already released. \033[0m")
                 pass
-            # else:
-            #     logging.info(f"\033[0;36mKeyboard Released \033[0m")
         elif self._is_host_active is True:
             try:
                 self._idev.grab()
@@ -90,23 +87,17 @@ class Keyboard(object):
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already captured by another process. \033[0m")
                 pass
-            # else:
-                # If the device is successfully captured, print a message
-                # logging.info(f"\033[0;36mKeyboard Captured \033[0m")
 
+    # Reactivates the bt host if a keyboard is connected, the host is not active and the client count is greater than 0.
     async def _handle_connected_client_count(self, clients_connected_count):
         self._clients_connected_count = clients_connected_count
-        if self._clients_connected_count == 0:
-            # logging.info(f"\033[0;36mNo Clients Connected \033[0m")
-            pass
-        elif self._clients_connected_count > 0 and is_kb_connected is True and _is_host_active is False:
+        if self._clients_connected_count > 0 and is_kb_connected is True and _is_host_active is False:
             try:
-                await self.make_first_host_active()
+                await self._kvm_dbus_iface.call_connect_active_host()
             except dbus_fast.DBusError:
-                logging.error(f"KB ERROR Nate: Task was never reterived")
-            # await self.make_first_host_active()
-            # logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033[0m")
-        # logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033
+                logging.warning(f"_handle_connected_client_count: D-Bus connection terminated - reconnecting...")
+                await self._connect_to_dbus_service()
+                await self._handle_connected_client_count(self) 
 
     # poll for keyboard events
     async def _event_loop(self):
@@ -132,7 +123,7 @@ class Keyboard(object):
                 # logging.warning(f"{self._idev.path}: D-Bus service not available - reconnecting...")
                 await asyncio.sleep(5)
 
-    # Copied over from info_hub
+    # Register to D-Bus signals
     async def _register_to_dbus_signals(self):
         logging.info("Register on D-Bus signals")
         try:
@@ -145,6 +136,7 @@ class Keyboard(object):
 
     # Clear active host when no keyboard is present.
     async def kb_clear_active_bt_host(self):
+
         await self._connect_to_dbus_service()
         try:
             await self._kvm_dbus_iface.call_clear_active_host()
@@ -152,19 +144,6 @@ class Keyboard(object):
             logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
             await self.kb_clear_active_bt_host()
-
-    # Calls the dbus method to make the next host active.
-    async def make_first_host_active(self):
-        try:
-            await self._connect_to_dbus_service()
-        except dbus_fast.DBusError:
-            logging.warning(f"{self._idev.path}: D-Bus Task was never reterived - reconnecting...")
-        try:
-            await self._kvm_dbus_iface.call_connect_active_host()
-        except dbus_fast.DBusError:
-            logging.warning(f"_make_next_host_active: D-Bus connection terminated - reconnecting...")
-            await self._connect_to_dbus_service()
-            await self.make_first_host_active()
 
     async def _send_state(self):
         modifier_str = ''
@@ -219,8 +198,12 @@ async def main():
             is_kb_connected = False
             logging.warning("No keyboard found, waiting till next device scan")
             # Call the function to clear the active keyboard host.
-            await asyncio.create_task(Keyboard().kb_clear_active_bt_host())
-            logging.info("No more keyboards connected, clearing active host.")
+            if _is_host_active is True:
+                logging.info("No more keyboards connected, clearing active host.")
+                try:
+                    await asyncio.create_task(Keyboard().kb_clear_active_bt_host())
+                except dbus_fast.DBusError as e:
+                    logging.error(f"kb_clear_active_bt_host Error : {e}")
         else:
             # await asyncio.create_task(Keyboard().make_first_host_active())
             is_kb_connected = True
