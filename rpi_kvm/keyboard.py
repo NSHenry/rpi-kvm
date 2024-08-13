@@ -88,7 +88,7 @@ class Keyboard(object):
                 # logging.info(f"\033[0;36mKeyboard already captured by another process. \033[0m")
                 pass
 
-    # Reactivates the bt host if a keyboard is connected, the host is not active and the client count is greater than 0.
+    # Reactivates the bt host if connected client count is greater than 0, a keyboard is connected, and the host is not active.
     async def _handle_connected_client_count(self, clients_connected_count):
         self._clients_connected_count = clients_connected_count
         if self._clients_connected_count > 0 and is_kb_connected is True and _is_host_active is False:
@@ -136,8 +136,7 @@ class Keyboard(object):
 
     # Clear active host when no keyboard is present.
     async def kb_clear_active_bt_host(self):
-
-        await self._connect_to_dbus_service()
+        # await self._connect_to_dbus_service()
         try:
             await self._kvm_dbus_iface.call_clear_active_host()
         except dbus_fast.DBusError:
