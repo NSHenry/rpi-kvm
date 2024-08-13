@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import asyncio
-from math import e
 import evdev
 from evdev import *
 import dbus_fast
