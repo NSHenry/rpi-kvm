@@ -3,13 +3,12 @@
 # Bluetooth D-Bus Service
 
 import os
-# import sys
+import sys
 import asyncio
 import dbus_fast
-import dbus_fast.aio
-from dbus_fast.aio.message_bus import MessageBus
-from dbus_fast.service import ServiceInterface
-# from dbus_fast import Variant
+from dbus_fast.aio import MessageBus
+from dbus_fast.service import ServiceInterface, method, dbus_property, signal
+from dbus_fast import Variant
 import signal
 import logging
 import json
@@ -17,7 +16,7 @@ from settings import Settings
 from bt_server import BtServer
 from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAction
 from usb_hid_decoder import UsbHidDecoder
-# Testing out using reTerminal status lights
+# reTerminal Status Lights
 import leds as reTerminal
 
 
@@ -138,8 +137,7 @@ class KvmDbusService(ServiceInterface):
             reTerminal.sta_led_green = True
             reTerminal.sta_led_red = False
         except NameError:
-            # print("reTerminal led not found.")
-            pass
+            print("reTerminal led not found.")
 
     @dbus_fast.service.method()
     def ConnectActiveHost(self) -> None:

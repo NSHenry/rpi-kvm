@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
 import asyncio
-# from operator import is_
-# import evdev
-from evdev import ecodes
+from math import e
+import evdev
+from evdev import *
 import dbus_fast
 from dbus_fast.aio import MessageBus
 import logging
@@ -69,18 +69,17 @@ class Keyboard(object):
         if self._is_host_active is False:
             try:
                 self._idev.ungrab()
-                logging.info(f"\033[0;36m FAKE Keyboard released \033[0m")
+                # logging.info(f"\033[0;36m FAKE Keyboard released \033[0m")
                 try:
                     reTerminal.sta_led_green = True
                     reTerminal.sta_led_red = False
                 except NameError:
-                    # print("reTerminal led not found.")
-                    pass
+                    print("reTerminal led not found.")
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already released. \033[0m")
                 pass
-            else:
-                logging.info(f"\033[0;36mKeyboard Released \033[0m")
+            # else:
+            #     logging.info(f"\033[0;36mKeyboard Released \033[0m")
         elif self._is_host_active is True:
             try:
                 self._idev.grab()
@@ -88,8 +87,7 @@ class Keyboard(object):
                     reTerminal.sta_led_green = False
                     reTerminal.sta_led_red = True
                 except NameError:
-                    # print("reTerminal led not found.")
-                    pass
+                    print("reTerminal led not found.")
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already captured by another process. \033[0m")
                 pass
@@ -100,17 +98,22 @@ class Keyboard(object):
     async def _handle_connected_client_count(self, clients_connected_count):
         self._clients_connected_count = clients_connected_count
         if self._clients_connected_count == 0:
-            logging.info(f"\033[0;36mNo Clients Connected \033[0m")
+            # logging.info(f"\033[0;36mNo Clients Connected \033[0m")
+            pass
         elif self._clients_connected_count > 0 and is_kb_connected is True and _is_host_active is False:
-            await self.make_first_host_active()
-            logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033[0m")
+            try:
+                await self.make_first_host_active()
+            except dbus_fast.DBusError:
+                logging.error(f"KB ERROR Nate: Task was never reterived")
+            # await self.make_first_host_active()
+            # logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033[0m")
         # logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033
 
     # poll for keyboard events
     async def _event_loop(self):
         async for event in self._idev.async_read_loop():
             # only bother if we hit a key and it's an up or down event
-            if event.type == ecodes.EV_KEY and event.value < 2:
+            if event.type == evdev.ecodes.EV_KEY and event.value < 2:
                 self._handle_event(event)
                 await self._send_state()
 
@@ -124,8 +127,7 @@ class Keyboard(object):
                 kvm_service_obj = bus.get_proxy_object(
                     'org.rpi.kvmservice', '/org/rpi/kvmservice', introspection)
                 self._kvm_dbus_iface = kvm_service_obj.get_interface('org.rpi.kvmservice')
-                logging.info(f"KB: D-Bus Service Connected")
-                # logging.info(f"{self._idev.path}: D-Bus service connected")
+                # logging.info(f"KB: D-Bus Service Connected")
             except dbus_fast.DBusError:
                 logging.info(f"KB: D-Bus service not available - reconnecting...")
                 # logging.warning(f"{self._idev.path}: D-Bus service not available - reconnecting...")
@@ -154,7 +156,10 @@ class Keyboard(object):
 
     # Calls the dbus method to make the next host active.
     async def make_first_host_active(self):
-        await self._connect_to_dbus_service()
+        try:
+            await self._connect_to_dbus_service()
+        except dbus_fast.DBusError:
+            logging.warning(f"{self._idev.path}: D-Bus Task was never reterived - reconnecting...")
         try:
             await self._kvm_dbus_iface.call_connect_active_host()
         except dbus_fast.DBusError:
@@ -176,10 +181,10 @@ class Keyboard(object):
             await self._connect_to_dbus_service()
 
     def _handle_event(self, event):
-        if event.code not in ecodes.ecodes.KEY:
+        if event.code not in ecodes.KEY:
             # logging.warning(f"{self._idev.path}: unsupported key press code: {event.code}")
             return
-        evdev_code = ecodes.ecodes.KEY[event.code]
+        evdev_code = ecodes.KEY[event.code]
         if UsbHidDecoder.is_modifier_key(evdev_code):
             modifier_index = UsbHidDecoder.encode_modifier_key_index(evdev_code)
             self._modifiers[modifier_index] = not self._modifiers[modifier_index]

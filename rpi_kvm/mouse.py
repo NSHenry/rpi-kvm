@@ -61,8 +61,8 @@ class KvmMouse(object):
             await self._kvm_dbus_iface.call_send_mouse_usb_telegram(common_buttons, x_pos, y_pos, v_wheel, h_wheel)
         except dbus_fast.DBusError:
             # Testing EventMouse.path instead of self._idev.path
-            path = EventMouse.path
-            logging.warning(f"{path}: D-Bus connection terminated - reconnecting...")
+            # path = EventMouse.path
+            # logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
 
 

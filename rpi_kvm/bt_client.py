@@ -101,7 +101,7 @@ class BtClient(object):
         else:
             logging.debug(f"{self.name}: Establish socket connection to {self.name} ({self.address})")
             try:
-                # This is fine. See docs.python.org/3/library/socket.html#socket.socket
+                # socket.BTPROTO_L2CAP linter error is fine. See docs.python.org/3/library/socket.html#socket.socket
                 # Auto-detection is overruled by the explicit protocol parameter and linters are not aware of this.
                 self._control_socket = socket.socket(
                     socket.AF_BLUETOOTH, socket.SOCK_SEQPACKET, socket.BTPROTO_L2CAP)
@@ -154,7 +154,7 @@ class BtClient(object):
                 # Testing out bus_name vs get_name
                 # self._altName = await self._bluez_itf.bus_name
                 logging.debug(f"self._name: {self._name}")
-                logging.debug(f"self._altName: {self._altName}")
+                # logging.debug(f"self._altName: {self._altName}")
                 logging.debug(f"{self._address}: Name resolves to {self._name}")
                 self._bluez_props.on_properties_changed(self._on_properties_changed)
             except dbus_fast.DBusError:

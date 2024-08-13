@@ -5,8 +5,7 @@ import asyncio
 import dbus_fast
 import socket
 # MessageBus not exported from module dbus_fast.aio. Import from dbus_fast.aio.message_bus instead
-import dbus_fast.aio
-from dbus_fast.aio.message_bus import MessageBus
+from dbus_fast.aio import MessageBus
 from dbus_fast.errors import DBusError
 from aiohttp import web
 import json
@@ -139,7 +138,7 @@ class WebServer(object):
         while self._is_alive:
             self._server_future = asyncio.Future()
             # Trying out https
-            self._server_url = f"https://{socket.gethostname()}:{self._settings['web']['port']}"
+            self._server_url = f"http://{socket.gethostname()}:{self._settings['web']['port']}"
             logging.info(f"Starting web server on: {self._server_url}")
             self._runner = web.AppRunner(self._app)
             await self._runner.setup()
