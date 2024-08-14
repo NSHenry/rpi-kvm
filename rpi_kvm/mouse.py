@@ -13,7 +13,7 @@ from usb_hid_decoder import UsbHidDecoder
 # Global Variable for active host
 _is_host_active = bool
 # TODO: Test below
-# _idev = None
+_idev = None
 
 
 class KvmMouse(object):
@@ -54,11 +54,10 @@ class KvmMouse(object):
         global _is_host_active
         _is_host_active = is_host_active
         # TODO: Test below
-        # if _is_host_active is True:
-        #     try:
-        #         asyncio.create_task(EventMouse(_idev)._handle_active_host_event())
-        #     except dbus_fast.DBusError as e:
-        #         logging.error(f"_handle_active_host_event : {e}")
+        try:
+            asyncio.create_task(EventMouse(_idev)._handle_active_host_event())
+        except dbus_fast.DBusError as e:
+            logging.error(f"_handle_active_host_event : {e}")
 
     async def send_state(self, buttons, x_pos, y_pos, v_wheel, h_wheel):
         common_buttons = [False, False, False, False, False, False, False, False]
@@ -75,9 +74,9 @@ class KvmMouse(object):
 class EventMouse(object):
     def __init__(self, input_device):
         self._idev = input_device
-        # global _idev
-        # _idev = input_device
-        logging.info(f"{self._idev.path}: Init Mouse - {self._idev.name}")
+        global _idev
+        _idev = input_device
+        # logging.info(f"{self._idev.path}: Init Mouse - {self._idev.name}")
         self.send_state_cb = None
         self.__client_switch_button_index = 2
         self._is_alive = False
@@ -157,7 +156,7 @@ class EventMouse(object):
             await self._handle_event(basic_event)
             # Check to see if the host is active
             # TODO: Comment out line below when testing alternate method.
-            await self._handle_active_host_event()
+            # await self._handle_active_host_event()
             await asyncio.sleep(1)
 
     async def _handle_event(self, event):
