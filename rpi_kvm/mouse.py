@@ -75,8 +75,8 @@ class KvmMouse(object):
 class EventMouse(object):
     def __init__(self, input_device):
         self._idev = input_device
-        global _idev
-        _idev = input_device
+        # global _idev
+        # _idev = input_device
         logging.info(f"{self._idev.path}: Init Mouse - {self._idev.name}")
         self.send_state_cb = None
         self.__client_switch_button_index = 2

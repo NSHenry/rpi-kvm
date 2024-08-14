@@ -68,9 +68,8 @@ class KvmDbusService(ServiceInterface):
     # noinspection PyProtectedMember
     @dbus_fast.service.method()
     def GetClientsInfo(self) -> 's':
-        # This behavior isn't triggering until the browser is open because that's the only time it's called. 
-        # TODO: Double check this.
-        logging.info(f"D-Bus: Getting clients info.")
+        # The websocket calls this all the time. 
+        # logging.info(f"D-Bus: Getting clients info.")
         # Get connected client count from bt_server as an integer
         connected_client_count = len(self._bt_server._clients_connected)
         if connected_client_count > 0:
