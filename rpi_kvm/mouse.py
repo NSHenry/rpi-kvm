@@ -10,8 +10,10 @@ import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
 
-# behold the evil global variable
+# Global Variable for active host
 _is_host_active = bool
+# TODO: Test below
+# _idev = None
 
 
 class KvmMouse(object):
@@ -38,7 +40,7 @@ class KvmMouse(object):
                 logging.warning(f"D-Bus service not available - reconnecting...")
                 await asyncio.sleep(5)
 
-    # Copied over from info_hub
+    # Register to D-Bus signals
     async def _register_to_dbus_signals(self):
         logging.info("Register on D-Bus signals")
         try:
@@ -51,6 +53,12 @@ class KvmMouse(object):
     def _handle_active_host(self, is_host_active):
         global _is_host_active
         _is_host_active = is_host_active
+        # TODO: Test below
+        # if _is_host_active is True:
+        #     try:
+        #         asyncio.create_task(EventMouse(_idev)._handle_active_host_event())
+        #     except dbus_fast.DBusError as e:
+        #         logging.error(f"_handle_active_host_event : {e}")
 
     async def send_state(self, buttons, x_pos, y_pos, v_wheel, h_wheel):
         common_buttons = [False, False, False, False, False, False, False, False]
@@ -60,8 +68,6 @@ class KvmMouse(object):
         try:
             await self._kvm_dbus_iface.call_send_mouse_usb_telegram(common_buttons, x_pos, y_pos, v_wheel, h_wheel)
         except dbus_fast.DBusError:
-            # Testing EventMouse.path instead of self._idev.path
-            # path = EventMouse.path
             # logging.warning(f"{self._idev.path}: D-Bus connection terminated - reconnecting...")
             await self._connect_to_dbus_service()
 
@@ -69,6 +75,8 @@ class KvmMouse(object):
 class EventMouse(object):
     def __init__(self, input_device):
         self._idev = input_device
+        global _idev
+        _idev = input_device
         logging.info(f"{self._idev.path}: Init Mouse - {self._idev.name}")
         self.send_state_cb = None
         self.__client_switch_button_index = 2
@@ -122,25 +130,15 @@ class EventMouse(object):
         if _is_host_active is False:
             try:
                 self._idev.ungrab()
-                # logging.info(f"\033[0;36m FAKE Mouse already released. \033[0m")
             except OSError:
-                # If the device is already released, print a message
                 # logging.info(f"\033[0;36mMouse already released. \033[0m")
                 pass
-            else:
-                # If the device is successfully grabbed, print a message
-                logging.info(f"\033[0;36mMouse Released \033[0m")
         elif _is_host_active is True:
             try:
                 self._idev.grab()
-                # logging.info(f"\033[0;36m FAKE Mouse Captured \033[0m")
             except OSError:
-                # If the device is already captured, print a message
                 # logging.info(f"\033[0;36mMouse already captured by another process. \033[0m")
                 pass
-            # else:
-                # If the device is successfully captured, print a message
-                # logging.info(f"\033[0;36mMouse Captured \033[0m")
 
     # poll for mouse events
     async def _event_loop(self):
@@ -157,7 +155,8 @@ class EventMouse(object):
             # code and value are chosen at random
             basic_event = evdev.events.InputEvent(time_s, time_ms, ecodes.EV_SYN, 55, 55)
             await self._handle_event(basic_event)
-            # Add the active host event
+            # Check to see if the host is active
+            # TODO: Comment out line below when testing alternate method.
             await self._handle_active_host_event()
             await asyncio.sleep(1)
 

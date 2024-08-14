@@ -69,6 +69,8 @@ class KvmDbusService(ServiceInterface):
     @dbus_fast.service.method()
     def GetClientsInfo(self) -> 's':
         # This behavior isn't triggering until the browser is open because that's the only time it's called. 
+        # TODO: Double check this.
+        logging.info(f"D-Bus: Getting clients info.")
         # Get connected client count from bt_server as an integer
         connected_client_count = len(self._bt_server._clients_connected)
         if connected_client_count > 0:
@@ -82,12 +84,12 @@ class KvmDbusService(ServiceInterface):
             except NameError:
                 logging.info("reTerminal usr_led not found.")
         # logging.info(f"\033[0;36mD-Bus Service: connected_client_count = {connected_client_count}\033[0m")
-        # Send the client count to the signal service
+        # Send the client count to the D-Bus signaler.
         self.signal_connected_client_count(connected_client_count)
         # Get active host status from bt_server as boolean
         is_host_active = bool(self._bt_server._active_host)
         # logging.info(f"\033[0;36mD-Bus Service: active_host = {is_host_active}\033[0m")
-        # Send the active host status to the signal service
+        # Send the active host to the D-Bus signaler.
         self.signal_is_host_active(is_host_active)
         return json.dumps(self._bt_server.get_clients_info_dict())
 
@@ -113,7 +115,7 @@ class KvmDbusService(ServiceInterface):
 
     @dbus_fast.service.method()
     def ReloadSettings(self) -> None:
-        logging.info(f"D-Bus: Reload settings")
+        logging.info(f"D-Bus: Reloading settings.")
         self._hotkey_detector.reload_settings()
         return
 
@@ -121,16 +123,14 @@ class KvmDbusService(ServiceInterface):
     def SwitchActiveHost(self, client_address: 's') -> None:
         self._bt_server.switch_active_host_to(client_address)
         client_names = self._bt_server.get_connected_client_names()
-        logging.info(f"D-Bus: Cleared active host")
-        logging.info(f"D-Bus: Switch active host to: {client_names[0]}")
-        # logging.info(f"\033[0;36mD-Bus Service: SwitchActiveHost\033[0m")
+        logging.info(f"D-Bus: Switching active host to: {client_names[0]}.")
         self.signal_host_change(client_names)
 
     # Dbus method to clear the active host
     @dbus_fast.service.method()
     def ClearActiveHost(self) -> None:
         self._bt_server.clear_active_host()
-        logging.info(f"D-Bus: Cleared active host")
+        logging.info(f"D-Bus: Clearing active host.")
         client_names = self._bt_server.get_connected_client_names()
         self.signal_host_change(client_names)
         try:
@@ -142,12 +142,8 @@ class KvmDbusService(ServiceInterface):
     @dbus_fast.service.method()
     def ConnectActiveHost(self) -> None:
         # logging.warning(f"D-Bus: RUNNING CONNECT ACTIVE HOST")
-        # This throws "TypeError: 'NoneType' object is not subscriptable"
-        # self._bt_server.reactivate_last_host()
         # NOTE: Switches to the next connected host similar to how the hotkey works. 
         self._bt_server.switch_to_next_connected_host()
-        # TODO: See what this does.
-        # self._bt_server._connect_to_paired_clients()
         client_names = self._bt_server.get_connected_client_names()
         # logging.info(f"D-Bus: KB Detected Activating: {client_names[0]}")
         self.signal_host_change(client_names)

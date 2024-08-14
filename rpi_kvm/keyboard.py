@@ -21,7 +21,7 @@ class Keyboard(object):
     def __init__(self, input_device=None):
         self._is_alive = False
         self._idev = input_device
-        self._is_host_active = bool
+        # self._is_host_active = bool
         self._modifiers = [  # One byte size (bit map) to represent the pressed modifier keys
             False,  # Right GUI
             False,  # Right Alt
@@ -62,12 +62,12 @@ class Keyboard(object):
     def _handle_active_host(self, is_host_active):
         global _is_host_active
         _is_host_active = is_host_active
-        self._is_host_active = is_host_active
+        # self._is_host_active = is_host_active
         # logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033[0m")
-        if self._is_host_active is False:
+        # if self._is_host_active is False:
+        if _is_host_active is False:
             try:
                 self._idev.ungrab()
-                # logging.info(f"\033[0;36m FAKE Keyboard released \033[0m")
                 try:
                     reTerminal.sta_led_green = True
                     reTerminal.sta_led_red = False
@@ -76,7 +76,8 @@ class Keyboard(object):
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already released. \033[0m")
                 pass
-        elif self._is_host_active is True:
+        # elif self._is_host_active is True:
+        elif _is_host_active is True:
             try:
                 self._idev.grab()
                 try:
@@ -98,8 +99,6 @@ class Keyboard(object):
                 logging.warning(f"_handle_connected_client_count: D-Bus connection terminated - reconnecting...")
                 await self._connect_to_dbus_service()
                 await self._handle_connected_client_count(self)
-        # elif _is_host_active is True:
-        #     logging.info(f"Host is already active, no need to connect.")
 
     # poll for keyboard events
     async def _event_loop(self):
@@ -119,10 +118,9 @@ class Keyboard(object):
                 kvm_service_obj = bus.get_proxy_object(
                     'org.rpi.kvmservice', '/org/rpi/kvmservice', introspection)
                 self._kvm_dbus_iface = kvm_service_obj.get_interface('org.rpi.kvmservice')
-                # logging.info(f"KB: D-Bus Service Connected")
+                logging.info(f"KB: D-Bus Service Connected")
             except dbus_fast.DBusError:
                 logging.info(f"KB: D-Bus service not available - reconnecting...")
-                # logging.warning(f"{self._idev.path}: D-Bus service not available - reconnecting...")
                 await asyncio.sleep(5)
 
     # Register to D-Bus signals
@@ -138,7 +136,7 @@ class Keyboard(object):
 
     # Clear active host when no keyboard is present.
     async def kb_clear_active_bt_host(self):
-        # await self._connect_to_dbus_service()
+        await self._connect_to_dbus_service()
         try:
             await self._kvm_dbus_iface.call_clear_active_host()
         except dbus_fast.DBusError:
@@ -162,7 +160,7 @@ class Keyboard(object):
     def _handle_event(self, event):
         # noinspection PyUnresolvedReferences
         if event.code not in ecodes.KEY:
-            # logging.warning(f"{self._idev.path}: unsupported key press code: {event.code}")
+            logging.warning(f"{self._idev.path}: unsupported key press code: {event.code}")
             return
         # noinspection PyUnresolvedReferences
         evdev_code = ecodes.KEY[event.code]
@@ -208,7 +206,6 @@ async def main():
                 except dbus_fast.DBusError as e:
                     logging.error(f"kb_clear_active_bt_host Error : {e}")
         else:
-            # await asyncio.create_task(Keyboard().make_first_host_active())
             is_kb_connected = True
             new_keyboards = [keyboard_device for keyboard_device in hid_manager.keyboard_devices if keyboard_device.path not in keyboards]
             for keyboard_device in new_keyboards:
