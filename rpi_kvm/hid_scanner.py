@@ -37,12 +37,66 @@ class HidScanner(object):
                 self._mice.append(device)
                 # logging.info(f"self._mice = {self._mice}")
             # Ignore reTerminal Keys & Touchscreen (Surface touchscreen too)
-            elif device.name == "gpio_keys" or device.name == "seeed-tp" or device.name == "gpio_ir_recv" or device.name == "vc4-hdmi-0" or device.name == "vc4-hdmi-1" or device.name == "vc4-hdmi-0 HDMI Jack" or device.name == "vc4-hdmi-1 HDMI Jack" or device.name == "ELAN9038:00 04F3:2A1C":
+            # elif device.name == "gpio_keys" or device.name == "seeed-tp" or device.name == "gpio_ir_recv" or device.name == "vc4-hdmi-0" or device.name == "vc4-hdmi-1" or device.name == "vc4-hdmi-0 HDMI Jack" or device.name == "vc4-hdmi-1 HDMI Jack" or device.name == "ELAN9038:00 04F3:2A1C":
                 # logging.info(f"{device.name} ignored")
+            elif not self._kb_include(device):
                 continue
             else:
                 self._keyboards.append(device)
                 # logging.info(f"self._keyboards = {self._keyboards}")
+    
+    def _kb_include(self, device):
+        match device.name:
+            case "gpio_keys":
+                return False
+            case "seeed-tp":
+                return False
+            case "gpio_ir_recv":
+                return False
+            case "vc4-hdmi-0":
+                return False
+            case "vc4-hdmi-1":
+                return False
+            case "vc4-hdmi-0 HDMI Jack":
+                return False
+            case "vc4-hdmi-1 HDMI Jack":
+                return False
+            case "ELAN9038:00 04F3:2A1C":
+                return False
+            case "Power Button":
+                return False
+            case "Lid Switch":
+                return False
+            case "AT Translated Set 2 keyboard":
+                return False
+            case "ELAN9038:00 04F3:2A1C Stylus":
+                return False
+            case "Microsoft Surface Keyboard Touchpad":
+                return False
+            case "Intel HID events":
+                return False
+            case "Intel HID 5 button array":
+                return False
+            case "Intel HID switches":
+                return False
+            case "Video Bus":
+                return False
+            case "HDA Intel PCH Mic":
+                return False
+            case "HDA Intel PCH Headphone":
+                return False
+            case "HDA Intel PCH HDMI/DP,pcm=3":
+                return False
+            case "HDA Intel PCH HDMI/DP,pcm=7":
+                return False
+            case "HDA Intel PCH HDMI/DP,pcm=8":
+                return False
+            case "Generic USB Audio Consumer Control":
+                return False
+            case "Generic USB Audio":
+                return False
+            case _:
+                return True
 
     def info(self, verbose=False):
         logging.info(f"=== devices ========================")

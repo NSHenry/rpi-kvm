@@ -11,18 +11,16 @@ from usb_hid_decoder import UsbHidDecoder
 # reTerminal Status Lights
 import leds as reTerminal
 
-# Global Variable for active host
-# _is_host_active = bool
-# is_kb_connected = bool
-
 
 class Keyboard(object):
+    is_host_active = bool
+    # So I guess this is a class attribute vs a literal setting a "literal" boolean. Pylance only seems to whine about this.
+    is_kb_connected: bool
+
     # def __init__(self, input_device):
     def __init__(self, input_device=None):
         self._is_alive = False
         self._idev = input_device
-        self._is_host_active = bool
-        self._is_kb_connected = bool
         self._modifiers = [  # One byte size (bit map) to represent the pressed modifier keys
             False,  # Right GUI
             False,  # Right Alt
@@ -46,22 +44,6 @@ class Keyboard(object):
     @property
     def name(self):
         return self._idev.name
-    
-    @property
-    def is_host_active(self):
-        logging.info(f"Getting is_host_active property: {self._is_host_active}")
-        return self._is_host_active
-    
-    @property
-    def is_kb_connected(self):
-        logging.info(f"Getting is_kb_connected property: {self._is_kb_connected}")
-        return self._is_kb_connected
-    
-    @is_kb_connected.setter
-    def is_kb_connected(self, value):
-        self._is_kb_connected = value
-        logging.info(f"is_kb_connected setter called: {self._is_kb_connected}")
-
 
     async def run(self):
         logging.info(f"{self._idev.path}: Init Keyboard - {self._idev.name}")
@@ -77,14 +59,10 @@ class Keyboard(object):
         self._is_alive = False
 
     def _handle_active_host(self, is_host_active):
-        # global _is_host_active
-        # _is_host_active = is_host_active
-        self._is_host_active = is_host_active
-        logging.info(f"is_host_active = {is_host_active}")
-        logging.info(f"self._is_host_active {self._is_host_active}")
+        Keyboard.is_host_active = is_host_active
+        # logging.info(f"HAF Keyboard._s_host_active = {Keyboard.is_host_active}")
         # logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033[0m")
-        if self._is_host_active is False:
-        # if _is_host_active is False:
+        if Keyboard.is_host_active is False:
             try:
                 self._idev.ungrab()
                 try:
@@ -95,8 +73,7 @@ class Keyboard(object):
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already released. \033[0m")
                 pass
-        elif self._is_host_active is True:
-        # elif _is_host_active is True:
+        elif Keyboard.is_host_active is True:
             try:
                 self._idev.grab()
                 try:
@@ -111,7 +88,10 @@ class Keyboard(object):
     # Reactivates the bt host if connected client count is greater than 0, a keyboard is connected, and the host is not active.
     async def _handle_connected_client_count(self, clients_connected_count):
         self._clients_connected_count = clients_connected_count
-        if self._clients_connected_count > 0 and self._is_kb_connected is True and self._is_host_active is False:
+        # logging.info(f"HCCC self._clients_connected_count: {self._clients_connected_count}")
+        # logging.info(f"HCCC Keyboard.is_kb_connected: {Keyboard.is_kb_connected}")
+        # logging.info(f"HCCC Keyboard.is_host_active: {Keyboard.is_host_active}")
+        if self._clients_connected_count > 0 and Keyboard.is_kb_connected is True and Keyboard.is_host_active is False:
             try:
                 await self._kvm_dbus_iface.call_connect_active_host()
             except dbus_fast.DBusError:
@@ -201,7 +181,6 @@ async def main():
     logging.info("Creating HID Manager")
     hid_manager = HidScanner()
     keyboards = dict()
-    # global is_kb_connected
 
     while True:
         await hid_manager.scan()
@@ -215,21 +194,17 @@ async def main():
         # logging.info(f"Keyboard Count: {len(device_paths)}")
 
         if len(device_paths) == 0:
-            # is_kb_connected = False
-            Keyboard().is_kb_connected = False
+            Keyboard.is_kb_connected = False
             logging.warning("No keyboard found, waiting till next device scan")
-            # Call the function to clear the active keyboard host.
-            # if _is_host_active is True:
-            logging.info(f"Keyboard().is_host_active = {Keyboard().is_host_active}")
-            if Keyboard().is_host_active is True:
+            logging.info(f"MAIN Keyboard.is_host_active = {Keyboard.is_host_active}")
+            if Keyboard.is_host_active is True:
                 logging.info("No more keyboards connected, clearing active host.")
                 try:
                     await asyncio.create_task(Keyboard().kb_clear_active_bt_host())
                 except dbus_fast.DBusError as e:
                     logging.error(f"kb_clear_active_bt_host Error : {e}")
         else:
-            # is_kb_connected = True
-            Keyboard().is_kb_connected = True
+            Keyboard.is_kb_connected = True
             new_keyboards = [keyboard_device for keyboard_device in hid_manager.keyboard_devices if keyboard_device.path not in keyboards]
             for keyboard_device in new_keyboards:
                 kb = Keyboard(keyboard_device)
