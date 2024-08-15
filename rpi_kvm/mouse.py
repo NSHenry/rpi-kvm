@@ -20,9 +20,9 @@ class KvmMouse(object):
     async def start(self):
         logging.info(f"D-Bus service connecting...")
         await self.connect_to_dbus_service()
-        # await self._register_to_dbus_signals()
 
-    async def connect_to_dbus_service(self):
+    @staticmethod
+    async def connect_to_dbus_service():
         KvmMouse.kvm_dbus_iface = None
         while not KvmMouse.kvm_dbus_iface:
             try:
@@ -132,7 +132,7 @@ class EventMouse(object):
             KvmMouse.kvm_dbus_iface.on_signal_is_host_active(self._handle_active_host)
         except dbus_fast.DBusError:
             logging.warning("D-Bus service not available - reconnecting...")
-            await KvmMouse().connect_to_dbus_service()
+            await KvmMouse.connect_to_dbus_service()
             await self._register_to_dbus_signals()
 
     async def _handle_active_host(self, is_host_active):

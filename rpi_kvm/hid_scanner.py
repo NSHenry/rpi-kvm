@@ -45,7 +45,8 @@ class HidScanner(object):
                 self._keyboards.append(device)
                 # logging.info(f"self._keyboards = {self._keyboards}")
     
-    def _kb_include(self, device):
+    @staticmethod
+    def _kb_include(device):
         match device.name:
             case "gpio_keys":
                 return False

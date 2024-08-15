@@ -47,7 +47,8 @@ class BtServer(object):
         if handler in self._handlers_on_clients_change:
             self._handlers_on_clients_change.remove(handler)
 
-    async def _restart_and_init_bt(self):
+    @staticmethod
+    async def _restart_and_init_bt():
         logging.info("Server: Configuring BT server name {}".format(BtServer.NAME))
         # start bluetooth server
         await common.System.exec_cmd(f"hciconfig hci0 down")
@@ -74,7 +75,8 @@ class BtServer(object):
         # noinspection PyUnresolvedReferences
         await manager_itf.call_register_profile("/org/bluez/hci0", BtServer.BT_HID_UUID, opts)
 
-    def _read_sdp_service_record(self):
+    @staticmethod
+    def _read_sdp_service_record():
         # content = ""
         with open(BtServer.SDP_RECORD_PATH, 'r') as f:
             content = f.read()
@@ -201,18 +203,6 @@ class BtServer(object):
         self._clients_order.active_client = ""
         logging.warning(f"Server: clear_active_host triggered.")
     
-    # Function to reconnect to the last active host. (Keyboard reconnection will trigger this via kvm_service.py)
-    # TODO: Pretty sure this is broken. Fix it.
-    # This throws "TypeError: 'NoneType' object is not subscriptable"
-    # def reactivate_last_host(self):
-    #     if len(self._clients_connected) >= 1:
-    #         # In theory this should match the hotkey activation above in the switch_to_next_connected_host fuction.
-    #         # However, we may need to go about it as if reinitlizing in the _connect_to_paired_clients fucntion
-    #         # Not sure. This seems to be connected to introspection and the dbus service. It's not just a string I'm clearing when I clear the active host.
-    #         last_host = self._get_connected_client_addresses()[0]
-    #         self._active_host = self._clients_connected[last_host]
-    #     self._clients_order.active_client = self._active_host.address
-
     def _get_connected_client_addresses(self):
         if self._active_host and len(self._clients_connected) > 0:
             client_addresses = self._clients_order.sort_clients(list(self._clients_connected.keys()))
@@ -297,7 +287,8 @@ class BtServer(object):
         await self._remove_client_from_bluez(client)
         logging.info(f"\033[0;31mServer: Client {client.name} ({client.address}) removed!\033[0m")
 
-    async def _remove_client_from_bluez(self, client):
+    @staticmethod
+    async def _remove_client_from_bluez(client):
         logging.info(f"Server: Remove client {client.name} ({client.address}) from bluez")
         dbus = await MessageBus(bus_type=dbus_fast.BusType.SYSTEM).connect()
         introspection = await dbus.introspect(

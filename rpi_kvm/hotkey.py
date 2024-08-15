@@ -31,7 +31,8 @@ class HotkeyConfig(object):
             reduced_combination = self.__combine_bitmask_and_remove_vendor_reserved(hotkey_combination)
             self.keys[action] = reduced_combination
     
-    def __combine_bitmask_and_remove_vendor_reserved(self, keyboard_input):
+    @staticmethod
+    def __combine_bitmask_and_remove_vendor_reserved(keyboard_input):
         modifiers_int = UsbHidDecoder.convert_modifier_bit_mask_to_int(keyboard_input[0])
         return [modifiers_int, *keyboard_input[1:7]]
 
