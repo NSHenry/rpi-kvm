@@ -1,120 +1,120 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <record>
-	<attribute id="0x0001">
+	<attribute id="0x0001"> <!-- Service CLass ID List -->
 		<sequence>
-			<uuid value="0x1124" />
+			<uuid value="0x1124" /> <!-- Human Interface Device (HID) - Service Class & Profile-->
 		</sequence>
 	</attribute>
-	<attribute id="0x0004">
+	<attribute id="0x0004"> <!-- Protocol Descriptor List -->
 		<sequence>
 			<sequence>
-				<uuid value="0x0100" />
-				<uint16 value="0x0011" />
+				<uuid value="0x0100" /> <!-- Protocol Identifier: L2CAP -->
+				<uint16 value="0x0011" /> <!-- Protocol Descriptor: (Definition: PSM) (Value: HID Control) -->
 			</sequence>
 			<sequence>
-				<uuid value="0x0011" />
-			</sequence>
-		</sequence>
-	</attribute>
-	<attribute id="0x0005">
-		<sequence>
-			<uuid value="0x1002" />
-		</sequence>
-	</attribute>
-	<attribute id="0x0006">
-		<sequence>
-			<uint16 value="0x656e" />
-			<uint16 value="0x006a" />
-			<uint16 value="0x0100" />
-		</sequence>
-	</attribute>
-	<attribute id="0x0009">
-		<sequence>
-			<sequence>
-				<uuid value="0x1124" />
-				<uint16 value="0x0100" />
+				<uuid value="0x0011" /> <!-- Protocol Identifier: HID Prototcol (HIDP) -->
 			</sequence>
 		</sequence>
 	</attribute>
-	<attribute id="0x000d">
+	<attribute id="0x0005"> <!-- Browse Group List -->
+		<sequence>
+			<uuid value="0x1002" /> <!-- Public Browse Root -->
+		</sequence>
+	</attribute>
+	<attribute id="0x0006"> <!-- Language Base Attribute ID List -->
+		<sequence>
+			<uint16 value="0x656e" /> <!-- English -->
+			<uint16 value="0x006a" /> <!-- UTF-8 -->
+			<uint16 value="0x0100" /> <!-- Primary Language Base ID = 0 -->
+		</sequence>
+	</attribute>
+	<attribute id="0x0009"> <!-- Bluetooth Profile Descriptor List -->
+		<sequence>
+			<sequence>
+				<uuid value="0x1124" /> <!-- HID Profile -->
+				<uint16 value="0x0100" /> <!-- Version 1.0 --> <!-- Consider switching to 1.1 which would be 0x0101 -->
+			</sequence>
+		</sequence>
+	</attribute>
+	<attribute id="0x000d"> <!-- Additional Protocol Descriptor Lists -->
 		<sequence>
 			<sequence>
 				<sequence>
-					<uuid value="0x0100" />
-					<uint16 value="0x0013" />
+					<uuid value="0x0100" /> <!-- Protocol Identifier: L2CAP -->
+					<uint16 value="0x0013" /> <!-- Parameter: (Definition: PSM) (Value: HID Interrupt) -->
 				</sequence>
 				<sequence>
-					<uuid value="0x0011" />
+					<uuid value="0x0011" /> <!-- Protocol Identifier: HID Prototcol (HIDP) -->
 				</sequence>
 			</sequence>
 		</sequence>
 	</attribute>
-	<attribute id="0x0100">
+	<attribute id="0x0100"> <!-- Service Name -->
 		<text value="RPi K(V)M" />
 	</attribute>
-	<attribute id="0x0101">
+	<attribute id="0x0101"> <!-- Service Description -->
 		<text value="Raspberry Pi USB - Bluetooth K(V)M" />
 	</attribute>
-	<attribute id="0x0102">
+	<attribute id="0x0102"> <!-- Provider Name -->
 		<text value="Raspberry Pi" />
 	</attribute>
-	<attribute id="0x0200">
-		<uint16 value="0x0100" />
+	<attribute id="0x0200"> <!-- HID Device Release Number (Deprecated in HID 1.1) -->
+		<uint16 value="0x0100" /> <!-- Version 1.0 -->
 	</attribute>
-	<attribute id="0x0201">
-		<uint16 value="0x0111" />
+	<attribute id="0x0201"> <!-- HID Parser Version -->
+		<uint16 value="0x0111" /> <!-- 1.1 Per Spec -->
+	</attribute>`
+	<attribute id="0x0202"> <!-- HID Device Subclass -->
+		<uint8 value="0xC0" /> <!-- Keyboard/Mouse Combo -->
 	</attribute>
-	<attribute id="0x0202">
-		<uint8 value="0xC0" />
+	<attribute id="0x0203"> <!-- HID Country Code -->
+		<uint8 value="0x00" /> <!-- Non-Localized -->
 	</attribute>
-	<attribute id="0x0203">
-		<uint8 value="0x00" />
+	<attribute id="0x0204"> <!-- HID Virtual Cable -->
+		<boolean value="false" /> 
 	</attribute>
-	<attribute id="0x0204">
-		<boolean value="false" />
-	</attribute>
-	<attribute id="0x0205">
+	<attribute id="0x0205"> <!-- HID Reconnect Initiate -->
 		<boolean value="true" />
 	</attribute>
-	<attribute id="0x0206">
+	<attribute id="0x0206"> <!-- HID Descriptor List -->
 		<sequence>
 			<sequence>
-				<uint8 value="0x22" />
-				<text encoding="hex" value="05010906a101850175019508050719e029e715002501810295017508810395057501050819012905910295017503910395067508150026ff000507190029ff8100c005010902a10185020901a100950575010509190129051500250181029501750381017508950305010930093109381581257f810675089501050C0A38021581257f8106c0c0" />
+				<uint8 value="0x22" /> <!-- Descriptor Type: Report -->
+				<text encoding="hex" value="05010906a101850175019508050719e029e715002501810295017508810395057501050819012905910295017503910395067508150026ff000507190029ff8100c005010902a10185020901a100950575010509190129051500250181029501750381017508950305010930093109381581257f810675089501050C0A38021581257f8106c0c0" /> <!-- Class Descriptor Data -->
 			</sequence>
 		</sequence>
 	</attribute>
-	<attribute id="0x0207">
+	<attribute id="0x0207"> <!-- HID LANG ID Base List -->
 		<sequence>
 			<sequence>
-				<uint16 value="0x0409" />
-				<uint16 value="0x0100" />
+				<uint16 value="0x0409" /> <!-- English -->
+				<uint16 value="0x0100" /> <!-- UTF-8 -->
 			</sequence>
 		</sequence>
 	</attribute>
-	<attribute id="0x0209">
+	<attribute id="0x0209"> <!-- HID Battery Power -->
 		<boolean value="false" />
 	</attribute>
-	<attribute id="0x020a">
+	<attribute id="0x020a"> <!-- HID Remote Wake -->
 		<boolean value="true" />
 	</attribute>
-	<attribute id="0x020b">
+	<attribute id="0x020b"> <!-- HID Profile Version (DEPRECATED) -->
 		<uint16 value="0x0100" />
 	</attribute>
-	<attribute id="0x020c">
+	<attribute id="0x020c"> <!-- HID Supervision Timeout-->
 		<uint16 value="0x0c80" />
 	</attribute>
-	<attribute id="0x020d">
+	<attribute id="0x020d"> <!-- HID Normally Connectable -->
 		<boolean value="true" />
 	</attribute>
-	<attribute id="0x020e">
+	<attribute id="0x020e"> <!-- HID Boot Device-->
 		<boolean value="false" />
 	</attribute>
-	<attribute id="0x020f">
+	<attribute id="0x020f"> <!-- HID SSR Host Max Latency -->
 		<uint16 value="0x0640" />
 	</attribute>
-	<attribute id="0x0210">
+	<attribute id="0x0210"> <!-- HID SSR Host Min Timeout -->
 		<uint16 value="0x0320" />
 	</attribute>
 </record>
