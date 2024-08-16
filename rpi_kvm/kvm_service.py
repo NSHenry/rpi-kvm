@@ -17,7 +17,6 @@ from bt_server import BtServer
 from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAction
 from usb_hid_decoder import UsbHidDecoder
 # reTerminal Status Lights
-# import leds as reTerminal
 from leds import Leds as reTerminal
 
 
@@ -76,12 +75,12 @@ class KvmDbusService(ServiceInterface):
         # logging.info(f"D-Bus Service: connected_client_count = {connected_client_count}")
         if connected_client_count > 0:
             try:
-                reTerminal.usr_led = True
+                reTerminal().usr_led = True
             except NameError:
                 logging.info("reTerminal usr_led not found.")
         elif connected_client_count == 0:
             try:
-                reTerminal.usr_led = False
+                reTerminal().usr_led = False
             except NameError:
                 logging.info("reTerminal usr_led not found.")
         # logging.info(f"\033[0;36mD-Bus Service: connected_client_count = {connected_client_count}\033[0m")
@@ -135,8 +134,8 @@ class KvmDbusService(ServiceInterface):
         client_names = self._bt_server.get_connected_client_names()
         self.signal_host_change(client_names)
         try:
-            reTerminal.sta_led_green = True
-            reTerminal.sta_led_red = False
+            reTerminal().sta_led_green = True
+            reTerminal().sta_led_red = False
         except NameError:
             # print("reTerminal led not found.")
             pass

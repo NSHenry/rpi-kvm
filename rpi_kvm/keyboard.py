@@ -9,13 +9,12 @@ import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
 # reTerminal Status Lights
-# import leds as reTerminal
 from leds import Leds as reTerminal
 
 
 class Keyboard(object):
     is_host_active = bool
-    # So I guess this is a class attribute vs a literal setting a "literal" boolean. Pylance only seems to whine about this.
+    # So I guess this is a class attribute type vs. setting the attribute as a "literal" boolean. The program runs correctly either way. Pylance only seems to whine about this.
     is_kb_connected: bool
 
     # def __init__(self, input_device):
