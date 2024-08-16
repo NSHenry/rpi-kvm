@@ -33,7 +33,7 @@
 		<sequence>
 			<sequence>
 				<uuid value="0x1124" /> <!-- HID Profile -->
-				<uint16 value="0x0100" /> <!-- Version 1.0 --> <!-- Consider switching to 1.1 which would be 0x0101 -->
+				<uint16 value="0x0101" /> <!-- Version 1.0 --> <!-- Consider switching to 1.1 which would be 0x0101 -->
 			</sequence>
 		</sequence>
 	</attribute>
@@ -58,9 +58,6 @@
 	</attribute>
 	<attribute id="0x0102"> <!-- Provider Name -->
 		<text value="Raspberry Pi" />
-	</attribute>
-	<attribute id="0x0200"> <!-- HID Device Release Number (Deprecated in HID 1.1) -->
-		<uint16 value="0x0100" /> <!-- Version 1.0 -->
 	</attribute>
 	<attribute id="0x0201"> <!-- HID Parser Version -->
 		<uint16 value="0x0111" /> <!-- 1.1 Per Spec -->
@@ -98,9 +95,6 @@
 	</attribute>
 	<attribute id="0x020a"> <!-- HID Remote Wake -->
 		<boolean value="true" />
-	</attribute>
-	<attribute id="0x020b"> <!-- HID Profile Version (DEPRECATED) -->
-		<uint16 value="0x0100" />
 	</attribute>
 	<attribute id="0x020c"> <!-- HID Supervision Timeout-->
 		<uint16 value="0x0c80" />
