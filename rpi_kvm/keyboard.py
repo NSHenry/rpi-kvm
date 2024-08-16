@@ -9,7 +9,8 @@ import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
 # reTerminal Status Lights
-import leds as reTerminal
+# import leds as reTerminal
+from leds import Leds as reTerminal
 
 
 class Keyboard(object):
@@ -66,10 +67,11 @@ class Keyboard(object):
             try:
                 self._idev.ungrab()
                 try:
-                    reTerminal.sta_led_green = True
-                    reTerminal.sta_led_red = False
+                    reTerminal().sta_led_green = True
+                    reTerminal().sta_led_red = False
                 except NameError:
-                    print("reTerminal led not found.")
+                    # print("reTerminal led not found.")
+                    pass
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already released. \033[0m")
                 pass
@@ -77,10 +79,11 @@ class Keyboard(object):
             try:
                 self._idev.grab()
                 try:
-                    reTerminal.sta_led_green = False
-                    reTerminal.sta_led_red = True
+                    reTerminal().sta_led_green = False
+                    reTerminal().sta_led_red = True
                 except NameError:
-                    print("reTerminal led not found.")
+                    # print("reTerminal led not found.")
+                    pass
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already captured by another process. \033[0m")
                 pass

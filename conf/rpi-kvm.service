@@ -7,6 +7,8 @@ Type=forking
 ExecStart=/home/nateh/rpi-kvm/rpi-kvm.sh restart
 WorkingDirectory=/home/nateh/rpi-kvm
 Restart=on-abort
- 
+CPUSchedulingPolicy=fifo
+CPUSchedulingPriority=20
+
 [Install]
 WantedBy=multi-user.target

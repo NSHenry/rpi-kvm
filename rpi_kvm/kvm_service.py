@@ -17,7 +17,8 @@ from bt_server import BtServer
 from hotkey import HotkeyDetector, HotkeyConfig, HotkeyAction
 from usb_hid_decoder import UsbHidDecoder
 # reTerminal Status Lights
-import leds as reTerminal
+# import leds as reTerminal
+from leds import Leds as reTerminal
 
 
 class KvmDbusService(ServiceInterface):
@@ -68,10 +69,11 @@ class KvmDbusService(ServiceInterface):
     # noinspection PyProtectedMember
     @dbus_fast.service.method()
     def GetClientsInfo(self) -> 's':
-        # The websocket calls this all the time. 
+        # The websocket calls GetClientsInfo all the time. 
         # logging.info(f"D-Bus: Getting clients info.")
         # Get connected client count from bt_server as an integer
         connected_client_count = len(self._bt_server._clients_connected)
+        # logging.info(f"D-Bus Service: connected_client_count = {connected_client_count}")
         if connected_client_count > 0:
             try:
                 reTerminal.usr_led = True
@@ -136,7 +138,8 @@ class KvmDbusService(ServiceInterface):
             reTerminal.sta_led_green = True
             reTerminal.sta_led_red = False
         except NameError:
-            print("reTerminal led not found.")
+            # print("reTerminal led not found.")
+            pass
 
     @dbus_fast.service.method()
     def ConnectActiveHost(self) -> None:

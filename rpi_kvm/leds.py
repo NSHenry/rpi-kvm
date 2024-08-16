@@ -1,8 +1,8 @@
-import sys
+# import sys
 # import os
 
 
-class _Leds:
+class Leds:
     __STA_LED_GREEN_BRIGHTNESS = "/sys/class/leds/usr_led2/brightness"
     __STA_LED_RED_BRIGHTNESS = "/sys/class/leds/usr_led1/brightness"
     __USR_LED_GREEN_BRIGHTNESS = "/sys/class/leds/usr_led0/brightness"
@@ -18,27 +18,27 @@ class _Leds:
 
     @property
     def sta_led_green(self):
-        return True if self.__read_1st_line_from_file(_Leds.__STA_LED_GREEN_BRIGHTNESS) != "0" else False
+        return True if self.__read_1st_line_from_file(Leds.__STA_LED_GREEN_BRIGHTNESS) != "0" else False
 
     @sta_led_green.setter
     def sta_led_green(self, value):
-        self.__write_to_file(_Leds.__STA_LED_GREEN_BRIGHTNESS, "1" if value else "0")
+        self.__write_to_file(Leds.__STA_LED_GREEN_BRIGHTNESS, "1" if value else "0")
 
     @property
     def sta_led_red(self):
-        return True if self.__read_1st_line_from_file(_Leds.__STA_LED_RED_BRIGHTNESS) != "0" else False
+        return True if self.__read_1st_line_from_file(Leds.__STA_LED_RED_BRIGHTNESS) != "0" else False
 
     @sta_led_red.setter
     def sta_led_red(self, value):
-        self.__write_to_file(_Leds.__STA_LED_RED_BRIGHTNESS, "1" if value else "0")
+        self.__write_to_file(Leds.__STA_LED_RED_BRIGHTNESS, "1" if value else "0")
 
     @property
     def usr_led(self):
-        return True if self.__read_1st_line_from_file(_Leds.__USR_LED_GREEN_BRIGHTNESS) != "0" else False
+        return True if self.__read_1st_line_from_file(Leds.__USR_LED_GREEN_BRIGHTNESS) != "0" else False
 
     @usr_led.setter
     def usr_led(self, value):
-        self.__write_to_file(_Leds.__USR_LED_GREEN_BRIGHTNESS, "1" if value else "0")
+        self.__write_to_file(Leds.__USR_LED_GREEN_BRIGHTNESS, "1" if value else "0")
 
     @staticmethod
     def __read_1st_line_from_file(file_name):
@@ -51,5 +51,5 @@ class _Leds:
             f.write(value)
 
 
-sys.modules[__name__] = _Leds()
-# leds_instance = _Leds()
+# sys.modules[__name__] = Leds()
+# leds_instance = Leds()
