@@ -62,40 +62,42 @@ class HidScanner(object):
                 return False
             case "vc4-hdmi-1 HDMI Jack":
                 return False
-            case "ELAN9038:00 04F3:2A1C":
-                return False
-            case "Power Button":
-                return False
-            case "Lid Switch":
-                return False
-            case "AT Translated Set 2 keyboard":
-                return False
-            case "ELAN9038:00 04F3:2A1C Stylus":
-                return False
-            case "Microsoft Surface Keyboard Touchpad":
-                return False
-            case "Intel HID events":
-                return False
-            case "Intel HID 5 button array":
-                return False
-            case "Intel HID switches":
-                return False
-            case "Video Bus":
-                return False
-            case "HDA Intel PCH Mic":
-                return False
-            case "HDA Intel PCH Headphone":
-                return False
-            case "HDA Intel PCH HDMI/DP,pcm=3":
-                return False
-            case "HDA Intel PCH HDMI/DP,pcm=7":
-                return False
-            case "HDA Intel PCH HDMI/DP,pcm=8":
-                return False
-            case "Generic USB Audio Consumer Control":
-                return False
-            case "Generic USB Audio":
-                return False
+            # BEGIN: Surface Go 2 Inputs
+            # case "ELAN9038:00 04F3:2A1C":
+            #     return False
+            # case "Power Button":
+            #     return False
+            # case "Lid Switch":
+            #     return False
+            # case "AT Translated Set 2 keyboard":
+            #     return False
+            # case "ELAN9038:00 04F3:2A1C Stylus":
+            #     return False
+            # case "Microsoft Surface Keyboard Touchpad":
+            #     return False
+            # case "Intel HID events":
+            #     return False
+            # case "Intel HID 5 button array":
+            #     return False
+            # case "Intel HID switches":
+            #     return False
+            # case "Video Bus":
+            #     return False
+            # case "HDA Intel PCH Mic":
+            #     return False
+            # case "HDA Intel PCH Headphone":
+            #     return False
+            # case "HDA Intel PCH HDMI/DP,pcm=3":
+            #     return False
+            # case "HDA Intel PCH HDMI/DP,pcm=7":
+            #     return False
+            # case "HDA Intel PCH HDMI/DP,pcm=8":
+            #     return False
+            # case "Generic USB Audio Consumer Control":
+            #     return False
+            # case "Generic USB Audio":
+            #     return False
+            # END: Surface Go 2 Inputs
             case _:
                 return True
 

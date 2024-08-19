@@ -62,19 +62,7 @@ class Keyboard(object):
         Keyboard.is_host_active = is_host_active
         # logging.info(f"HAF Keyboard._s_host_active = {Keyboard.is_host_active}")
         # logging.info(f"\033[0;36mConnected Clients: {self._clients_connected_count} \033[0m")
-        if Keyboard.is_host_active is False:
-            try:
-                self._idev.ungrab()
-                try:
-                    reTerminal().sta_led_green = True
-                    reTerminal().sta_led_red = False
-                except NameError:
-                    # print("reTerminal led not found.")
-                    pass
-            except OSError:
-                # logging.info(f"\033[0;36mKeyboard already released. \033[0m")
-                pass
-        elif Keyboard.is_host_active is True:
+        if Keyboard.is_host_active is True:
             try:
                 self._idev.grab()
                 try:
@@ -85,6 +73,18 @@ class Keyboard(object):
                     pass
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already captured by another process. \033[0m")
+                pass
+        elif Keyboard.is_host_active is False:
+            try:
+                self._idev.ungrab()
+                try:
+                    reTerminal().sta_led_green = True
+                    reTerminal().sta_led_red = False
+                except NameError:
+                    # print("reTerminal led not found.")
+                    pass
+            except OSError:
+                # logging.info(f"\033[0;36mKeyboard already released. \033[0m")
                 pass
 
     # Reactivates the bt host if connected client count is greater than 0, a keyboard is connected, and the host is not active.
