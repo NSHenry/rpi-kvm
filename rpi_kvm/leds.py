@@ -1,11 +1,23 @@
-# import sys
-# import os
+import sys
+import os
 
 
 class Leds:
     __STA_LED_GREEN_BRIGHTNESS = "/sys/class/leds/usr_led2/brightness"
     __STA_LED_RED_BRIGHTNESS = "/sys/class/leds/usr_led1/brightness"
     __USR_LED_GREEN_BRIGHTNESS = "/sys/class/leds/usr_led0/brightness"
+
+    # BEGIN: AI Suggestions
+    def __init__(self):
+        self.__verify_files_existence()
+
+    @staticmethod
+    def __verify_files_existence():
+
+        for file in [__STA_LED_GREEN_BRIGHTNESS, __STA_LED_RED_BRIGHTNESS, __USR_LED_GREEN_BRIGHTNESS]:
+            if not os.path.exists(file):
+                raise FileNotFoundError(f"LED control file does not exist: {file}")
+    # END: AI Suggestions
 
     @property
     def sta_led(self):
@@ -42,14 +54,24 @@ class Leds:
 
     @staticmethod
     def __read_1st_line_from_file(file_name):
-        with open(file_name, "r") as f:
-            return f.readline().replace("\n", "")
+        try:
+            with open(file_name, "r") as f:
+                return f.readline().replace("\n", "")
+        except NameError as e:
+            # Handle/Log exception
+            pass
 
     @staticmethod
     def __write_to_file(file_name, value):
-        with open(file_name, "w") as f:
-            f.write(value)
+        try:
+            with open(file_name, "w") as f:
+                f.write(value)
+        except NameError as e:
+            # Handle/Log exception
+            pass
 
 
-# sys.modules[__name__] = Leds()
-# leds_instance = Leds()
+# BEGIN: AI Suggestions
+# Create _Leds instance for further use instead of modifying sys.modules
+leds_instance = Leds()
+# END: AI Suggestions
