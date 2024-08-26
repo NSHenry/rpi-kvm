@@ -2,14 +2,14 @@
 
 import asyncio
 import evdev
-from evdev import *
+# from evdev import *
 import dbus_fast
 from dbus_fast.aio import MessageBus
 import logging
 from hid_scanner import HidScanner
 from usb_hid_decoder import UsbHidDecoder
 # reTerminal Status Lights
-from leds import Leds as reTerminal
+from leds import Leds
 
 
 class Keyboard(object):
@@ -66,8 +66,8 @@ class Keyboard(object):
             try:
                 self._idev.grab()
                 try:
-                    reTerminal().sta_led_green = False
-                    reTerminal().sta_led_red = True
+                    Leds().sta_led_green = False
+                    Leds().sta_led_red = True
                 except NameError:
                     # print("reTerminal led not found.")
                     pass
@@ -78,8 +78,8 @@ class Keyboard(object):
             try:
                 self._idev.ungrab()
                 try:
-                    reTerminal().sta_led_green = True
-                    reTerminal().sta_led_red = False
+                    Leds().sta_led_green = True
+                    Leds().sta_led_red = False
                 except NameError:
                     # print("reTerminal led not found.")
                     pass
