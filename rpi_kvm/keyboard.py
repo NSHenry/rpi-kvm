@@ -65,24 +65,16 @@ class Keyboard(object):
         if Keyboard.is_host_active is True:
             try:
                 self._idev.grab()
-                try:
-                    Leds().sta_led_green = False
-                    Leds().sta_led_red = True
-                except NameError:
-                    # print("reTerminal led not found.")
-                    pass
+                Leds().sta_led_green = False
+                Leds().sta_led_red = True
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already captured by another process. \033[0m")
                 pass
         elif Keyboard.is_host_active is False:
             try:
                 self._idev.ungrab()
-                try:
-                    Leds().sta_led_green = True
-                    Leds().sta_led_red = False
-                except NameError:
-                    # print("reTerminal led not found.")
-                    pass
+                Leds().sta_led_green = True
+                Leds().sta_led_red = False
             except OSError:
                 # logging.info(f"\033[0;36mKeyboard already released. \033[0m")
                 pass

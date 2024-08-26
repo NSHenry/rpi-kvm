@@ -74,15 +74,9 @@ class KvmDbusService(ServiceInterface):
         connected_client_count = len(self._bt_server._clients_connected)
         # logging.info(f"D-Bus Service: connected_client_count = {connected_client_count}")
         if connected_client_count > 0:
-            try:
-                Leds().usr_led = True
-            except NameError:
-                logging.info("reTerminal usr_led not found.")
+            Leds().usr_led = True
         elif connected_client_count == 0:
-            try:
-                Leds().usr_led = False
-            except NameError:
-                logging.info("reTerminal usr_led not found.")
+            Leds().usr_led = False
         # logging.info(f"\033[0;36mD-Bus Service: connected_client_count = {connected_client_count}\033[0m")
         # Send the client count to the D-Bus signaler.
         self.signal_connected_client_count(connected_client_count)
@@ -133,12 +127,8 @@ class KvmDbusService(ServiceInterface):
         logging.info(f"D-Bus: Clearing active host.")
         client_names = self._bt_server.get_connected_client_names()
         self.signal_host_change(client_names)
-        try:
-            Leds().sta_led_green = True
-            Leds().sta_led_red = False
-        except NameError:
-            # print("reTerminal led not found.")
-            pass
+        Leds().sta_led_green = True
+        Leds().sta_led_red = False
 
     @dbus_fast.service.method()
     def ConnectActiveHost(self) -> None:

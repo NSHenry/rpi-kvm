@@ -1,7 +1,3 @@
-# import sys
-# import os
-
-
 class Leds:
     __STA_LED_GREEN_BRIGHTNESS = "/sys/class/leds/usr_led2/brightness"
     __STA_LED_RED_BRIGHTNESS = "/sys/class/leds/usr_led1/brightness"
@@ -42,14 +38,18 @@ class Leds:
 
     @staticmethod
     def __read_1st_line_from_file(file_name):
-        with open(file_name, "r") as f:
-            return f.readline().replace("\n", "")
+        try:
+            with open(file_name, "r") as f:
+                return f.readline().replace("\n", "")
+        except NameError:
+            # Handle/Log Exception
+            pass
 
     @staticmethod
     def __write_to_file(file_name, value):
-        with open(file_name, "w") as f:
-            f.write(value)
-
-
-# sys.modules[__name__] = Leds()
-# leds_instance = Leds()
+        try:
+            with open(file_name, "w") as f:
+                f.write(value)
+        except NameError:
+            # Handle/Log Exception
+            pass
