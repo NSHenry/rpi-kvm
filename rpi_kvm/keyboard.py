@@ -2,7 +2,7 @@
 
 import asyncio
 import evdev
-# from evdev import *
+from evdev import ecodes
 import dbus_fast
 from dbus_fast.aio import MessageBus
 import logging
