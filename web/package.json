@@ -18,6 +18,7 @@
     "@types/react-dom": "^18.3.0",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "electron-squirrel-startup": "^1.0.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
@@ -29,12 +30,13 @@
     "typescript": "$typescript"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "electron-forge start",
     "electron": "electron .",
     "build": "react-scripts build",
-    "package": "electron-packager . --out electron-build/",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "eslintConfig": {
     "extends": [
@@ -55,7 +57,15 @@
     ]
   },
   "devDependencies": {
-    "@electron/packager": "^18.3.4",
+    "@electron-forge/cli": "^7.4.0",
+    "@electron-forge/maker-deb": "^7.4.0",
+    "@electron-forge/maker-rpm": "^7.4.0",
+    "@electron-forge/maker-squirrel": "^7.4.0",
+    "@electron-forge/maker-zip": "^7.4.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
+    "@electron-forge/plugin-fuses": "^7.4.0",
+    "@electron/fuses": "^1.8.0",
+    "@electron/rebuild": "^3.6.0",
     "electron": "^32.0.1"
   }
 }
