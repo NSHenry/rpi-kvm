@@ -7,6 +7,7 @@ conf/rpi-kvm-client-order.json
 # dependencies
 web/node_modules
 web/.pnp
+web/electron-build
 .pnp.js
 
 # testing
