@@ -130,11 +130,11 @@ export default class Settings extends React.Component<any, SettingsState> {
           } else {
             throw Error("")
           }
-       })
+        })
       .catch((error) => {
           console.log("error")
           this.context.addNotification(NotifyType.error, 'Something went wrong during settings send...')
-       })
+        })
   }
 
   handleWebPortChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -247,22 +247,16 @@ class ServiceRestartSection extends React.Component {
           } else {
             this.context.addNotification(NotifyType.error, 'Something went wrong during restart ' + serviceName + ' service send...')
           }
-       })
+        })
       .catch((error) => {
           this.context.addNotification(NotifyType.error, 'Something went wrong during restart ' + serviceName + ' service send...')
-       })
+        })
   }
 
   render() {
     return (
       <div className="row g-3 align-items-center">
         <h2 className="fw-light">RPI-K(V)M Service Actions</h2>
-
-        {/* <div className="d-grid col-3">
-          <button className="btn btn-lg btn-outline-danger" onClick={() => this.sendServiceRestart("info-hub")}>
-            Restart Info Hub
-          </button>
-        </div> */}
 
         <div className="d-grid col">
           <button className="btn btn-xl btn-outline-danger" onClick={() => this.sendServiceRestart("web")}>

@@ -5,6 +5,7 @@ function createWindow () {
     width: 1280,
     height: 720,
     fullscreen: true,
+    icon: '/images/wireless-keyboard-3d.png',
     webPreferences: {
       nodeIntegration: true
     }

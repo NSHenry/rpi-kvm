@@ -17,7 +17,11 @@ module.exports = {
     // },
     {
       name: '@electron-forge/maker-deb',
-      config: {},
+      config: {
+        options: {
+          icon: '/images/wireless-keyboard-3d.png'
+        }
+      },
     },
     // {
     //   name: '@electron-forge/maker-rpm',
