@@ -1,5 +1,6 @@
 {
   "name": "rpi-kvm",
+  "description": "Raspberry Pi K(V)M Switch. Bluetooth switch for usb peripherals.",
   "version": "0.2.0",
   "private": true,
   "main": "electron-main.js",
@@ -7,15 +8,6 @@
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@testing-library/jest-dom": "^6.4.8",
-    "@testing-library/react": "^16.0.0",
-    "@testing-library/user-event": "^14.5.2",
-    "@types/bootstrap": "^5.2.10",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^22.1.0",
-    "@types/react": "^18.3.3",
-    "@types/react-bootstrap": "^0.32.37",
-    "@types/react-dom": "^18.3.0",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "electron-squirrel-startup": "^1.0.1",
@@ -23,7 +15,6 @@
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
     "react-scripts": "^5.0.1",
-    "typescript": "^5.5.4",
     "web-vitals": "^4.2.3"
   },
   "overrides": {
@@ -66,6 +57,16 @@
     "@electron-forge/plugin-fuses": "^7.4.0",
     "@electron/fuses": "^1.8.0",
     "@electron/rebuild": "^3.6.0",
-    "electron": "^32.0.1"
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/bootstrap": "^5.2.10",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.5.1",
+    "@types/react": "^18.3.4",
+    "@types/react-bootstrap": "^0.32.37",
+    "@types/react-dom": "^18.3.0",
+    "electron": "^32.0.1",
+    "typescript": "^5.5.4"
   }
 }
