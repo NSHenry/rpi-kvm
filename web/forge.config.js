@@ -19,7 +19,7 @@ module.exports = {
       name: '@electron-forge/maker-deb',
       config: {
         options: {
-          icon: '/images/wireless-keyboard-3d.png'
+          icon: './images/wireless-keyboard-3d.png'
         }
       },
     },
