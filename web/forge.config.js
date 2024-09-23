@@ -19,6 +19,8 @@ module.exports = {
       name: '@electron-forge/maker-deb',
       config: {
         options: {
+          maintainer: 'Nate Henry',
+          homepage: 'https://github.com/NSHenry/rpi-kvm',
           icon: './images/wireless-keyboard-3d.png'
         }
       },
